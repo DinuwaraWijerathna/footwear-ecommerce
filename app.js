@@ -168,7 +168,13 @@ function showToast(msg, icon = '✅') {
 ══════════════════════════════════ */
 function renderProducts(filter = 'all') {
   const grid = $('#productsGrid');
-  const filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+  if (!grid) return;
+
+  const filtered = filter === 'all' 
+    ? PRODUCTS 
+    : filter === 'sale' 
+      ? PRODUCTS.filter(p => p.badge === 'sale') 
+      : PRODUCTS.filter(p => p.category === filter);
 
   grid.innerHTML = '';
 
@@ -268,11 +274,22 @@ $$('.filter-tab').forEach(tab => {
 
 function filterProducts(cat) {
   currentFilter = cat;
+  
+  // If not on products.html, redirect with filter query param
+  if (!window.location.pathname.includes('products.html')) {
+    window.location.href = `products.html?filter=${cat}`;
+    return;
+  }
+
   $$('.filter-tab').forEach(t => {
     t.classList.toggle('active', t.dataset.filter === cat);
   });
   renderProducts(cat);
-  document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+  
+  const productsSection = document.getElementById('products');
+  if (productsSection) {
+    productsSection.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 window.filterProducts = filterProducts;
 
@@ -502,7 +519,7 @@ window.addEventListener('scroll', () => {
     navbar.classList.remove('scrolled');
   }
 
-  // Active nav link based on scroll
+  // Active nav link based on scroll (only if section exists on page)
   const sections = ['home','categories','products','offers','testimonials'];
   sections.forEach(id => {
     const section = document.getElementById(id);
@@ -510,7 +527,8 @@ window.addEventListener('scroll', () => {
       const rect = section.getBoundingClientRect();
       if (rect.top <= 80 && rect.bottom >= 80) {
         $$('.nav-links a').forEach(a => {
-          a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
+          const href = a.getAttribute('href');
+          a.classList.toggle('active', href === `#${id}` || href === `index.html#${id}`);
         });
       }
     }
@@ -572,6 +590,9 @@ $('#searchInput').addEventListener('keydown', (e) => {
    COUNTDOWN TIMER
 ══════════════════════════════════ */
 function startCountdown() {
+  const hoursEl = $('#cd-hours');
+  if (!hoursEl) return;
+
   // Set target to 8 hours from now
   const stored = localStorage.getItem('stepz-countdown-end');
   let endTime;
@@ -608,6 +629,7 @@ function startCountdown() {
 ══════════════════════════════════ */
 function initSlider() {
   const slider = $('#testimonialSlider');
+  if (!slider) return;
   const dotsContainer = $('#sliderDots');
   const cards = slider.children;
   let autoSlideInterval;
@@ -804,7 +826,19 @@ window.addEventListener('load', () => {
    INIT
 ══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  renderProducts('all');
+  const isOffersPage = window.location.pathname.includes('offers.html');
+  const defaultFilter = isOffersPage ? 'sale' : 'all';
+  const filterParam = urlParams.get('filter') || defaultFilter;
+
+  // Set active class on filter tab if they exist
+  const tabs = $$('.filter-tab');
+  if (tabs.length > 0) {
+    tabs.forEach(t => {
+      t.classList.toggle('active', t.dataset.filter === filterParam);
+    });
+  }
+
+  renderProducts(filterParam);
   updateCartUI();
   startCountdown();
   initReveal();

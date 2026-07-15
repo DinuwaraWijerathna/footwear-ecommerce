@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STEPZ — Premium Footwear | Step Into Luxury</title>
-  <meta name="description" content="Discover the world's finest footwear collection. Men's, Women's, Sport and Casual shoes with premium quality and modern design.">
-  <meta name="keywords" content="footwear, shoes, sneakers, boots, premium shoes, designer footwear, sport shoes">
-  <meta property="og:title" content="STEPZ — Premium Footwear">
-  <meta property="og:description" content="Step Into Luxury — Premium Footwear Collection">
+  <title>Offers & Deals — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Shop the end of season sale at STEPZ. Up to 50% off on premium footwear collections.">
   <link rel="stylesheet" href="style.css">
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -22,15 +19,15 @@
 </div>
 
 <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
-<nav class="navbar" id="navbar">
+<nav class="navbar scrolled" id="navbar">
   <div class="container">
-    <a href="#" class="nav-logo">STEP<span>Z</span></a>
+    <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
 
     <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="index.html">Home</a></li>
       <li><a href="categories.html">Categories</a></li>
       <li><a href="products.html">Products</a></li>
-      <li><a href="offers.html">Offers</a></li>
+      <li><a href="offers.html" class="active">Offers</a></li>
       <li><a href="reviews.html">Reviews</a></li>
     </ul>
 
@@ -55,115 +52,59 @@
 <!-- Mobile Navigation -->
 <div class="nav-overlay" id="navOverlay"></div>
 <nav class="mobile-nav" id="mobileNav">
-  <a href="index.html" class="active">Home</a>
+  <a href="index.html">Home</a>
   <a href="categories.html">Categories</a>
   <a href="products.html">Products</a>
-  <a href="offers.html">Offers</a>
+  <a href="offers.html" class="active">Offers</a>
   <a href="reviews.html">Reviews</a>
 </nav>
 
-<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-
+<!-- ═══════════════════════════════ SPECIAL OFFER ═══════════════════════════════ -->
+<section class="offer-section" id="offers" style="margin-top: 100px;">
   <div class="container">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        New Collection 2026
+    <div class="offer-banner reveal">
+      <div class="offer-content">
+        <div class="section-tag">Limited Time</div>
+        <h2 class="offer-title">
+          Season End Sale<br>
+          Up to <span class="text-accent">50% OFF</span>
+        </h2>
+        <p class="offer-desc">
+          Grab your favorite pairs before they're gone. This mega sale ends in just a few hours — don't miss out!
+        </p>
       </div>
 
-      <h1 class="hero-title">
-        Step Into<br>
-        <span class="outline">Pure</span>
-        <span class="gradient-text"> Luxury</span>
-      </h1>
-
-      <p class="hero-desc">
-        Experience footwear crafted for those who refuse to compromise. 
-        Where premium quality meets contemporary design — every step tells your story.
-      </p>
-
-      <div class="hero-actions">
-        <a href="products.html" class="btn-primary" id="shopNowBtn">
-          Shop Now <span class="arrow">→</span>
-        </a>
-        <a href="categories.html" class="btn-ghost">
-          <i class="fa-solid fa-grid-2"></i> Browse Collections
-        </a>
-      </div>
-
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="num">10<span>K+</span></div>
-          <div class="label">Happy Customers</div>
+      <div class="countdown" id="countdown">
+        <div class="countdown-item">
+          <div class="countdown-num" id="cd-hours">00</div>
+          <div class="countdown-label">Hours</div>
         </div>
-        <div class="hero-stat">
-          <div class="num">500<span>+</span></div>
-          <div class="label">Shoe Styles</div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-item">
+          <div class="countdown-num" id="cd-mins">00</div>
+          <div class="countdown-label">Minutes</div>
         </div>
-        <div class="hero-stat">
-          <div class="num">50<span>+</span></div>
-          <div class="label">Premium Brands</div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-item">
+          <div class="countdown-num" id="cd-secs">00</div>
+          <div class="countdown-label">Seconds</div>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    scroll
   </div>
 </section>
 
-<!-- ═══════════════════════════════ TICKER ═══════════════════════════════ -->
-<div class="ticker">
-  <div class="ticker-inner" id="tickerInner">
-    <span class="ticker-item"><span class="star">★</span> Free Shipping Over Rs. 5,000</span>
-    <span class="ticker-item"><span class="star">★</span> New Arrivals Every Week</span>
-    <span class="ticker-item"><span class="star">★</span> 30-Day Easy Returns</span>
-    <span class="ticker-item"><span class="star">★</span> Authentic Products Guaranteed</span>
-    <span class="ticker-item"><span class="star">★</span> Premium Quality Since 2018</span>
-    <span class="ticker-item"><span class="star">★</span> Free Shipping Over Rs. 5,000</span>
-    <span class="ticker-item"><span class="star">★</span> New Arrivals Every Week</span>
-    <span class="ticker-item"><span class="star">★</span> 30-Day Easy Returns</span>
-    <span class="ticker-item"><span class="star">★</span> Authentic Products Guaranteed</span>
-    <span class="ticker-item"><span class="star">★</span> Premium Quality Since 2018</span>
-  </div>
-</div>
-
-
-
-<!-- ═══════════════════════════════ FEATURES ═══════════════════════════════ -->
-<section class="section" id="features" style="padding-top:0">
+<!-- ═══════════════════════════════ SALE PRODUCTS ═══════════════════════════════ -->
+<section class="section" id="products" style="padding-top:0">
   <div class="container">
     <div class="text-center reveal">
-      <div class="section-tag">Why STEPZ</div>
-      <h2 class="section-title">The <span class="text-accent">STEPZ</span> Experience</h2>
+      <div class="section-tag">Hot Deals</div>
+      <h2 class="section-title">Discounted <span class="text-accent">Items</span></h2>
+      <p class="section-sub" style="margin:0 auto">Hurry! Limited stock available on these high-demand items.</p>
     </div>
-    <div class="features-grid">
-      <div class="feature-card reveal reveal-delay-1">
-        <div class="feature-icon">🚚</div>
-        <h3>Free Fast Delivery</h3>
-        <p>Orders above Rs. 5,000 get free island-wide delivery. Express same-day shipping available in Colombo.</p>
-      </div>
-      <div class="feature-card reveal reveal-delay-2">
-        <div class="feature-icon">✅</div>
-        <h3>100% Authentic</h3>
-        <p>Every product is verified for authenticity. We source directly from official brand distributors.</p>
-      </div>
-      <div class="feature-card reveal reveal-delay-3">
-        <div class="feature-icon">🔄</div>
-        <h3>Easy 30-Day Returns</h3>
-        <p>Not happy? Return within 30 days for a full refund. No questions asked, hassle-free process.</p>
-      </div>
-      <div class="feature-card reveal reveal-delay-4">
-        <div class="feature-icon">🛡️</div>
-        <h3>Secure Payments</h3>
-        <p>Your payment information is always protected with 256-bit SSL encryption and fraud monitoring.</p>
-      </div>
+
+    <div class="products-grid" id="productsGrid">
+      <!-- Dynamically rendered by JS (filtered to sale items) -->
     </div>
   </div>
 </section>
@@ -191,10 +132,10 @@
       <div class="footer-col">
         <h4>Shop</h4>
         <ul>
-          <li><a href="#">Men's Shoes</a></li>
-          <li><a href="#">Women's Shoes</a></li>
-          <li><a href="#">Sport & Athletic</a></li>
-          <li><a href="#">Casual Wear</a></li>
+          <li><a href="#" onclick="filterProducts('men')">Men's Shoes</a></li>
+          <li><a href="#" onclick="filterProducts('women')">Women's Shoes</a></li>
+          <li><a href="#" onclick="filterProducts('sport')">Sport & Athletic</a></li>
+          <li><a href="#" onclick="filterProducts('casual')">Casual Wear</a></li>
           <li><a href="#">Kids' Shoes</a></li>
           <li><a href="#">New Arrivals</a></li>
         </ul>
