@@ -749,6 +749,7 @@ window.handleNewsletter = handleNewsletter;
 ══════════════════════════════════ */
 function initParallax() {
   const heroBg = $('.hero-bg');
+  if (!heroBg) return;
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     if (scrollY < window.innerHeight) {
@@ -826,6 +827,7 @@ window.addEventListener('load', () => {
    INIT
 ══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
   const isOffersPage = window.location.pathname.includes('offers.html');
   const defaultFilter = isOffersPage ? 'sale' : 'all';
   const filterParam = urlParams.get('filter') || defaultFilter;
