@@ -5,130 +5,26 @@
 'use strict';
 
 /* ══════════════════════════════════
-   PRODUCT DATA
+   PRODUCT DATA (now loaded from MySQL via PHP API)
 ══════════════════════════════════ */
-const PRODUCTS = [
-  {
-    id: 1,
-    brand: 'Nike',
-    name: 'Air Max 270 React',
-    category: 'men',
-    price: 18500,
-    oldPrice: 24000,
-    badge: 'sale',
-    rating: 4.8,
-    reviews: 214,
-    image: 'assets/images/product_mens.png',
-    sizes: [6, 7, 8, 9, 10, 11, 12],
-    description: 'The Nike Air Max 270 React combines two of Nike\'s most innovative cushioning technologies. Featuring a massive heel Air unit and React foam midsole, this shoe delivers all-day comfort and a sleek, modern profile.',
-    inStock: true
-  },
-  {
-    id: 2,
-    brand: 'Adidas',
-    name: 'Ultraboost 23',
-    category: 'sport',
-    price: 21000,
-    oldPrice: null,
-    badge: 'new',
-    rating: 4.9,
-    reviews: 187,
-    image: 'assets/images/product_sport.png',
-    sizes: [6, 7, 8, 9, 10, 11],
-    description: 'Engineered for elite performance. Adidas Ultraboost 23 features BOOST midsole technology, Primeknit+ upper, and a Continental rubber outsole for superior grip in all conditions.',
-    inStock: true
-  },
-  {
-    id: 3,
-    brand: 'Steve Madden',
-    name: 'Elara Stiletto Heels',
-    category: 'women',
-    price: 9800,
-    oldPrice: 14500,
-    badge: 'sale',
-    rating: 4.7,
-    reviews: 92,
-    image: 'assets/images/product_womens.png',
-    sizes: [4, 5, 6, 7, 8, 9],
-    description: 'The Elara stiletto by Steve Madden is the epitome of elegant femininity. Crafted from premium materials with a sleek pointed toe and 4-inch heel that commands attention at every event.',
-    inStock: true
-  },
-  {
-    id: 4,
-    brand: 'Timberland',
-    name: 'Premium Loafer',
-    category: 'casual',
-    price: 13500,
-    oldPrice: null,
-    badge: 'hot',
-    rating: 4.6,
-    reviews: 143,
-    image: 'assets/images/product_casual.png',
-    sizes: [6, 7, 8, 9, 10, 11, 12],
-    description: 'The Timberland Premium Loafer is crafted from full-grain leather with a padded collar and premium foam footbed. Versatile enough for the office or weekend outings.',
-    inStock: true
-  },
-  {
-    id: 5,
-    brand: 'Jordan',
-    name: 'Air Jordan 1 Retro High',
-    category: 'men',
-    price: 32000,
-    oldPrice: 38000,
-    badge: 'sale',
-    rating: 4.9,
-    reviews: 512,
-    image: 'assets/images/product_mens.png',
-    sizes: [7, 8, 9, 10, 11, 12],
-    description: 'The iconic Air Jordan 1 Retro High OG is a classic reimagined. Premium leather upper with Nike Air cushioning delivers unparalleled comfort and style that has transcended generations.',
-    inStock: true
-  },
-  {
-    id: 6,
-    brand: 'Puma',
-    name: 'Nitro Runner Elite',
-    category: 'sport',
-    price: 15800,
-    oldPrice: null,
-    badge: 'new',
-    rating: 4.5,
-    reviews: 76,
-    image: 'assets/images/product_sport.png',
-    sizes: [6, 7, 8, 9, 10, 11],
-    description: 'Built for speed and endurance, the Puma Nitro Runner Elite uses NITRO foam technology for a super-responsive ride with every stride. Lightweight, breathable, and race-ready.',
-    inStock: true
-  },
-  {
-    id: 7,
-    brand: 'Aldo',
-    name: 'Strappy Sandal Heels',
-    category: 'women',
-    price: 7200,
-    oldPrice: 10800,
-    badge: 'sale',
-    rating: 4.4,
-    reviews: 61,
-    image: 'assets/images/product_womens.png',
-    sizes: [4, 5, 6, 7, 8],
-    description: 'ALDO Strappy Sandal Heels feature delicate ankle straps and a block heel for balance and style. Perfect for summer events, brunches, and evening outings.',
-    inStock: true
-  },
-  {
-    id: 8,
-    brand: 'Skechers',
-    name: 'Arch Fit Loafer',
-    category: 'casual',
-    price: 8900,
-    oldPrice: 11000,
-    badge: 'sale',
-    rating: 4.6,
-    reviews: 208,
-    image: 'assets/images/product_casual.png',
-    sizes: [6, 7, 8, 9, 10, 11, 12],
-    description: 'Skechers Arch Fit Loafer features an orthopedic insole developed with podiatrists. Superior arch support combined with a stylish slip-on design for all-day comfort.',
-    inStock: true
+// Change this if your XAMPP setup / folder name is different
+const API_URL = 'http://localhost/stepz-api/get_products.php';
+
+let PRODUCTS = [];
+
+async function loadProducts() {
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error('Network response was not ok');
+    PRODUCTS = await res.json();
+  } catch (err) {
+    console.error('Failed to load products from API:', err);
+    const grid = document.getElementById('productsGrid');
+    if (grid) {
+      grid.innerHTML = '<p style="padding:40px;text-align:center;color:red;">⚠️ Could not load products. Make sure XAMPP (Apache + MySQL) is running.</p>';
+    }
   }
-];
+}
 
 /* ══════════════════════════════════
    STATE
@@ -826,7 +722,7 @@ window.addEventListener('load', () => {
 /* ══════════════════════════════════
    INIT
 ══════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const isOffersPage = window.location.pathname.includes('offers.html');
   const defaultFilter = isOffersPage ? 'sale' : 'all';
@@ -839,6 +735,8 @@ document.addEventListener('DOMContentLoaded', () => {
       t.classList.toggle('active', t.dataset.filter === filterParam);
     });
   }
+
+  await loadProducts();   // fetch from MySQL (via PHP API) before rendering
 
   renderProducts(filterParam);
   updateCartUI();
