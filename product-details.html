@@ -116,6 +116,38 @@
           </div>
         </div>
 
+        <!-- Quantity Selector -->
+        <div class="qty-section">
+          <span class="size-label">Quantity</span>
+          <div class="qty-stepper">
+            <button type="button" class="qty-btn" id="qtyMinusBtn" aria-label="Decrease quantity">−</button>
+            <span class="qty-value" id="qtyValue">1</span>
+            <button type="button" class="qty-btn" id="qtyPlusBtn" aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+
+        <!-- Delivery Estimator -->
+        <div class="delivery-estimator">
+          <div class="delivery-estimator-header">
+            <i class="fa-solid fa-truck-fast text-accent"></i>
+            <span>Check Delivery Time</span>
+          </div>
+          <div class="delivery-estimator-body">
+            <select id="deliveryDistrict">
+              <option value="">Select your district…</option>
+              <option value="colombo">Colombo</option>
+              <option value="gampaha">Gampaha</option>
+              <option value="kalutara">Kalutara</option>
+              <option value="kandy">Kandy</option>
+              <option value="galle">Galle</option>
+              <option value="jaffna">Jaffna</option>
+              <option value="other">Other District</option>
+            </select>
+            <button type="button" class="delivery-check-btn" id="deliveryCheckBtn">Check</button>
+          </div>
+          <p class="delivery-estimate-result" id="deliveryEstimateResult"></p>
+        </div>
+
         <!-- Actions -->
         <div class="action-buttons-detail">
           <button class="add-to-cart-detail-btn" id="detail-add-to-cart-btn">
@@ -226,6 +258,15 @@
       <div class="section-tag">You May Also Like</div>
       <h2 class="section-title">Related <span class="text-accent">Products</span></h2>
       <div class="products-grid" id="relatedGrid">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+
+    <!-- Recently Viewed Products -->
+    <div class="related-section" id="recentlyViewedSection" style="display:none">
+      <div class="section-tag">Your History</div>
+      <h2 class="section-title">Recently <span class="text-accent">Viewed</span></h2>
+      <div class="products-grid" id="recentlyViewedGrid">
         <!-- Dynamically rendered -->
       </div>
     </div>
@@ -543,6 +584,17 @@
 <div class="toast" id="toast">
   <span class="toast-icon">✅</span>
   <span id="toastMsg">Added to cart!</span>
+</div>
+
+<!-- ═══════════════════════════════ STICKY MOBILE ADD TO CART BAR ═══════════════════════════════ -->
+<div class="sticky-cart-bar" id="stickyCartBar">
+  <div class="sticky-cart-bar-info">
+    <span class="sticky-cart-bar-name" id="stickyCartName">Product</span>
+    <span class="sticky-cart-bar-price" id="stickyCartPrice">Rs. 0</span>
+  </div>
+  <button class="add-to-cart-detail-btn" id="stickyCartAddBtn">
+    <i class="fa-solid fa-bag-shopping"></i> Add to Cart
+  </button>
 </div>
 
 <script src="app.js"></script>

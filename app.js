@@ -11,17 +11,20 @@
 const API_URL = 'http://localhost/stepz-api/get_products.php';
 
 let PRODUCTS = [];
+let PRODUCTS_LOAD_FAILED = false;
 
 async function loadProducts() {
   try {
     const res = await fetch(API_URL);
     if (!res.ok) throw new Error('Network response was not ok');
     PRODUCTS = await res.json();
+    PRODUCTS_LOAD_FAILED = false;
   } catch (err) {
     console.error('Failed to load products from API:', err);
+    PRODUCTS_LOAD_FAILED = true;
     const grid = document.getElementById('productsGrid');
     if (grid) {
-      grid.innerHTML = '<p style="padding:40px;text-align:center;color:red;">⚠️ Could not load products. Make sure XAMPP (Apache + MySQL) is running.</p>';
+      grid.innerHTML = '<p style="padding:40px;text-align:center;color:red;">⚠️ Could not load products. Make sure XAMPP (Apache + MySQL) is running, and check the browser console for the exact error.</p>';
     }
   }
 }
@@ -201,15 +204,15 @@ window.filterProducts = filterProducts;
 /* ══════════════════════════════════
    CART
 ══════════════════════════════════ */
-function addToCart(productId, size = null) {
+function addToCart(productId, size = null, qty = 1) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
 
   const existingIndex = cart.findIndex(item => item.id === productId && item.size === size);
   if (existingIndex !== -1) {
-    cart[existingIndex].qty++;
+    cart[existingIndex].qty += qty;
   } else {
-    cart.push({ ...product, qty: 1, size: size || product.sizes[0] });
+    cart.push({ ...product, qty: qty, size: size || product.sizes[0] });
   }
 
   saveCart();
@@ -942,6 +945,8 @@ async function initProductDetails() {
     }
   }
 
+  let currentQty = 1;
+
   // Populate Gallery
   const mainImg = $('#main-product-img');
   const thumbnailGrid = $('#thumbnailGrid');
@@ -1040,7 +1045,7 @@ async function initProductDetails() {
     addToCartBtn.onclick = () => {
       const selectedSizeBtn = $('.size-btn.selected');
       const size = selectedSizeBtn ? Number(selectedSizeBtn.textContent) : product.sizes[0];
-      addToCart(product.id, size);
+      addToCart(product.id, size, currentQty);
       setTimeout(() => openCart(), 500);
     };
   }
@@ -1048,7 +1053,7 @@ async function initProductDetails() {
     buyNowBtn.onclick = () => {
       const selectedSizeBtn = $('.size-btn.selected');
       const size = selectedSizeBtn ? Number(selectedSizeBtn.textContent) : product.sizes[0];
-      addToCart(product.id, size);
+      addToCart(product.id, size, currentQty);
       setTimeout(() => {
         openCart();
         handleCheckout();
@@ -1159,6 +1164,136 @@ async function initProductDetails() {
     };
   }
 
+  // Quantity Stepper
+  const qtyMinusBtn = $('#qtyMinusBtn');
+  const qtyPlusBtn = $('#qtyPlusBtn');
+  const qtyValue = $('#qtyValue');
+  if (qtyMinusBtn && qtyPlusBtn && qtyValue) {
+    qtyMinusBtn.addEventListener('click', () => {
+      if (currentQty > 1) {
+        currentQty--;
+        qtyValue.textContent = currentQty;
+      }
+    });
+    qtyPlusBtn.addEventListener('click', () => {
+      if (currentQty < 10) {
+        currentQty++;
+        qtyValue.textContent = currentQty;
+      }
+    });
+  }
+
+  // Delivery Estimator
+  const deliveryCheckBtn = $('#deliveryCheckBtn');
+  const deliveryDistrict = $('#deliveryDistrict');
+  const deliveryEstimateResult = $('#deliveryEstimateResult');
+  if (deliveryCheckBtn && deliveryDistrict && deliveryEstimateResult) {
+    deliveryCheckBtn.addEventListener('click', () => {
+      const district = deliveryDistrict.value;
+      if (!district) {
+        deliveryEstimateResult.innerHTML = `⚠️ Please select your district first.`;
+        deliveryEstimateResult.classList.add('show');
+        return;
+      }
+      const isColombo = district === 'colombo' || district === 'gampaha' || district === 'kalutara';
+      const minDays = isColombo ? 1 : 2;
+      const maxDays = isColombo ? 2 : 4;
+      const today = new Date();
+      const minDate = new Date(today);
+      minDate.setDate(today.getDate() + minDays);
+      const maxDate = new Date(today);
+      maxDate.setDate(today.getDate() + maxDays);
+      const fmt = (d) => d.toLocaleDateString('en-LK', { weekday: 'short', month: 'short', day: 'numeric' });
+      const feeText = isColombo ? 'Rs. 350 (FREE over Rs. 5,000)' : 'Rs. 450 (FREE over Rs. 5,000)';
+      deliveryEstimateResult.innerHTML = `✅ Estimated delivery: <strong>${fmt(minDate)} – ${fmt(maxDate)}</strong><br>Delivery fee: ${feeText}`;
+      deliveryEstimateResult.classList.add('show');
+    });
+  }
+
+  // Recently Viewed Products
+  const RECENTLY_VIEWED_KEY = 'stepz-recently-viewed';
+  let recentlyViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || '[]');
+  const recentGrid = $('#recentlyViewedGrid');
+  const recentSection = $('#recentlyViewedSection');
+  if (recentGrid && recentSection) {
+    const viewedProducts = recentlyViewed
+      .filter(pid => pid !== product.id)
+      .map(pid => PRODUCTS.find(p => p.id === pid))
+      .filter(Boolean)
+      .slice(0, 4);
+
+    if (viewedProducts.length > 0) {
+      recentSection.style.display = '';
+      recentGrid.innerHTML = '';
+      viewedProducts.forEach((p, i) => {
+        const isWishlisted = wishlist.includes(p.id);
+        const card = document.createElement('div');
+        card.className = 'product-card reveal visible';
+        card.style.transitionDelay = `${i * 0.08}s`;
+        card.dataset.productId = p.id;
+        card.innerHTML = `
+          <div class="product-img-wrap">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+            <div class="product-badge badge-${p.badge}">${p.badge ? p.badge.toUpperCase() : ''}</div>
+            <div class="product-actions">
+              <button class="action-btn wishlist-toggle ${isWishlisted ? 'wishlisted' : ''}" data-id="${p.id}">
+                <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
+              </button>
+              <button class="action-btn quick-view-btn" data-id="${p.id}">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-brand">${p.brand}</div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-rating">
+              <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))}</span>
+              <span class="rating-count">(${p.reviews})</span>
+            </div>
+            <div class="product-footer">
+              <div class="product-price">
+                <span class="price-current">${formatPrice(p.price)}</span>
+              </div>
+              <button class="add-cart-btn" data-id="${p.id}">+</button>
+            </div>
+          </div>
+        `;
+        recentGrid.appendChild(card);
+      });
+      bindProductEvents();
+    } else {
+      recentSection.style.display = 'none';
+    }
+  }
+  // Track this product as viewed (most recent first, max 8 remembered)
+  recentlyViewed = [product.id, ...recentlyViewed.filter(pid => pid !== product.id)].slice(0, 8);
+  localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(recentlyViewed));
+
+  // Sticky Mobile Add-to-Cart Bar
+  const stickyCartBar = $('#stickyCartBar');
+  const stickyCartName = $('#stickyCartName');
+  const stickyCartPrice = $('#stickyCartPrice');
+  const stickyCartAddBtn = $('#stickyCartAddBtn');
+  if (stickyCartBar && stickyCartName && stickyCartPrice && stickyCartAddBtn) {
+    stickyCartName.textContent = product.name;
+    stickyCartPrice.textContent = formatPrice(product.price);
+    stickyCartAddBtn.onclick = () => {
+      const selectedSizeBtn = $('.size-btn.selected');
+      const size = selectedSizeBtn ? Number(selectedSizeBtn.textContent) : product.sizes[0];
+      addToCart(product.id, size, currentQty);
+      setTimeout(() => openCart(), 500);
+    };
+    const actionButtonsBlock = $('.action-buttons-detail');
+    if (actionButtonsBlock) {
+      window.addEventListener('scroll', () => {
+        const rect = actionButtonsBlock.getBoundingClientRect();
+        const isPastActions = rect.bottom < 0;
+        stickyCartBar.classList.toggle('visible', isPastActions);
+      }, { passive: true });
+    }
+  }
+
   // Reviews System
   initProductReviews(product);
 }
@@ -1263,7 +1398,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (window.location.pathname.includes('product-details.html')) {
     await initProductDetails();
-  } else {
+  } else if (!PRODUCTS_LOAD_FAILED) {
     renderProducts(filterParam);
   }
   updateCartUI();
