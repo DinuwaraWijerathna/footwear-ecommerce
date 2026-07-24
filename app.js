@@ -154,6 +154,15 @@ function bindProductEvents() {
       toggleWishlist(id, btn);
     });
   });
+
+  $$('.product-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = parseInt(card.dataset.productId);
+      if (id) {
+        window.location.href = `product-details.html?id=${id}`;
+      }
+    });
+  });
 }
 
 /* ══════════════════════════════════
@@ -641,6 +650,520 @@ function handleNewsletter(e) {
 window.handleNewsletter = handleNewsletter;
 
 /* ══════════════════════════════════
+   PRODUCT DETAILS PAGE LOGIC
+   ══════════════════════════════════ */
+let sessionReviews = JSON.parse(localStorage.getItem('stepz-custom-reviews') || '{}');
+
+function getReviewsForProduct(product) {
+  const templateReviews = [
+    { name: 'Kasun Perera', rating: 5, date: '2026-06-12', title: 'Perfect purchase!', text: 'Got my shoes in perfect shape. Very comfortable for everyday wear. Delivery was faster than expected!' },
+    { name: 'Dilshan Silva', rating: 5, date: '2026-06-25', title: 'Fits like a glove', text: 'Amazing cushion and stylish design. Walked in these for hours without any pain.' },
+    { name: 'Nimesha Fernando', rating: 4, date: '2026-07-02', title: 'Excellent, but slightly large', text: 'Superb quality and premium materials. Only downside is it fits a tiny bit larger than my usual UK size, so maybe order half a size down.' },
+    { name: 'Amara Jayasinghe', rating: 5, date: '2026-07-10', title: 'Top tier quality', text: 'Highly recommend this footwear. Sizing is perfect. Authentic packaging too!' },
+    { name: 'Ruwan Kumara', rating: 4, date: '2026-07-15', title: 'Good value for money', text: 'The sole feels extremely durable. Nice aesthetics and matches many outfits.' },
+    { name: 'Sajani Alwis', rating: 3, date: '2026-07-18', title: 'Decent, but sole is stiff', text: 'Looks identical to pictures. The sole is a bit stiff at first, but gets better after breaking them in.' }
+  ];
+
+  const count = (product.id % 3) + 2;
+  const selected = [];
+  for (let i = 0; i < count; i++) {
+    const idx = (product.id + i * 2) % templateReviews.length;
+    const item = { ...templateReviews[idx] };
+    if (!selected.some(r => r.text === item.text)) {
+      selected.push(item);
+    }
+  }
+
+  selected.forEach(r => {
+    if (product.rating >= 4.8) {
+      r.rating = Math.max(4, r.rating);
+    } else if (product.rating < 4.5) {
+      r.rating = Math.min(3, r.rating);
+    }
+  });
+
+  const key = `product-${product.id}`;
+  if (sessionReviews[key]) {
+    selected.unshift(...sessionReviews[key]);
+  }
+
+  return selected;
+}
+
+function initProductReviews(product) {
+  const toggleFormBtn = $('#toggleReviewFormBtn');
+  const formContainer = $('#reviewFormContainer');
+  const cancelFormBtn = $('#cancelReviewBtn');
+  const reviewForm = $('#productReviewForm');
+  const formStars = $$('#formStars i');
+  const formRatingInput = $('#formRatingInput');
+
+  if (toggleFormBtn && formContainer) {
+    toggleFormBtn.addEventListener('click', () => {
+      const isHidden = formContainer.style.display === 'none';
+      formContainer.style.display = isHidden ? 'block' : 'none';
+      toggleFormBtn.textContent = isHidden ? 'Cancel' : 'Write a Review';
+    });
+  }
+
+  if (cancelFormBtn && formContainer && toggleFormBtn) {
+    cancelFormBtn.addEventListener('click', () => {
+      formContainer.style.display = 'none';
+      toggleFormBtn.textContent = 'Write a Review';
+    });
+  }
+
+  // Interactive stars hover/click logic
+  if (formStars.length > 0) {
+    formStars.forEach((star, index) => {
+      star.addEventListener('mouseenter', () => {
+        formStars.forEach((s, idx) => {
+          s.classList.toggle('hover', idx <= index);
+        });
+      });
+      
+      star.addEventListener('mouseleave', () => {
+        formStars.forEach(s => s.classList.remove('hover'));
+      });
+      
+      star.addEventListener('click', () => {
+        const val = index + 1;
+        formRatingInput.value = val;
+        formStars.forEach((s, idx) => {
+          if (idx < val) {
+            s.className = 'fa-solid fa-star active';
+          } else {
+            s.className = 'fa-regular fa-star';
+          }
+        });
+      });
+    });
+  }
+
+  function updateReviewsView() {
+    const reviewsList = getReviewsForProduct(product);
+
+    // Calculate rating breakdowns
+    const breakdownGrid = $('#rating-breakdown');
+    if (breakdownGrid) {
+      breakdownGrid.innerHTML = '';
+      for (let star = 5; star >= 1; star--) {
+        const starCount = reviewsList.filter(r => r.rating === star).length;
+        const pct = reviewsList.length > 0 ? Math.round((starCount / reviewsList.length) * 100) : 0;
+        
+        const row = document.createElement('div');
+        row.className = 'rating-bar-row';
+        row.innerHTML = `
+          <div class="rating-bar-label">${star} <span>★</span></div>
+          <div class="rating-bar-progress">
+            <div class="rating-bar-fill" style="width: ${pct}%"></div>
+          </div>
+          <div class="rating-bar-percent">${pct}%</div>
+        `;
+        breakdownGrid.appendChild(row);
+      }
+    }
+
+    // Recalculate average rating & counts
+    const totalRating = reviewsList.reduce((sum, r) => sum + r.rating, 0);
+    const avgRating = reviewsList.length > 0 ? (totalRating / reviewsList.length).toFixed(1) : '0.0';
+
+    const avgVal = $('#avg-rating-value');
+    const avgStars = $('#avg-rating-stars');
+    const totCount = $('#total-reviews-count');
+    const revCountHeader = $('#reviews-count-header');
+    const detailStars = $('#detail-stars');
+    const reviewJump = $('#review-jump-link');
+
+    if (avgVal) avgVal.textContent = avgRating;
+    if (avgStars) avgStars.textContent = '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating));
+    if (totCount) totCount.textContent = `Based on ${reviewsList.length} reviews`;
+    if (revCountHeader) revCountHeader.textContent = reviewsList.length;
+    if (detailStars) detailStars.textContent = '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating));
+    if (reviewJump) reviewJump.textContent = `(${reviewsList.length} reviews)`;
+
+    // Populate reviews list
+    const reviewsFeed = $('#reviewsFeed');
+    if (reviewsFeed) {
+      reviewsFeed.innerHTML = '';
+      if (reviewsList.length === 0) {
+        reviewsFeed.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px;">No reviews yet. Be the first to write one!</p>';
+      } else {
+        reviewsList.forEach(r => {
+          const item = document.createElement('div');
+          item.className = 'review-item-card';
+          
+          let dateStr = r.date;
+          try {
+            dateStr = new Date(r.date).toLocaleDateString('en-LK', { year: 'numeric', month: 'long', day: 'numeric' });
+          } catch(e) {}
+
+          item.innerHTML = `
+            <div class="review-item-header">
+              <div class="review-item-user">
+                <div class="user-avatar-circle">${r.name.charAt(0)}</div>
+                <div class="user-name-title">
+                  <span class="username">${r.name}</span>
+                  <span class="user-date">${dateStr}</span>
+                </div>
+              </div>
+              <div class="review-item-rating">
+                <span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+              </div>
+            </div>
+            <div class="review-item-body">
+              <h4>${r.title}</h4>
+              <p>${r.text}</p>
+            </div>
+          `;
+          reviewsFeed.appendChild(item);
+        });
+      }
+    }
+  }
+
+  // Handle Form Submit
+  if (reviewForm) {
+    reviewForm.onsubmit = (e) => {
+      e.preventDefault();
+      const rating = parseInt(formRatingInput.value);
+      if (!rating) {
+        showToast('Please select a star rating!', '⚠️');
+        return;
+      }
+      const name = $('#reviewName').value;
+      const title = $('#reviewTitle').value;
+      const comment = $('#reviewComment').value;
+      
+      const newReview = {
+        name: name,
+        rating: rating,
+        date: new Date().toISOString().split('T')[0],
+        title: title,
+        text: comment
+      };
+
+      const key = `product-${product.id}`;
+      if (!sessionReviews[key]) {
+        sessionReviews[key] = [];
+      }
+      sessionReviews[key].unshift(newReview);
+      localStorage.setItem('stepz-custom-reviews', JSON.stringify(sessionReviews));
+
+      showToast('Thank you! Review submitted successfully.', '🎉');
+      reviewForm.reset();
+      formRatingInput.value = '';
+      formStars.forEach(s => s.className = 'fa-regular fa-star');
+      if (formContainer) formContainer.style.display = 'none';
+      if (toggleFormBtn) toggleFormBtn.textContent = 'Write a Review';
+
+      updateReviewsView();
+    };
+  }
+
+  updateReviewsView();
+}
+
+async function initProductDetails() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const idParam = urlParams.get('id');
+  if (!idParam) {
+    window.location.href = 'products.html';
+    return;
+  }
+  const id = parseInt(idParam);
+  const product = PRODUCTS.find(p => p.id === id);
+  if (!product) {
+    const container = $('.product-details-section .container');
+    if (container) {
+      container.innerHTML = `<div style="text-align:center;padding:100px 0;">
+        <h2>⚠️ Product Not Found</h2>
+        <p style="color:var(--text-secondary);margin:16px 0 24px;">The product you are looking for does not exist or has been removed.</p>
+        <a href="products.html" class="btn-primary" style="padding:14px 28px;border-radius:var(--radius-md);display:inline-block;">Back to Products</a>
+      </div>`;
+    }
+    return;
+  }
+
+  // Populate Breadcrumb
+  const breadcrumbCurrent = $('#breadcrumb-current');
+  if (breadcrumbCurrent) breadcrumbCurrent.textContent = product.name;
+
+  // Populate Basic Details
+  const detailBrand = $('#detail-brand');
+  const detailName = $('#detail-name');
+  const detailPriceCurrent = $('#detail-price-current');
+  const detailPriceOld = $('#detail-price-old');
+  const detailSavingBadge = $('#detail-saving-badge');
+  const detailDescription = $('#detail-description');
+
+  if (detailBrand) detailBrand.textContent = product.brand;
+  if (detailName) detailName.textContent = product.name;
+  if (detailPriceCurrent) detailPriceCurrent.textContent = formatPrice(product.price);
+  if (detailPriceOld) {
+    if (product.oldPrice) {
+      detailPriceOld.textContent = formatPrice(product.oldPrice);
+      detailPriceOld.style.display = 'inline';
+      if (detailSavingBadge) {
+        const savingPercent = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
+        detailSavingBadge.textContent = `Save ${savingPercent}%`;
+        detailSavingBadge.style.display = 'inline-block';
+      }
+    } else {
+      detailPriceOld.style.display = 'none';
+      if (detailSavingBadge) detailSavingBadge.style.display = 'none';
+    }
+  }
+  if (detailDescription) detailDescription.textContent = product.description;
+
+  // Populate Specs tab content
+  const specBrand = $('#spec-brand');
+  const specCategory = $('#spec-category');
+  const specSizes = $('#spec-sizes');
+  const tabDescContent = $('#tab-desc-content');
+
+  if (specBrand) specBrand.textContent = product.brand;
+  if (specCategory) specCategory.textContent = product.category.toUpperCase();
+  if (specSizes) specSizes.textContent = product.sizes.join(', ');
+  if (tabDescContent) tabDescContent.textContent = product.description;
+
+  // Stock Status Indicator
+  const stockBadge = $('#stock-badge');
+  if (stockBadge) {
+    if (!product.inStock) {
+      stockBadge.className = 'stock-badge out-of-stock';
+      stockBadge.innerHTML = `<span class="dot"></span>Out of Stock`;
+    } else if (product.id % 2 === 0) {
+      stockBadge.className = 'stock-badge low-stock';
+      stockBadge.innerHTML = `<span class="dot"></span>Only 3 Left!`;
+    } else {
+      stockBadge.className = 'stock-badge in-stock';
+      stockBadge.innerHTML = `<span class="dot"></span>In Stock`;
+    }
+  }
+
+  // Populate Gallery
+  const mainImg = $('#main-product-img');
+  const thumbnailGrid = $('#thumbnailGrid');
+  if (mainImg) {
+    mainImg.src = product.image;
+    mainImg.alt = product.name;
+  }
+
+  if (thumbnailGrid) {
+    thumbnailGrid.innerHTML = '';
+    const angles = [
+      { name: 'Side View', style: 'transform: none;' },
+      { name: 'Angle View', style: 'transform: scaleX(-1) rotate(-5deg);' },
+      { name: 'Top View', style: 'transform: rotate(20deg);' },
+      { name: 'Detail View', style: 'transform: scale(1.3) translateY(10px);' }
+    ];
+
+    angles.forEach((angle, i) => {
+      const thumb = document.createElement('div');
+      thumb.className = 'thumbnail' + (i === 0 ? ' active' : '');
+      thumb.title = angle.name;
+      thumb.innerHTML = `<img src="${product.image}" alt="${angle.name}" style="${angle.style}">`;
+      thumb.addEventListener('click', () => {
+        $$('.thumbnail').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        if (mainImg) {
+          mainImg.src = product.image;
+          mainImg.style.cssText = angle.style;
+        }
+      });
+      thumbnailGrid.appendChild(thumb);
+    });
+  }
+
+  // Magnifier zoom effect on main image hover
+  const mainImgContainer = $('#mainImgContainer');
+  if (mainImgContainer && mainImg) {
+    mainImgContainer.addEventListener('mousemove', (e) => {
+      const rect = mainImgContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const xPercent = (x / rect.width) * 100;
+      const yPercent = (y / rect.height) * 100;
+
+      mainImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+      const activeThumb = $('.thumbnail.active');
+      const isZoomThumb = activeThumb && activeThumb.title === 'Detail View';
+      mainImg.style.transform = isZoomThumb ? 'scale(2.2)' : 'scale(1.7)';
+    });
+
+    mainImgContainer.addEventListener('mouseleave', () => {
+      mainImg.style.transformOrigin = 'center center';
+      const activeThumb = $('.thumbnail.active');
+      const isZoomThumb = activeThumb && activeThumb.title === 'Detail View';
+      mainImg.style.transform = isZoomThumb ? 'scale(1.3) translateY(10px)' : 'none';
+    });
+  }
+
+  // Populate sizes grid
+  const sizeGrid = $('#detail-size-grid');
+  if (sizeGrid) {
+    sizeGrid.innerHTML = '';
+    product.sizes.forEach((size, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'size-btn' + (i === 0 ? ' selected' : '');
+      btn.textContent = size;
+      btn.addEventListener('click', () => {
+        $$('.size-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+      sizeGrid.appendChild(btn);
+    });
+  }
+
+  // Size Guide trigger
+  const sizeGuideBtn = $('#sizeGuideBtn');
+  const sizeGuideClose = $('#sizeGuideClose');
+  const sizeGuideModal = $('#sizeGuideModalOverlay');
+  if (sizeGuideBtn && sizeGuideModal) {
+    sizeGuideBtn.addEventListener('click', () => sizeGuideModal.classList.add('open'));
+  }
+  if (sizeGuideClose && sizeGuideModal) {
+    sizeGuideClose.addEventListener('click', () => sizeGuideModal.classList.remove('open'));
+  }
+  if (sizeGuideModal) {
+    sizeGuideModal.addEventListener('click', (e) => {
+      if (e.target === sizeGuideModal) sizeGuideModal.classList.remove('open');
+    });
+  }
+
+  // Bind Add to Cart & Buy Now buttons
+  const addToCartBtn = $('#detail-add-to-cart-btn');
+  const buyNowBtn = $('#detail-buy-now-btn');
+  if (addToCartBtn) {
+    addToCartBtn.onclick = () => {
+      const selectedSizeBtn = $('.size-btn.selected');
+      const size = selectedSizeBtn ? Number(selectedSizeBtn.textContent) : product.sizes[0];
+      addToCart(product.id, size);
+      setTimeout(() => openCart(), 500);
+    };
+  }
+  if (buyNowBtn) {
+    buyNowBtn.onclick = () => {
+      const selectedSizeBtn = $('.size-btn.selected');
+      const size = selectedSizeBtn ? Number(selectedSizeBtn.textContent) : product.sizes[0];
+      addToCart(product.id, size);
+      setTimeout(() => {
+        openCart();
+        handleCheckout();
+      }, 500);
+    };
+  }
+
+  // Wishlist bindings
+  const wishlistBtn = $('#detail-wishlist-btn');
+  if (wishlistBtn) {
+    const checkWishlistState = () => {
+      const isWishlisted = wishlist.includes(product.id);
+      wishlistBtn.classList.toggle('wishlisted', isWishlisted);
+      wishlistBtn.innerHTML = `<i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>`;
+    };
+    checkWishlistState();
+    wishlistBtn.onclick = () => {
+      toggleWishlist(product.id, wishlistBtn);
+      checkWishlistState();
+      updateWishlistIcon();
+    };
+  }
+
+  // Info Tabs functionality
+  const tabBtns = $$('.tab-btn');
+  const tabPanes = $$('.tab-pane');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanes.forEach(p => p.classList.remove('active'));
+      
+      btn.classList.add('active');
+      const paneId = btn.dataset.tab;
+      const targetPane = document.getElementById(paneId);
+      if (targetPane) targetPane.classList.add('active');
+    });
+  });
+
+  // Related Products Loading
+  const relatedGrid = $('#relatedGrid');
+  if (relatedGrid) {
+    relatedGrid.innerHTML = '';
+    const related = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+    if (related.length < 4) {
+      const extra = PRODUCTS.filter(p => p.id !== product.id && !related.includes(p)).slice(0, 4 - related.length);
+      related.push(...extra);
+    }
+
+    related.forEach((p, i) => {
+      const isWishlisted = wishlist.includes(p.id);
+      const card = document.createElement('div');
+      card.className = 'product-card reveal visible';
+      card.style.transitionDelay = `${i * 0.08}s`;
+      card.dataset.productId = p.id;
+      card.innerHTML = `
+        <div class="product-img-wrap">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          <div class="product-badge badge-${p.badge}">${p.badge ? p.badge.toUpperCase() : ''}</div>
+          <div class="product-actions">
+            <button class="action-btn wishlist-toggle ${isWishlisted ? 'wishlisted' : ''}" data-id="${p.id}">
+              <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
+            </button>
+            <button class="action-btn quick-view-btn" data-id="${p.id}">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">${p.brand}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-rating">
+            <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))}</span>
+            <span class="rating-count">(${p.reviews})</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">${formatPrice(p.price)}</span>
+            </div>
+            <button class="add-cart-btn" data-id="${p.id}">+</button>
+          </div>
+        </div>
+      `;
+      relatedGrid.appendChild(card);
+    });
+
+    bindProductEvents();
+  }
+
+  // Sharing links setup
+  const currentURL = encodeURIComponent(window.location.href);
+  const shareText = encodeURIComponent(`Check out the awesome ${product.brand} ${product.name} on STEPZ: `);
+  
+  const shWhatsApp = $('#share-whatsapp');
+  const shFacebook = $('#share-facebook');
+  const shTwitter = $('#share-twitter');
+  const shCopy = $('#share-copy');
+
+  if (shWhatsApp) shWhatsApp.href = `https://api.whatsapp.com/send?text=${shareText}${currentURL}`;
+  if (shFacebook) shFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${currentURL}`;
+  if (shTwitter) shTwitter.href = `https://twitter.com/intent/tweet?text=${shareText}&url=${currentURL}`;
+  
+  if (shCopy) {
+    shCopy.onclick = (e) => {
+      e.preventDefault();
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => showToast('Product link copied to clipboard! 📋', '✅'))
+        .catch(err => console.error('Failed to copy text: ', err));
+    };
+  }
+
+  // Reviews System
+  initProductReviews(product);
+}
+
+/* ══════════════════════════════════
    HERO PARALLAX
 ══════════════════════════════════ */
 function initParallax() {
@@ -738,7 +1261,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadProducts();   // fetch from MySQL (via PHP API) before rendering
 
-  renderProducts(filterParam);
+  if (window.location.pathname.includes('product-details.html')) {
+    await initProductDetails();
+  } else {
+    renderProducts(filterParam);
+  }
   updateCartUI();
   startCountdown();
   initReveal();

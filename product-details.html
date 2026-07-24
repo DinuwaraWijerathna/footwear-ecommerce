@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details — STEPZ | Premium Footwear</title>
+  <meta name="description" content="View product specifications, custom sizes, checkout details, and verified buyer reviews for premium footwear at STEPZ.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ SEARCH BAR ═══════════════════════════════ -->
+<div class="search-bar" id="searchBar">
+  <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);font-size:20px"></i>
+  <input type="text" placeholder="Search for sneakers, boots, heels…" id="searchInput">
+  <button class="search-close" id="searchClose" aria-label="Close Search">✕</button>
+</div>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar scrolled" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="nav-icon-btn" id="searchBtn" aria-label="Search" title="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+      <button class="nav-icon-btn" id="wishlistBtn" aria-label="Wishlist" title="Wishlist">
+        <i class="fa-regular fa-heart"></i>
+      </button>
+      <button class="nav-icon-btn" id="cartBtn" aria-label="Cart" title="Cart">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="products.html">Products</a>
+  <a href="offers.html">Offers</a>
+  <a href="reviews.html">Reviews</a>
+</nav>
+
+<!-- ═══════════════════════════════ PRODUCT DETAILS ═══════════════════════════════ -->
+<section class="section product-details-section" style="padding-top: 120px;">
+  <div class="container">
+    
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> <i class="fa-solid fa-chevron-right"></i> 
+      <a href="products.html">Products</a> <i class="fa-solid fa-chevron-right"></i> 
+      <span id="breadcrumb-current" class="text-accent">Product Name</span>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="details-grid">
+      
+      <!-- Left Column: Gallery -->
+      <div class="gallery-col">
+        <div class="main-img-container" id="mainImgContainer">
+          <img id="main-product-img" src="" alt="Main Product Image">
+          <div class="zoom-lens" id="zoomLens"></div>
+          <div class="zoom-result" id="zoomResult"></div>
+        </div>
+        <div class="thumbnail-grid" id="thumbnailGrid">
+          <!-- Dynamically populated alternative angles -->
+        </div>
+      </div>
+
+      <!-- Right Column: Info -->
+      <div class="info-col">
+        <div class="brand-and-badge">
+          <span class="product-brand-detail" id="detail-brand">BRAND</span>
+          <span class="stock-badge" id="stock-badge"><span class="dot"></span>In Stock</span>
+        </div>
+        
+        <h1 class="product-name-detail" id="detail-name">Product Name</h1>
+        
+        <div class="rating-and-jump">
+          <div class="stars" id="detail-stars">★★★★★</div>
+          <a href="#reviews-section" class="review-jump-link" id="review-jump-link">(0 reviews)</a>
+        </div>
+
+        <div class="price-detail-wrap">
+          <span class="price-current-detail" id="detail-price-current">Rs. 0</span>
+          <span class="price-old-detail" id="detail-price-old"></span>
+          <span class="saving-badge" id="detail-saving-badge" style="display:none">Save 0%</span>
+        </div>
+
+        <p class="description-detail" id="detail-description">Loading product description...</p>
+
+        <!-- Sizing Selector -->
+        <div class="sizing-section">
+          <div class="size-header-wrap">
+            <span class="size-label">Select Size (UK)</span>
+            <button class="size-guide-btn" id="sizeGuideBtn"><i class="fa-solid fa-ruler-combined"></i> Size Guide</button>
+          </div>
+          <div class="size-grid" id="detail-size-grid">
+            <!-- Dynamically populated buttons -->
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-buttons-detail">
+          <button class="add-to-cart-detail-btn" id="detail-add-to-cart-btn">
+            <i class="fa-solid fa-bag-shopping"></i> Add to Cart
+          </button>
+          <button class="buy-now-detail-btn" id="detail-buy-now-btn">
+            Buy It Now
+          </button>
+          <button class="wishlist-detail-btn" id="detail-wishlist-btn" title="Add to Wishlist">
+            <i class="fa-regular fa-heart"></i>
+          </button>
+        </div>
+
+        <!-- Payment trust badge -->
+        <div class="payment-trust-badge">
+          <p class="trust-title"><i class="fa-solid fa-shield-halved text-accent"></i> 100% Secure Checkout & Fast Delivery</p>
+          <div class="trust-icons-wrap">
+            <div class="trust-payment-icons">
+              <span class="payment-icon" title="Visa"><i class="fa-brands fa-cc-visa"></i> VISA</span>
+              <span class="payment-icon" title="Mastercard"><i class="fa-brands fa-cc-mastercard"></i> MC</span>
+              <span class="payment-icon" title="AMEX"><i class="fa-brands fa-cc-amex"></i> AMEX</span>
+              <span class="payment-icon" title="PayPal"><i class="fa-brands fa-cc-paypal"></i> PAYPAL</span>
+              <span class="payment-icon" title="Cash on Delivery"><i class="fa-solid fa-truck-ramp-box"></i> COD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Share -->
+        <div class="share-section">
+          <span class="share-label">Share:</span>
+          <div class="share-buttons">
+            <a href="#" class="share-btn whatsapp" id="share-whatsapp" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="#" class="share-btn facebook" id="share-facebook" title="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="share-btn twitter" id="share-twitter" title="Share on Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="share-btn copy-link" id="share-copy" title="Copy Link"><i class="fa-solid fa-link"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Info Tabs -->
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="tab-description">Description</button>
+        <button class="tab-btn" data-tab="tab-specs">Specifications & Sizing</button>
+        <button class="tab-btn" data-tab="tab-shipping">Shipping & Returns</button>
+        <button class="tab-btn" data-tab="tab-payment">Payment & Safety</button>
+      </div>
+      <div class="tabs-content">
+        <div class="tab-pane active" id="tab-description">
+          <p id="tab-desc-content">Detailed product description will go here.</p>
+          <ul class="features-list-detail">
+            <li><i class="fa-solid fa-circle-check text-accent"></i> Crafted with ultra-premium materials for long-lasting durability</li>
+            <li><i class="fa-solid fa-circle-check text-accent"></i> Ergonomically designed midsole cushioning system</li>
+            <li><i class="fa-solid fa-circle-check text-accent"></i> Reinforced non-slip grip rubber sole</li>
+            <li><i class="fa-solid fa-circle-check text-accent"></i> Breathable lining for absolute fresh and cool feet</li>
+          </ul>
+        </div>
+        <div class="tab-pane" id="tab-specs">
+          <table class="specs-table">
+            <tr>
+              <td>Brand</td>
+              <td id="spec-brand">-</td>
+            </tr>
+            <tr>
+              <td>Category</td>
+              <td id="spec-category">-</td>
+            </tr>
+            <tr>
+              <td>Sizes Available</td>
+              <td id="spec-sizes">-</td>
+            </tr>
+            <tr>
+              <td>Upper Material</td>
+              <td>Premium Grade Suede / Mesh / Leather</td>
+            </tr>
+            <tr>
+              <td>Sole Cushioning</td>
+              <td>Dual-density EVA / TPU heel wrap</td>
+            </tr>
+            <tr>
+              <td>Recommended Use</td>
+              <td>Lifestyle, Running, Gym, Casual wear</td>
+            </tr>
+          </table>
+        </div>
+        <div class="tab-pane" id="tab-shipping">
+          <p>We are dedicated to getting your new shoes to you as fast as possible. Here are our delivery details:</p>
+          <ul class="shipping-info-list">
+            <li><strong>Colombo & Suburbs:</strong> Same-day or next-day express delivery available (Rs. 350, FREE on orders over Rs. 5,000).</li>
+            <li><strong>Outstation Deliveries:</strong> Delivered within 2-4 working days via registered courier services.</li>
+            <li><strong>Return Policy:</strong> Enjoy peace of mind with our 30-day hassle-free exchange policy. The shoes must be returned unworn and in original box packaging.</li>
+          </ul>
+        </div>
+        <div class="tab-pane" id="tab-payment">
+          <p>Your transaction security is our absolute priority. We support payment methods that keep you safe:</p>
+          <ul class="payment-safety-list">
+            <li><strong>Bank Transfer & Cards:</strong> Pay securely using Visa, MasterCard, AMEX, or PayPal with full SSL encryption.</li>
+            <li><strong>Cash on Delivery (COD):</strong> Pay in cash when the delivery agent delivers your package to your doorstep. Available island-wide.</li>
+            <li><strong>Authenticity Guaranteed:</strong> 100% authentic designer items sourced directly from international outlets. No counterfeits.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="related-section">
+      <div class="section-tag">You May Also Like</div>
+      <h2 class="section-title">Related <span class="text-accent">Products</span></h2>
+      <div class="products-grid" id="relatedGrid">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section-container" id="reviews-section">
+      <div class="section-tag">Feedback</div>
+      <h2 class="section-title">Customer <span class="text-accent">Reviews</span></h2>
+
+      <div class="reviews-layout">
+        <!-- Left: Summary Stats -->
+        <div class="reviews-stats-card">
+          <div class="avg-rating-big" id="avg-rating-value">0.0</div>
+          <div class="stars-big" id="avg-rating-stars">★★★★★</div>
+          <div class="total-reviews-text" id="total-reviews-count">Based on 0 reviews</div>
+
+          <div class="rating-breakdown-grid" id="rating-breakdown">
+            <!-- 5 Star Progress, 4 Star, etc. -->
+          </div>
+        </div>
+
+        <!-- Right: Reviews List & Write Review -->
+        <div class="reviews-list-col">
+          <div class="reviews-list-header">
+            <h3>Customer Reviews (<span id="reviews-count-header">0</span>)</h3>
+            <button class="btn-primary write-review-trigger-btn" id="toggleReviewFormBtn">Write a Review</button>
+          </div>
+
+          <!-- Review Form (Collapsible) -->
+          <div class="review-form-container" id="reviewFormContainer" style="display:none">
+            <h4 class="form-title">Share Your Experience</h4>
+            <form id="productReviewForm">
+              <div class="form-group">
+                <label>Your Rating *</label>
+                <div class="interactive-stars" id="formStars">
+                  <i class="fa-regular fa-star" data-rating="1"></i>
+                  <i class="fa-regular fa-star" data-rating="2"></i>
+                  <i class="fa-regular fa-star" data-rating="3"></i>
+                  <i class="fa-regular fa-star" data-rating="4"></i>
+                  <i class="fa-regular fa-star" data-rating="5"></i>
+                </div>
+                <input type="hidden" id="formRatingInput" value="" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reviewName">Your Name *</label>
+                  <input type="text" id="reviewName" placeholder="e.g. Kasun Perera" required>
+                </div>
+                <div class="form-group">
+                  <label for="reviewTitle">Review Title *</label>
+                  <input type="text" id="reviewTitle" placeholder="e.g. Extremely comfortable!" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="reviewComment">Review Content *</label>
+                <textarea id="reviewComment" rows="5" placeholder="Write your comments about size, fit, style, and delivery here..." required></textarea>
+              </div>
+              <div class="form-actions-submit">
+                <button type="submit" class="submit-review-btn">Submit Review <i class="fa-solid fa-paper-plane"></i></button>
+                <button type="button" class="cancel-review-btn" id="cancelReviewBtn">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Reviews List -->
+          <div class="reviews-feed" id="reviewsFeed">
+            <!-- Dynamic reviews go here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Size Guide Modal -->
+<div class="modal-overlay" id="sizeGuideModalOverlay">
+  <div class="modal size-guide-modal">
+    <button class="modal-close" id="sizeGuideClose" aria-label="Close">✕</button>
+    <div class="modal-content" style="padding:40px">
+      <h3 style="font-size:1.8rem;font-weight:900;margin-bottom:12px;font-family:'Outfit'">STEPZ Size Conversion Guide</h3>
+      <p style="color:var(--text-secondary);margin-bottom:24px">Use this table to find your standard UK shoe size relative to US and EU sizes.</p>
+      
+      <table class="size-chart-table" style="width:100%;border-collapse:collapse;margin-top:10px">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border-glass)">
+            <th style="padding:12px;text-align:left;font-weight:700;color:var(--accent)">UK Size</th>
+            <th style="padding:12px;text-align:left;font-weight:700">US (Men's)</th>
+            <th style="padding:12px;text-align:left;font-weight:700">US (Women's)</th>
+            <th style="padding:12px;text-align:left;font-weight:700">EU Size</th>
+            <th style="padding:12px;text-align:left;font-weight:700">Length (cm)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">4</td>
+            <td style="padding:12px">4.5</td>
+            <td style="padding:12px">6</td>
+            <td style="padding:12px">37</td>
+            <td style="padding:12px">23.0 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">5</td>
+            <td style="padding:12px">5.5</td>
+            <td style="padding:12px">7</td>
+            <td style="padding:12px">38</td>
+            <td style="padding:12px">24.0 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">6</td>
+            <td style="padding:12px">6.5</td>
+            <td style="padding:12px">8</td>
+            <td style="padding:12px">39.5</td>
+            <td style="padding:12px">24.5 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">7</td>
+            <td style="padding:12px">7.5</td>
+            <td style="padding:12px">9</td>
+            <td style="padding:12px">41</td>
+            <td style="padding:12px">25.5 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">8</td>
+            <td style="padding:12px">8.5</td>
+            <td style="padding:12px">10</td>
+            <td style="padding:12px">42</td>
+            <td style="padding:12px">26.5 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">9</td>
+            <td style="padding:12px">9.5</td>
+            <td style="padding:12px">11</td>
+            <td style="padding:12px">43</td>
+            <td style="padding:12px">27.5 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">10</td>
+            <td style="padding:12px">10.5</td>
+            <td style="padding:12px">12</td>
+            <td style="padding:12px">44.5</td>
+            <td style="padding:12px">28.5 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">11</td>
+            <td style="padding:12px">11.5</td>
+            <td style="padding:12px">13</td>
+            <td style="padding:12px">46</td>
+            <td style="padding:12px">29.5 cm</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-glass)">
+            <td style="padding:12px;color:var(--accent);font-weight:600">12</td>
+            <td style="padding:12px">12.5</td>
+            <td style="padding:12px">14</td>
+            <td style="padding:12px">47</td>
+            <td style="padding:12px">30.5 cm</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:24px;text-align:right">
+        <button class="btn-primary" onclick="document.getElementById('sizeGuideModalOverlay').classList.remove('open')" style="padding:12px 24px">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <span class="nav-logo">STEP<span>Z</span></span>
+        <p>
+          Sri Lanka's premier footwear destination. We bring you the world's finest shoes — from iconic 
+          brands to exclusive collections — right to your doorstep.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-link" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="#" class="social-link" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <!-- Shop -->
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="#" onclick="filterProducts('men')">Men's Shoes</a></li>
+          <li><a href="#" onclick="filterProducts('women')">Women's Shoes</a></li>
+          <li><a href="#" onclick="filterProducts('sport')">Sport & Athletic</a></li>
+          <li><a href="#" onclick="filterProducts('casual')">Casual Wear</a></li>
+          <li><a href="#">Kids' Shoes</a></li>
+          <li><a href="#">New Arrivals</a></li>
+        </ul>
+      </div>
+
+      <!-- Help -->
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Returns & Exchanges</a></li>
+          <li><a href="#">Track Your Order</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact">
+          <div class="contact-item">
+            <i class="fa-solid fa-location-dot contact-icon"></i>
+            <span>123 Galle Road, Colombo 03, Sri Lanka</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-phone contact-icon"></i>
+            <span>+94 11 234 5678</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-envelope contact-icon"></i>
+            <span>hello@stepz.lk</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-clock contact-icon"></i>
+            <span>Mon–Sat: 9AM – 9PM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 <span>STEPZ</span>. All rights reserved. Made with ❤️ in Sri Lanka</p>
+      <div class="payment-icons">
+        <span class="payment-icon">VISA</span>
+        <span class="payment-icon">MC</span>
+        <span class="payment-icon">AMEX</span>
+        <span class="payment-icon">PAYPAL</span>
+        <span class="payment-icon">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════ CART SIDEBAR ═══════════════════════════════ -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <h3>Your Cart</h3>
+      <span class="cart-count" id="cartCount">0</span>
+    </div>
+    <button class="cart-close" id="cartClose" aria-label="Close Cart">✕</button>
+  </div>
+
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <p>Your cart is empty</p>
+      <p style="font-size:12px;color:var(--text-muted)">Add your favourite shoes to get started!</p>
+    </div>
+  </div>
+
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <span id="cartSubtotal">Rs. 0</span>
+    </div>
+    <div class="cart-subtotal">
+      <span>Shipping</span>
+      <span style="color:var(--accent)">FREE</span>
+    </div>
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">Rs. 0</span>
+    </div>
+    <button class="checkout-btn" onclick="handleCheckout()">
+      <i class="fa-solid fa-lock" style="font-size:14px"></i> Proceed to Checkout
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ QUICK VIEW MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <img class="modal-img" id="modalImg" src="" alt="Product">
+    <div class="modal-content">
+      <div class="modal-brand" id="modalBrand">Brand</div>
+      <h2 class="modal-name" id="modalName">Product Name</h2>
+      <div class="modal-rating">
+        <span class="stars">★★★★★</span>
+        <span style="font-size:13px;color:var(--text-muted)">(128 reviews)</span>
+      </div>
+      <div class="modal-price" id="modalPrice">Rs. 0</div>
+      <p class="modal-desc" id="modalDesc">Description</p>
+      <div class="size-label">Select Size (UK)</div>
+      <div class="size-grid" id="sizeGrid"></div>
+      <div class="modal-actions">
+        <button class="modal-add-btn" id="modalAddBtn">
+          <i class="fa-solid fa-bag-shopping"></i> Add to Cart
+        </button>
+        <button class="action-btn" id="modalWishBtn" style="width:52px;height:52px;border-radius:var(--radius-md)">
+          <i class="fa-regular fa-heart"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Added to cart!</span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
