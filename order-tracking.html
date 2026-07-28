@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Order 📦 — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Track your STEPZ order in real-time. Enter your order number to see delivery status.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="wishlist.html">Wishlist</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
+        <i class="fa-regular fa-user"></i>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="products.html">Products</a>
+  <a href="offers.html">Offers</a>
+  <a href="reviews.html">Reviews</a>
+  <a href="wishlist.html">Wishlist</a>
+  <a href="contact.html">Contact</a>
+  <a href="login.html" id="mobileUserBtn">Login / Account</a>
+</nav>
+
+<!-- ═══════════════════════════════ PAGE HERO ═══════════════════════════════ -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-tag">Delivery Status</div>
+    <h1>Track Your Order</h1>
+    <p>Enter your order number below to see real-time delivery updates</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TRACKING SECTION ═══════════════════════════════ -->
+<section class="tracking-section">
+  <div class="container">
+
+    <!-- Search Box -->
+    <div class="tracking-search-box">
+      <h2><i class="fa-solid fa-magnifying-glass" style="color:var(--accent)"></i> Find Your Order</h2>
+      <p>Enter your Order ID (e.g. <strong style="color:var(--accent)">#STZ-2026-00142</strong>) and your email address to track your shipment.</p>
+      <div class="tracking-input-row">
+        <input type="text" id="trackOrderId" placeholder="Order ID (e.g. #STZ-2026-00142)" style="flex:1;padding:14px 18px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.95rem;outline:none">
+        <button class="btn-primary" onclick="trackOrder()" id="trackBtn" style="white-space:nowrap">
+          <i class="fa-solid fa-search"></i> Track
+        </button>
+      </div>
+      <div style="margin-top:12px;font-size:0.82rem;color:var(--text-muted)">
+        Note: Your order ID was sent in your confirmation email.
+        <a href="contact.html" style="color:var(--accent)">Need help?</a>
+      </div>
+    </div>
+
+    <!-- Demo Tracking Result (initially hidden) -->
+    <div class="tracking-result" id="trackingResult">
+
+      <!-- Order Header -->
+      <div class="tracking-header-card">
+        <div class="tracking-order-meta">
+          <h3 id="trOrderNum">#STZ-2026-00142</h3>
+          <p>Placed: <strong>28 July 2026</strong> &nbsp;|&nbsp; Delivering to: <strong>Colombo 07</strong></p>
+          <p style="margin-top:6px">2 Items &nbsp;|&nbsp; Total: <strong style="color:var(--accent)">Rs. 24,800</strong></p>
+        </div>
+        <span class="tracking-status-badge status-shipped">Shipped</span>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="tracking-progress-card">
+        <h3><i class="fa-solid fa-route" style="color:var(--accent)"></i> Shipment Progress</h3>
+        <div style="position:relative">
+          <div class="track-steps">
+            <div class="track-step done" id="ts1">
+              <div class="track-step-dot"><i class="fa-solid fa-check" style="font-size:0.8rem"></i></div>
+              <div class="track-step-label">Order Placed</div>
+              <div class="track-step-date">28 Jul</div>
+            </div>
+            <div class="track-step done" id="ts2">
+              <div class="track-step-dot"><i class="fa-solid fa-gear" style="font-size:0.8rem"></i></div>
+              <div class="track-step-label">Processing</div>
+              <div class="track-step-date">28 Jul</div>
+            </div>
+            <div class="track-step done" id="ts3">
+              <div class="track-step-dot"><i class="fa-solid fa-box" style="font-size:0.8rem"></i></div>
+              <div class="track-step-label">Packed</div>
+              <div class="track-step-date">29 Jul</div>
+            </div>
+            <div class="track-step active" id="ts4">
+              <div class="track-step-dot"><i class="fa-solid fa-truck" style="font-size:0.8rem"></i></div>
+              <div class="track-step-label">In Transit</div>
+              <div class="track-step-date">Today</div>
+            </div>
+            <div class="track-step" id="ts5">
+              <div class="track-step-dot"><i class="fa-solid fa-house" style="font-size:0.8rem"></i></div>
+              <div class="track-step-label">Delivered</div>
+              <div class="track-step-date">Est. 31 Jul</div>
+            </div>
+          </div>
+          <!-- Animated progress bar overlaying the grey line -->
+          <div class="tracking-progress-bar-wrap" id="trackProgressBar" style="width:75%"></div>
+        </div>
+
+        <div style="margin-top:28px;padding:16px;background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius-md);display:flex;align-items:center;gap:12px">
+          <span style="font-size:1.5rem"><i class="fa-solid fa-truck" style="color:var(--accent)"></i></span>
+          <div>
+            <div style="font-weight:700;color:var(--text-primary);font-size:0.95rem">Your package is on its way!</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary)">Expected delivery: <strong style="color:var(--accent)">Thursday, 31 July 2026</strong> (before 8 PM)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tracking Updates -->
+      <div class="tracking-updates-card">
+        <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i> Live Updates</h3>
+
+        <div class="tracking-update-item">
+          <div class="update-dot-col">
+            <div class="update-dot active"></div>
+            <div class="update-line"></div>
+          </div>
+          <div class="update-info">
+            <strong>Out for Delivery — Colombo Hub</strong>
+            <span>Your package is with our courier and will be delivered today</span>
+            <span class="update-time">30 July 2026 — 08:45 AM</span>
+          </div>
+        </div>
+
+        <div class="tracking-update-item">
+          <div class="update-dot-col">
+            <div class="update-dot"></div>
+            <div class="update-line"></div>
+          </div>
+          <div class="update-info">
+            <strong>Arrived at Colombo Sorting Facility</strong>
+            <span>Package has arrived at the regional sorting center</span>
+            <span class="update-time">29 July 2026 — 11:20 PM</span>
+          </div>
+        </div>
+
+        <div class="tracking-update-item">
+          <div class="update-dot-col">
+            <div class="update-dot"></div>
+            <div class="update-line"></div>
+          </div>
+          <div class="update-info">
+            <strong>Shipped from STEPZ Warehouse</strong>
+            <span>Your order has been dispatched via Express Courier</span>
+            <span class="update-time">29 July 2026 — 02:30 PM</span>
+          </div>
+        </div>
+
+        <div class="tracking-update-item">
+          <div class="update-dot-col">
+            <div class="update-dot"></div>
+            <div class="update-line"></div>
+          </div>
+          <div class="update-info">
+            <strong>Order Packed &amp; Ready</strong>
+            <span>Your shoes have been carefully packed and quality checked</span>
+            <span class="update-time">29 July 2026 — 09:00 AM</span>
+          </div>
+        </div>
+
+        <div class="tracking-update-item">
+          <div class="update-dot-col">
+            <div class="update-dot"></div>
+          </div>
+          <div class="update-info">
+            <strong>Order Placed Successfully</strong>
+            <span>Payment confirmed — order entered into our system</span>
+            <span class="update-time">28 July 2026 — 06:15 PM</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;text-align:center">
+        <a href="contact.html" class="btn-ghost">
+          Contact Support
+        </a>
+        <a href="products.html" class="btn-ghost" style="margin-left:12px">
+          Continue Shopping
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="page-footer">
+  <div class="container">
+    <div class="page-footer-grid">
+      <div class="page-footer-brand">
+        <span class="nav-logo">STEP<span>Z</span></span>
+        <p>Sri Lanka's premier footwear destination. Premium quality shoes delivered to your doorstep.</p>
+        <div class="pf-social-links">
+          <a href="#" class="pf-social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="pf-social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="pf-social-link" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="#" class="pf-social-link" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="page-footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="offers.html">Special Offers</a></li>
+          <li><a href="size-guide.html">Size Guide</a></li>
+        </ul>
+      </div>
+      <div class="page-footer-col">
+        <h4>Orders</h4>
+        <ul>
+          <li><a href="order-tracking.html">Track Order</a></li>
+          <li><a href="account.html">My Account</a></li>
+          <li><a href="contact.html">Returns &amp; Help</a></li>
+        </ul>
+      </div>
+      <div class="page-footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About STEPZ</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="page-footer-bottom">
+      <p>© 2026 <span>STEPZ</span>. All rights reserved. Registered in Sri Lanka</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:0.8rem;color:var(--text-muted)">Secure:</span>
+        <span style="font-size:0.78rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:6px">VISA</span>
+        <span style="font-size:0.78rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:6px">MC</span>
+        <span style="font-size:0.78rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:6px">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Success!</span>
+</div>
+
+<script src="app.js"></script>
+<script>
+  function trackOrder() {
+    const val = document.getElementById('trackOrderId').value.trim();
+    if (!val) {
+      alert('⚠️ Please enter your Order ID to track.');
+      return;
+    }
+    const btn = document.getElementById('trackBtn');
+    btn.textContent = '⏳ Tracking...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      document.getElementById('trOrderNum').textContent = val;
+      document.getElementById('trackingResult').classList.add('visible');
+      document.getElementById('trackingResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        btn.innerHTML = '<i class="fa-solid fa-search"></i> Track';
+      btn.disabled = false;
+    }, 1200);
+  }
+
+  // Allow Enter key
+  document.getElementById('trackOrderId').addEventListener('keydown', e => {
+    if (e.key === 'Enter') trackOrder();
+  });
+
+  // If returning from order confirmation, pre-fill order ID
+  const lastOrder = JSON.parse(localStorage.getItem('lastOrder') || '{}');
+  if (lastOrder.orderNum) {
+    document.getElementById('trackOrderId').value = lastOrder.orderNum;
+  }
+
+  // Animate progress bar on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const bar = document.getElementById('trackProgressBar');
+      if (bar) { bar.style.width = '0'; setTimeout(() => { bar.style.width = '75%'; }, 100); }
+    }, 300);
+  });
+</script>
+</body>
+</html>

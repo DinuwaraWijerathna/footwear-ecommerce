@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Size Guide 📏 — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Find your perfect shoe size with STEPZ size guide. UK, EU, US and CM conversions for Men, Women and Kids.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="wishlist.html">Wishlist</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
+        <i class="fa-regular fa-user"></i>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="products.html">Products</a>
+  <a href="offers.html">Offers</a>
+  <a href="reviews.html">Reviews</a>
+  <a href="wishlist.html">Wishlist</a>
+  <a href="contact.html">Contact</a>
+  <a href="login.html" id="mobileUserBtn">Login / Account</a>
+</nav>
+
+<!-- ═══════════════════════════════ PAGE HERO ═══════════════════════════════ -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-tag">Sizing Help</div>
+    <h1>Size Guide</h1>
+    <p>Find your perfect fit — UK, EU, US &amp; CM conversions for all categories</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SIZE GUIDE ═══════════════════════════════ -->
+<section class="size-guide-section">
+  <div class="container">
+
+    <!-- Tab Switcher -->
+    <div class="size-guide-tabs" role="tablist">
+      <button class="sg-tab-btn active" id="tabMen" onclick="switchSgTab('men')" role="tab" aria-selected="true">Men's</button>
+      <button class="sg-tab-btn" id="tabWomen" onclick="switchSgTab('women')" role="tab" aria-selected="false">Women's</button>
+      <button class="sg-tab-btn" id="tabKids" onclick="switchSgTab('kids')" role="tab" aria-selected="false">Kids'</button>
+    </div>
+
+    <!-- MEN'S SIZES -->
+    <div class="size-guide-panel active" id="sgPanelMen">
+      <div class="sg-table-card">
+        <h3>Men's Shoe Size Chart</h3>
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>UK</th>
+              <th>EU</th>
+              <th>US</th>
+              <th>CM (Foot Length)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>6</td><td>39</td><td>7</td><td>24.0 cm</td></tr>
+            <tr><td>6.5</td><td>40</td><td>7.5</td><td>24.5 cm</td></tr>
+            <tr><td>7</td><td>40.5</td><td>8</td><td>25.0 cm</td></tr>
+            <tr><td>7.5</td><td>41</td><td>8.5</td><td>25.5 cm</td></tr>
+            <tr><td>8</td><td>42</td><td>9</td><td>26.0 cm</td></tr>
+            <tr><td>8.5</td><td>43</td><td>9.5</td><td>26.5 cm</td></tr>
+            <tr><td>9</td><td>43.5</td><td>10</td><td>27.0 cm</td></tr>
+            <tr><td>9.5</td><td>44</td><td>10.5</td><td>27.5 cm</td></tr>
+            <tr><td>10</td><td>44.5</td><td>11</td><td>28.0 cm</td></tr>
+            <tr><td>10.5</td><td>45</td><td>11.5</td><td>28.5 cm</td></tr>
+            <tr><td>11</td><td>46</td><td>12</td><td>29.0 cm</td></tr>
+            <tr><td>12</td><td>47</td><td>13</td><td>30.0 cm</td></tr>
+            <tr><td>13</td><td>48</td><td>14</td><td>31.0 cm</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WOMEN'S SIZES -->
+    <div class="size-guide-panel" id="sgPanelWomen">
+      <div class="sg-table-card">
+        <h3>Women's Shoe Size Chart</h3>
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>UK</th>
+              <th>EU</th>
+              <th>US</th>
+              <th>CM (Foot Length)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>3</td><td>35.5</td><td>5</td><td>21.5 cm</td></tr>
+            <tr><td>3.5</td><td>36</td><td>5.5</td><td>22.0 cm</td></tr>
+            <tr><td>4</td><td>37</td><td>6</td><td>22.5 cm</td></tr>
+            <tr><td>4.5</td><td>37.5</td><td>6.5</td><td>23.0 cm</td></tr>
+            <tr><td>5</td><td>38</td><td>7</td><td>23.5 cm</td></tr>
+            <tr><td>5.5</td><td>38.5</td><td>7.5</td><td>24.0 cm</td></tr>
+            <tr><td>6</td><td>39</td><td>8</td><td>24.5 cm</td></tr>
+            <tr><td>6.5</td><td>40</td><td>8.5</td><td>25.0 cm</td></tr>
+            <tr><td>7</td><td>40.5</td><td>9</td><td>25.5 cm</td></tr>
+            <tr><td>7.5</td><td>41</td><td>9.5</td><td>26.0 cm</td></tr>
+            <tr><td>8</td><td>42</td><td>10</td><td>26.5 cm</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KIDS' SIZES -->
+    <div class="size-guide-panel" id="sgPanelKids">
+      <div class="sg-table-card">
+        <h3>Kids' Shoe Size Chart</h3>
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>UK</th>
+              <th>EU</th>
+              <th>US</th>
+              <th>CM (Foot Length)</th>
+              <th>Age (Approx)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>9C</td><td>27</td><td>10C</td><td>16.5 cm</td><td>3–4 yrs</td></tr>
+            <tr><td>10C</td><td>28</td><td>11C</td><td>17.0 cm</td><td>4–5 yrs</td></tr>
+            <tr><td>11C</td><td>29</td><td>12C</td><td>18.0 cm</td><td>5–6 yrs</td></tr>
+            <tr><td>12C</td><td>30</td><td>13C</td><td>18.5 cm</td><td>6–7 yrs</td></tr>
+            <tr><td>13C</td><td>31</td><td>1Y</td><td>19.5 cm</td><td>7–8 yrs</td></tr>
+            <tr><td>1Y</td><td>32</td><td>2Y</td><td>20.0 cm</td><td>8–9 yrs</td></tr>
+            <tr><td>2Y</td><td>33.5</td><td>3Y</td><td>21.0 cm</td><td>9–10 yrs</td></tr>
+            <tr><td>3Y</td><td>35</td><td>4Y</td><td>22.0 cm</td><td>10–11 yrs</td></tr>
+            <tr><td>4Y</td><td>36</td><td>5Y</td><td>22.5 cm</td><td>11–12 yrs</td></tr>
+            <tr><td>5Y</td><td>37.5</td><td>6Y</td><td>23.5 cm</td><td>12–13 yrs</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- How to Measure -->
+    <div class="sg-measure-card">
+      <h3><i class="fa-solid fa-ruler" style="color:var(--accent);margin-right:8px"></i> How to Measure Your Foot Size</h3>
+      <div class="sg-steps">
+        <div class="sg-step">
+          <div class="sg-step-num">1</div>
+          <div class="sg-step-text">
+            <strong>Prepare a Sheet</strong>
+            <p>Place a blank A4 paper on a flat, hard floor. Stand barefoot on it.</p>
+          </div>
+        </div>
+        <div class="sg-step">
+          <div class="sg-step-num">2</div>
+          <div class="sg-step-text">
+            <strong>Trace Your Foot</strong>
+            <p>Use a pencil to trace the outline of your foot, keeping the pen vertical.</p>
+          </div>
+        </div>
+        <div class="sg-step">
+          <div class="sg-step-num">3</div>
+          <div class="sg-step-text">
+            <strong>Measure Length</strong>
+            <p>Measure from the longest toe (usually big toe) to the heel in centimetres.</p>
+          </div>
+        </div>
+        <div class="sg-step">
+          <div class="sg-step-num">4</div>
+          <div class="sg-step-text">
+            <strong>Find Your Size</strong>
+            <p>Match your CM measurement to the chart above. When in doubt, go up half a size.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sg-tip-box">
+        <span class="tip-icon"><i class="fa-solid fa-circle-info" style="color:var(--accent)"></i></span>
+        <div>
+          <strong style="color:var(--accent)">Pro Tips:</strong>
+          Measure your feet in the afternoon when feet are slightly larger. Always measure both feet — use the larger measurement. Wear the type of socks you plan to use with the shoe.
+        </div>
+      </div>
+    </div>
+
+    <!-- Still unsure? -->
+    <div style="margin-top:40px;text-align:center">
+      <p style="color:var(--text-secondary);margin-bottom:20px">Still unsure about your size?</p>
+      <a href="contact.html" class="btn-primary" style="margin-right:12px">
+        Ask Our Size Expert
+      </a>
+      <a href="products.html" class="btn-ghost">
+        Shop Now
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="page-footer">
+  <div class="container">
+    <div class="page-footer-grid">
+      <div class="page-footer-brand">
+        <span class="nav-logo">STEP<span>Z</span></span>
+        <p>Sri Lanka's premier footwear destination. Premium quality shoes delivered to your doorstep.</p>
+        <div class="pf-social-links">
+          <a href="#" class="pf-social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="pf-social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="pf-social-link" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="#" class="pf-social-link" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="page-footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="offers.html">Special Offers</a></li>
+          <li><a href="size-guide.html" style="color:var(--accent)">Size Guide</a></li>
+        </ul>
+      </div>
+      <div class="page-footer-col">
+        <h4>Orders</h4>
+        <ul>
+          <li><a href="order-tracking.html">Track Order</a></li>
+          <li><a href="account.html">My Account</a></li>
+          <li><a href="contact.html">Returns &amp; Help</a></li>
+        </ul>
+      </div>
+      <div class="page-footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About STEPZ</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="page-footer-bottom">
+      <p>© 2026 <span>STEPZ</span>. All rights reserved. Registered in Sri Lanka</p>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Success!</span>
+</div>
+
+<script src="app.js"></script>
+<script>
+  function switchSgTab(tab) {
+    // Panels
+    document.querySelectorAll('.size-guide-panel').forEach(p => p.classList.remove('active'));
+    // Buttons
+    document.querySelectorAll('.sg-tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+
+    const panelMap = { men: 'sgPanelMen', women: 'sgPanelWomen', kids: 'sgPanelKids' };
+    const btnMap   = { men: 'tabMen',     women: 'tabWomen',     kids: 'tabKids' };
+
+    document.getElementById(panelMap[tab]).classList.add('active');
+    const btn = document.getElementById(btnMap[tab]);
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+  }
+</script>
+</body>
+</html>

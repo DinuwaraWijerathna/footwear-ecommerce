@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed 🎉 — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Your STEPZ order has been confirmed! Track your delivery and manage your order.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="wishlist.html">Wishlist</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
+        <i class="fa-regular fa-user"></i>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="products.html">Products</a>
+  <a href="offers.html">Offers</a>
+  <a href="reviews.html">Reviews</a>
+  <a href="wishlist.html">Wishlist</a>
+  <a href="contact.html">Contact</a>
+  <a href="login.html" id="mobileUserBtn">Login / Account</a>
+</nav>
+
+<!-- ═══════════════════════════════ ORDER CONFIRMATION ═══════════════════════════════ -->
+<section class="order-confirm-section">
+  <div class="container">
+
+    <div class="confirm-card">
+      <!-- Success Icon -->
+      <div class="confirm-success-icon"><i class="fa-solid fa-check" style="color:var(--accent)"></i></div>
+
+      <h1 class="confirm-title">Order Confirmed!</h1>
+      <p class="confirm-sub">
+        Thank you for your purchase! Your order has been placed successfully.<br>
+        A confirmation email has been sent to your inbox.
+      </p>
+
+      <!-- Order Details Box -->
+      <div class="confirm-order-box">
+        <div class="confirm-detail-item">
+          <label>Order Number</label>
+          <span class="accent-val" id="confOrderNum">#STZ-2026-00142</span>
+        </div>
+        <div class="confirm-detail-item">
+          <label>Order Date</label>
+          <span id="confOrderDate">28 July 2026</span>
+        </div>
+        <div class="confirm-detail-item">
+          <label>Total Amount</label>
+          <span class="accent-val" id="confTotal">Rs. 0</span>
+        </div>
+        <div class="confirm-detail-item">
+          <label>Est. Delivery</label>
+          <span id="confDelivery">2 – 4 Business Days</span>
+        </div>
+      </div>
+
+      <!-- Items Ordered -->
+      <div class="confirm-items-list">
+        <h3><i class="fa-solid fa-box-open" style="color:var(--accent)"></i> Items Ordered</h3>
+        <div id="confItemsBody">
+          <p style="color:var(--text-muted);font-size:0.9rem;text-align:center;padding:16px">Loading your order details...</p>
+        </div>
+      </div>
+
+      <!-- Delivery Timeline -->
+      <div class="confirm-timeline">
+        <div class="timeline-step done">
+          <div class="timeline-dot"><i class="fa-solid fa-check" style="font-size:0.8rem"></i></div>
+          <div class="timeline-label">Order Placed</div>
+        </div>
+        <div class="timeline-step active">
+          <div class="timeline-dot"><i class="fa-solid fa-gear" style="font-size:0.8rem"></i></div>
+          <div class="timeline-label">Processing</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot"><i class="fa-solid fa-box" style="font-size:0.8rem"></i></div>
+          <div class="timeline-label">Packed</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot"><i class="fa-solid fa-truck" style="font-size:0.8rem"></i></div>
+          <div class="timeline-label">Shipped</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot"><i class="fa-solid fa-house" style="font-size:0.8rem"></i></div>
+          <div class="timeline-label">Delivered</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="confirm-actions">
+        <a href="order-tracking.html" class="btn-primary">
+          <i class="fa-solid fa-location-dot"></i> Track My Order
+        </a>
+        <a href="products.html" class="btn-ghost">
+          Continue Shopping
+        </a>
+        <a href="account.html" class="btn-ghost">
+          My Account
+        </a>
+      </div>
+
+      <!-- Helpful Note -->
+      <div style="margin-top:32px;padding:16px 20px;background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius-md);font-size:0.85rem;color:var(--text-secondary)">
+        <i class="fa-solid fa-circle-info" style="color:var(--accent);margin-right:4px"></i> <strong style="color:var(--text-primary)">Need help?</strong>
+        Visit <a href="contact.html" style="color:var(--accent)">our support page</a> or call
+        <strong style="color:var(--text-primary)">+94 11 234 5678</strong> (Mon–Sat, 9AM–9PM).
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="page-footer">
+  <div class="container">
+    <div class="page-footer-grid">
+      <div class="page-footer-brand">
+        <span class="nav-logo">STEP<span>Z</span></span>
+        <p>Sri Lanka's premier footwear destination. Premium quality shoes delivered to your doorstep.</p>
+        <div class="pf-social-links">
+          <a href="#" class="pf-social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="pf-social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="pf-social-link" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="#" class="pf-social-link" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="page-footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="offers.html">Special Offers</a></li>
+          <li><a href="size-guide.html">Size Guide</a></li>
+        </ul>
+      </div>
+      <div class="page-footer-col">
+        <h4>Orders</h4>
+        <ul>
+          <li><a href="order-tracking.html">Track Order</a></li>
+          <li><a href="account.html">My Account</a></li>
+          <li><a href="contact.html">Returns &amp; Help</a></li>
+        </ul>
+      </div>
+      <div class="page-footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About STEPZ</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="page-footer-bottom">
+      <p>© 2026 <span>STEPZ</span>. All rights reserved. Registered in Sri Lanka</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:0.8rem;color:var(--text-muted)">Secure:</span>
+        <span style="font-size:0.78rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:6px">VISA</span>
+        <span style="font-size:0.78rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:6px">MC</span>
+        <span style="font-size:0.78rem;color:var(--text-muted);padding:4px 10px;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:6px">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Success!</span>
+</div>
+
+<script src="app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const order = JSON.parse(localStorage.getItem('lastOrder') || '{}');
+    const cart  = JSON.parse(localStorage.getItem('stepz_cart') || '[]');
+
+    if (order.orderNum) document.getElementById('confOrderNum').textContent = order.orderNum;
+    if (order.total)    document.getElementById('confTotal').textContent = 'Rs. ' + Number(order.total).toLocaleString();
+
+    const today = new Date();
+    document.getElementById('confOrderDate').textContent =
+      today.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+
+    const items = order.items || cart;
+    const body  = document.getElementById('confItemsBody');
+    if (items && items.length) {
+      body.innerHTML = items.map(it => `
+        <div class="confirm-item-row">
+          <div class="confirm-item-info">
+            <strong>${it.name || it.title || 'Product'}</strong>
+            <span>Size: UK ${it.size || '—'} &nbsp;|&nbsp; Qty: ${it.qty || it.quantity || 1}</span>
+          </div>
+          <div class="confirm-item-price">Rs. ${((it.price || 0) * (it.qty || it.quantity || 1)).toLocaleString()}</div>
+        </div>`).join('');
+    } else {
+      body.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;text-align:center;padding:16px">Your order details will appear here after checkout.</p>';
+    }
+  });
+</script>
+</body>
+</html>

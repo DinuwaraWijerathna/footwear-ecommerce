@@ -81,7 +81,7 @@ function renderProducts(filter = 'all') {
     const isWishlisted = wishlist.includes(p.id);
     const stars = '★'.repeat(Math.floor(p.rating)) + (p.rating % 1 >= 0.5 ? '½' : '');
     const badgeClass = `badge-${p.badge}`;
-    const badgeText = { new: 'NEW', sale: 'SALE', hot: '🔥 HOT' }[p.badge] || '';
+    const badgeText = { new: 'NEW', sale: 'SALE', hot: 'HOT' }[p.badge] || '';
 
     const card = document.createElement('div');
     card.className = 'product-card reveal';
@@ -319,39 +319,156 @@ function handleCheckout() {
     showToast('Your cart is empty!', '⚠️');
     return;
   }
+  // Redirect to full checkout page
+  window.location.href = 'checkout.html';
+}
+window.handleCheckout = handleCheckout;
 
-  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
-  if (!currentUser) {
-    showToast('Please login to place an order', '🔒');
-    setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+/* ══════════════════════════════════
+   CHECKOUT PAGE LOGIC
+══════════════════════════════════ */
+let selectedPaymentMethod = 'cod';
+let checkoutDiscount = 0;
+
+function selectPaymentMethod(method) {
+  selectedPaymentMethod = method;
+  const payCOD = document.getElementById('payCOD');
+  const payCard = document.getElementById('payCard');
+  if (payCOD && payCard) {
+    payCOD.classList.toggle('active', method === 'cod');
+    payCard.classList.toggle('active', method === 'card');
+  }
+}
+window.selectPaymentMethod = selectPaymentMethod;
+
+function applyCheckoutPromo() {
+  const code = document.getElementById('chkPromo')?.value.trim().toUpperCase();
+  if (code === 'STEPZ15' || code === 'SAVE15') {
+    checkoutDiscount = 0.15;
+    showToast('Promo code applied! 15% OFF', '✓');
+    renderCheckoutSummary();
+  } else if (code) {
+    showToast('Invalid promo code', '!');
+  }
+}
+window.applyCheckoutPromo = applyCheckoutPromo;
+
+function renderCheckoutSummary() {
+  const summaryContainer = document.getElementById('checkoutSummaryItems');
+  if (!summaryContainer) return;
+
+  const cartItems = JSON.parse(localStorage.getItem('stepz-cart') || '[]');
+  if (cartItems.length === 0) {
+    summaryContainer.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;padding:12px">Your cart is empty. <a href="products.html" style="color:var(--accent)">Browse products</a></p>';
     return;
   }
 
-  let adminOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  summaryContainer.innerHTML = cartItems.map(item => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-glass)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <img src="${item.image}" alt="${item.name}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;background:var(--bg-glass)">
+        <div>
+          <div style="font-weight:600;font-size:0.9rem;color:var(--text-primary)">${item.name}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted)">Size: UK ${item.size} • Qty: ${item.qty}</div>
+        </div>
+      </div>
+      <div style="font-weight:700;color:var(--accent);font-size:0.9rem">Rs. ${(item.price * item.qty).toLocaleString()}</div>
+    </div>
+  `).join('');
 
-  const newOrder = {
-    id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
-    customer: currentUser.name || 'Customer',
-    email: currentUser.email || 'customer@stepz.lk',
-    date: new Date().toISOString().split('T')[0],
-    items: cart.map(item => ({ name: item.name, qty: item.qty, price: item.price })),
-    total: subtotal,
-    status: 'pending'
-  };
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const discountAmt = Math.round(subtotal * checkoutDiscount);
+  const shipping = subtotal > 5000 ? 0 : 350;
+  const grandTotal = subtotal - discountAmt + shipping;
 
-  adminOrders.unshift(newOrder);
-  localStorage.setItem('stepz-admin-orders', JSON.stringify(adminOrders));
+  const subEl = document.getElementById('summarySubtotal');
+  const discEl = document.getElementById('summaryDiscount');
+  const shipEl = document.getElementById('summaryShipping');
+  const grandEl = document.getElementById('summaryGrandTotal');
 
-  cart = [];
-  saveCart();
-  updateCartUI();
-  closeCart();
-
-  showToast('Order placed successfully! Track status in My Orders.', '🎉');
-  setTimeout(() => openCustomerOrdersModal(), 600);
+  if (subEl) subEl.textContent = 'Rs. ' + subtotal.toLocaleString();
+  if (discEl) discEl.textContent = '- Rs. ' + discountAmt.toLocaleString();
+  if (shipEl) shipEl.textContent = shipping === 0 ? 'FREE' : 'Rs. ' + shipping;
+  if (grandEl) grandEl.textContent = 'Rs. ' + grandTotal.toLocaleString();
 }
-window.handleCheckout = handleCheckout;
+
+function initCheckoutPage() {
+  const form = document.getElementById('checkoutForm');
+  if (!form) return;
+
+  renderCheckoutSummary();
+
+  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+  if (currentUser) {
+    const nameInput = document.getElementById('chkFullName');
+    const emailInput = document.getElementById('chkEmail');
+    if (nameInput && !nameInput.value) nameInput.value = currentUser.name || '';
+    if (emailInput && !emailInput.value) emailInput.value = currentUser.email || '';
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const cartItems = JSON.parse(localStorage.getItem('stepz-cart') || '[]');
+    if (cartItems.length === 0) {
+      showToast('Your cart is empty!', '!');
+      return;
+    }
+
+    const name = document.getElementById('chkFullName').value.trim();
+    const email = document.getElementById('chkEmail').value.trim();
+    const phone = document.getElementById('chkPhone').value.trim();
+    const city = document.getElementById('chkCity').value.trim();
+    const address = document.getElementById('chkAddress').value.trim();
+
+    const orderNum = '#STZ-2026-' + Math.floor(10000 + Math.random() * 90000);
+    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const discountAmt = Math.round(subtotal * checkoutDiscount);
+    const shipping = subtotal > 5000 ? 0 : 350;
+    const grandTotal = subtotal - discountAmt + shipping;
+
+    const lastOrder = {
+      orderNum: orderNum,
+      name: name,
+      email: email,
+      phone: phone,
+      city: city,
+      address: address,
+      items: cartItems,
+      subtotal: subtotal,
+      discount: discountAmt,
+      shipping: shipping,
+      total: grandTotal,
+      paymentMethod: selectedPaymentMethod,
+      date: new Date().toISOString()
+    };
+    localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
+
+    let adminOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
+    const newOrder = {
+      id: orderNum,
+      customer: name,
+      email: email,
+      phone: phone,
+      city: city,
+      date: new Date().toISOString().split('T')[0],
+      items: cartItems.map(item => ({ name: item.name, qty: item.qty, price: item.price })),
+      total: grandTotal,
+      status: 'pending'
+    };
+    adminOrders.unshift(newOrder);
+    localStorage.setItem('stepz-admin-orders', JSON.stringify(adminOrders));
+
+    // Clear cart state
+    cart = [];
+    saveCart();
+    updateCartUI();
+
+    showToast('Order placed successfully! Redirecting...', '✓');
+    setTimeout(() => {
+      window.location.href = 'order-confirmation.html';
+    }, 800);
+  });
+}
 
 /* ══════════════════════════════════
    USER NAV & CUSTOMER ORDERS MODAL
@@ -383,7 +500,7 @@ function initUserNav() {
     }
 
     if (mobileUserBtn) {
-      mobileUserBtn.textContent = isAd ? '⚡ Admin Dashboard' : `📦 My Orders (${currentUser.name})`;
+      mobileUserBtn.textContent = isAd ? 'Admin Dashboard' : `My Orders (${currentUser.name})`;
       mobileUserBtn.href = isAd ? 'admin/index.html' : '#';
       mobileUserBtn.onclick = (e) => {
         if (!isAd) {
@@ -474,7 +591,7 @@ function openCustomerOrdersModal() {
       </div>
     ` : `
       <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
-        <div style="font-size:2.5rem;margin-bottom:10px">🛍️</div>
+        <div style="font-size:2.5rem;margin-bottom:10px"><i class="fa-solid fa-box-open" style="color:var(--text-muted)"></i></div>
         <p style="font-size:1rem;color:var(--text-secondary)">No orders placed yet.</p>
         <p style="font-size:0.85rem">Start shopping and place your first order!</p>
       </div>
@@ -1613,6 +1730,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (window.location.pathname.includes('product-details.html')) {
     await initProductDetails();
+  } else if (window.location.pathname.includes('checkout.html')) {
+    initCheckoutPage();
   } else if (!PRODUCTS_LOAD_FAILED) {
     renderProducts(filterParam);
   }
