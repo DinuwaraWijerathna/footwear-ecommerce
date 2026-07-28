@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Sign in to your STEPZ account to access your orders, wishlist, and exclusive deals.">
+  <link rel="stylesheet" href="auth.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ BACKGROUND ═══════════════════════════════ -->
+<div class="auth-bg">
+  <div class="auth-orb auth-orb-1"></div>
+  <div class="auth-orb auth-orb-2"></div>
+  <div class="auth-orb auth-orb-3"></div>
+</div>
+<div class="auth-grid"></div>
+
+<!-- ═══════════════════════════════ LOGIN CARD ═══════════════════════════════ -->
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <a href="index.html">STEP<span>Z</span></a>
+    </div>
+
+    <!-- Header -->
+    <div class="auth-header">
+      <h1>Welcome Back</h1>
+      <p>Sign in to continue your premium experience</p>
+    </div>
+
+    <!-- Quick Demo Role Switcher -->
+    <div class="demo-login-box" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px;margin-bottom:20px;text-align:center;">
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;font-weight:600;">⚡ Quick Demo Access</p>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button type="button" onclick="fillDemoLogin('admin')" style="flex:1;background:rgba(245,166,35,0.15);color:#f5a623;border:1px solid rgba(245,166,35,0.4);padding:8px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fa-solid fa-user-shield"></i> Login as Admin
+        </button>
+        <button type="button" onclick="fillDemoLogin('customer')" style="flex:1;background:rgba(77,166,255,0.15);color:#4da6ff;border:1px solid rgba(77,166,255,0.4);padding:8px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+          <i class="fa-solid fa-user"></i> Login as Customer
+        </button>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form" id="loginForm" novalidate>
+
+      <!-- Email -->
+      <div class="input-group">
+        <label for="loginEmail">Email Address</label>
+        <div class="input-wrap">
+          <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="email">
+          <i class="fa-solid fa-envelope input-icon-left"></i>
+        </div>
+        <div class="input-error"><i class="fa-solid fa-circle-exclamation"></i> Error message</div>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <label for="loginPassword">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+          <i class="fa-solid fa-lock input-icon-left"></i>
+          <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+        <div class="input-error"><i class="fa-solid fa-circle-exclamation"></i> Error message</div>
+      </div>
+
+      <!-- Options -->
+      <div class="auth-options">
+        <label class="checkbox-group">
+          <input type="checkbox" id="rememberMe">
+          <span class="custom-checkbox"></span>
+          <span class="checkbox-label">Remember me</span>
+        </label>
+        <a href="#" class="forgot-link">Forgot Password?</a>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="auth-btn" id="loginBtn">
+        <span class="btn-text">Sign In</span>
+        <span class="btn-spinner"></span>
+      </button>
+
+      <!-- Divider -->
+      <div class="auth-divider">
+        <span>or continue with</span>
+      </div>
+
+      <!-- Social -->
+      <div class="social-auth">
+        <button type="button" class="social-auth-btn" onclick="showAuthToast('Google login coming soon!', 'error')">
+          <i class="fa-brands fa-google"></i> Google
+        </button>
+        <button type="button" class="social-auth-btn" onclick="showAuthToast('Facebook login coming soon!', 'error')">
+          <i class="fa-brands fa-facebook-f"></i> Facebook
+        </button>
+      </div>
+    </form>
+
+    <!-- Footer -->
+    <div class="auth-footer">
+      Don't have an account? <a href="signup.html">Create Account</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="auth.js"></script>
+</body>
+</html>

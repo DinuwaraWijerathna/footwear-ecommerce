@@ -44,6 +44,9 @@
         <i class="fa-solid fa-bag-shopping"></i>
         <span class="cart-badge" id="cartBadge">0</span>
       </button>
+      <a href="login.html" class="nav-icon-btn" id="userBtn" aria-label="Account" title="Login / Account" style="display:inline-flex;align-items:center;justify-content:center;">
+        <i class="fa-regular fa-user"></i>
+      </a>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -58,6 +61,7 @@
   <a href="products.html">Products</a>
   <a href="offers.html">Offers</a>
   <a href="reviews.html">Reviews</a>
+  <a href="login.html" id="mobileUserBtn">Login / Account</a>
 </nav>
 
 <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
@@ -310,6 +314,21 @@
           <i class="fa-regular fa-heart"></i>
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CUSTOMER ORDERS MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="customerOrdersModalOverlay">
+  <div class="modal" style="max-width:700px;width:90%;max-height:85vh;overflow-y:auto;background:var(--bg-secondary);border:1px solid var(--border-glass);border-radius:var(--radius-lg);padding:24px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid var(--border-glass);padding-bottom:12px;">
+      <h2 style="font-family:'Outfit',sans-serif;font-size:1.4rem;color:var(--text-primary);display:flex;align-items:center;gap:10px;">
+        <i class="fa-solid fa-box-open" style="color:var(--accent)"></i> My Account & Orders
+      </h2>
+      <button class="modal-close" id="customerOrdersModalClose" style="position:static;background:none;border:none;color:var(--text-primary);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="customerOrdersModalBody">
+      <!-- Rendered dynamically by app.js -->
     </div>
   </div>
 </div>

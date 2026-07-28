@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Complete your purchase securely at STEPZ footwear.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="wishlist.html">Wishlist</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
+        <i class="fa-regular fa-user"></i>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HEADER BANNER ═══════════════════════════════ -->
+<section style="padding:120px 0 40px;background:var(--bg-secondary);border-bottom:1px solid var(--border-glass)">
+  <div class="container">
+    <h1 style="font-size:2.2rem;font-weight:900;margin-bottom:8px">Secure Checkout</h1>
+    <p style="color:var(--text-secondary)">Complete your shipping & payment details below</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ MAIN CHECKOUT SUITE ═══════════════════════════════ -->
+<section class="checkout-section">
+  <div class="container">
+
+    <div class="checkout-grid">
+
+      <!-- Left Column: Shipping & Payment Form -->
+      <div class="checkout-form-card">
+        
+        <!-- Customer Info -->
+        <div class="checkout-section-title">
+          <i class="fa-solid fa-user-check"></i> Customer & Shipping Address
+        </div>
+
+        <form id="checkoutForm">
+          <div class="form-grid-2">
+            <div class="checkout-field-group">
+              <label for="chkFullName">Full Name</label>
+              <input type="text" id="chkFullName" placeholder="e.g. Kamal Perera" required>
+            </div>
+            <div class="checkout-field-group">
+              <label for="chkEmail">Email Address</label>
+              <input type="email" id="chkEmail" placeholder="kamal@gmail.com" required>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="checkout-field-group">
+              <label for="chkPhone">Phone Number</label>
+              <input type="tel" id="chkPhone" placeholder="+94 77 123 4567" required>
+            </div>
+            <div class="checkout-field-group">
+              <label for="chkCity">City / District</label>
+              <input type="text" id="chkCity" placeholder="e.g. Colombo" required>
+            </div>
+          </div>
+
+          <div class="checkout-field-group">
+            <label for="chkAddress">Street Address</label>
+            <textarea id="chkAddress" rows="2" placeholder="123 Main Street, Apartment 4B..." required></textarea>
+          </div>
+
+          <!-- Payment Options -->
+          <div class="checkout-section-title" style="margin-top:32px">
+            <i class="fa-solid fa-credit-card"></i> Payment Method
+          </div>
+
+          <div class="payment-options">
+            <div class="payment-option-card active" id="payCOD" onclick="selectPaymentMethod('cod')">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+              <div>
+                <strong style="display:block;font-size:0.95rem;color:var(--text-primary)">Cash on Delivery</strong>
+                <span style="font-size:0.75rem;color:var(--text-muted)">Pay with cash upon delivery</span>
+              </div>
+            </div>
+            <div class="payment-option-card" id="payCard" onclick="selectPaymentMethod('card')">
+              <i class="fa-solid fa-credit-card"></i>
+              <div>
+                <strong style="display:block;font-size:0.95rem;color:var(--text-primary)">Debit / Credit Card</strong>
+                <span style="font-size:0.75rem;color:var(--text-muted)">Visa, Mastercard, Amex</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Promo Code Option -->
+          <div class="checkout-field-group">
+            <label for="chkPromo">Have a Promo Code?</label>
+            <div style="display:flex;gap:10px">
+              <input type="text" id="chkPromo" placeholder="e.g. STEPZ15" style="text-transform:uppercase">
+              <button type="button" class="btn-ghost" onclick="applyCheckoutPromo()" style="padding:12px 20px;white-space:nowrap">Apply</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width:100%;margin-top:20px;padding:16px">
+            Place Order Now <span class="arrow">→</span>
+          </button>
+        </form>
+
+      </div>
+
+      <!-- Right Column: Order Summary -->
+      <div>
+        <div class="checkout-summary-card">
+          <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;border-bottom:1px solid var(--border-glass);padding-bottom:12px">Order Summary</h3>
+
+          <div id="checkoutSummaryItems">
+            <!-- Items rendered by app.js -->
+          </div>
+
+          <div class="summary-total-table">
+            <div class="summary-total-row">
+              <span>Subtotal</span>
+              <span id="summarySubtotal">Rs. 0</span>
+            </div>
+            <div class="summary-total-row">
+              <span>Discount</span>
+              <span id="summaryDiscount" style="color:var(--green)">- Rs. 0</span>
+            </div>
+            <div class="summary-total-row">
+              <span>Shipping</span>
+              <span id="summaryShipping">Rs. 350</span>
+            </div>
+            <div class="summary-total-row grand-total">
+              <span>Grand Total</span>
+              <span id="summaryGrandTotal">Rs. 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Added to cart!</span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

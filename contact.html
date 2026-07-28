@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Support — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Get in touch with STEPZ customer support team or visit our store outlets in Sri Lanka.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="wishlist.html">Wishlist</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
+        <i class="fa-regular fa-user"></i>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HEADER BANNER ═══════════════════════════════ -->
+<section style="padding:120px 0 40px;background:var(--bg-secondary);border-bottom:1px solid var(--border-glass)">
+  <div class="container">
+    <h1 style="font-size:2.2rem;font-weight:900;margin-bottom:8px">Contact & Support</h1>
+    <p style="color:var(--text-secondary)">We are here to assist you with any questions or order inquiries</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CONTACT SUITE ═══════════════════════════════ -->
+<section class="contact-section">
+  <div class="container">
+
+    <div class="contact-grid">
+
+      <!-- Left Column: Info Cards & Store Outlets -->
+      <div class="contact-info-card">
+        <h2 style="font-size:1.4rem;font-weight:800;margin-bottom:24px;color:var(--text-primary)">Get In Touch</h2>
+
+        <div class="contact-info-item">
+          <div class="contact-info-icon"><i class="fa-solid fa-phone"></i></div>
+          <div>
+            <strong style="display:block;color:var(--text-primary);margin-bottom:2px">Customer Support Line</strong>
+            <span style="color:var(--text-secondary);font-size:0.9rem">+94 11 234 5678 / +94 77 123 4567</span>
+          </div>
+        </div>
+
+        <div class="contact-info-item">
+          <div class="contact-info-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <strong style="display:block;color:var(--text-primary);margin-bottom:2px">Official Support Email</strong>
+            <span style="color:var(--text-secondary);font-size:0.9rem">support@stepz.lk</span>
+          </div>
+        </div>
+
+        <div class="contact-info-item">
+          <div class="contact-info-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <strong style="display:block;color:var(--text-primary);margin-bottom:2px">Flagship Store Location</strong>
+            <span style="color:var(--text-secondary);font-size:0.9rem">123 Store Street, Colombo 03, Sri Lanka</span>
+          </div>
+        </div>
+
+        <div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--border-glass)">
+          <h4 style="color:var(--text-primary);margin-bottom:12px">Store Outlets</h4>
+          <ul style="color:var(--text-secondary);font-size:0.9rem;line-height:1.8">
+            <li>📍 <strong>Colombo 03:</strong> Flagship Store, Galle Road</li>
+            <li>📍 <strong>Kandy:</strong> City Center, Level 2</li>
+            <li>📍 <strong>Galle:</strong> Fort Shopping Complex</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Inquiry Contact Form -->
+      <div class="contact-info-card">
+        <h2 style="font-size:1.4rem;font-weight:800;margin-bottom:24px;color:var(--text-primary)">Send Us a Message</h2>
+
+        <form id="contactForm">
+          <div class="checkout-field-group">
+            <label for="cntName">Your Name</label>
+            <input type="text" id="cntName" placeholder="e.g. Kamal Perera" required>
+          </div>
+
+          <div class="checkout-field-group">
+            <label for="cntEmail">Email Address</label>
+            <input type="email" id="cntEmail" placeholder="kamal@gmail.com" required>
+          </div>
+
+          <div class="checkout-field-group">
+            <label for="cntSubject">Subject</label>
+            <input type="text" id="cntSubject" placeholder="e.g. Order Inquiry / Size Advice" required>
+          </div>
+
+          <div class="checkout-field-group">
+            <label for="cntMessage">Message</label>
+            <textarea id="cntMessage" rows="4" placeholder="Type your message here..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width:100%">
+            Send Message <span class="arrow">→</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- FAQ Accordion -->
+    <div class="faq-card">
+      <h2 style="font-size:1.4rem;font-weight:800;margin-bottom:24px;color:var(--text-primary);display:flex;align-items:center;gap:10px">
+        <i class="fa-solid fa-circle-question" style="color:var(--accent)"></i> Frequently Asked Questions
+      </h2>
+
+      <div class="faq-item active">
+        <div class="faq-question">
+          <span>What is the estimated delivery time within Sri Lanka?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          Delivery within Colombo usually takes 1-2 business days. For island-wide deliveries (Outstation), it takes 2-4 business days.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>What is your return & exchange policy?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          We offer a 30-day easy exchange policy. Items must be unworn and in original box packaging.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>What payment methods do you accept?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          We accept Cash on Delivery (COD) as well as Visa, Mastercard, and Bank Transfers.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Added to cart!</span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

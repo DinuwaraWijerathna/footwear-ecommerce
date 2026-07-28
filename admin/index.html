@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — STEPZ Admin</title>
+  <meta name="description" content="STEPZ Admin Dashboard — Manage your footwear e-commerce store.">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <span class="logo-text">STEP<span>Z</span></span>
+      <span class="admin-tag">Admin</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <a href="index.html" class="sidebar-link active">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="products.html" class="sidebar-link">
+          <i class="fa-solid fa-shoe-prints"></i>
+          <span>Products</span>
+        </a>
+        <a href="orders.html" class="sidebar-link">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Orders</span>
+        </a>
+        <a href="customers.html" class="sidebar-link">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="reviews.html" class="sidebar-link">
+          <i class="fa-solid fa-star"></i>
+          <span>Reviews</span>
+        </a>
+        <a href="offers.html" class="sidebar-link">
+          <i class="fa-solid fa-tag"></i>
+          <span>Offers & Coupons</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">System</div>
+        <a href="settings.html" class="sidebar-link">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../index.html" class="sidebar-link">
+          <i class="fa-solid fa-store"></i>
+          <span>Visit Store</span>
+        </a>
+        <a href="#" class="sidebar-link" id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- User -->
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Admin</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn2" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ═══════════════════════════════ MAIN CONTENT ═══════════════════════════════ -->
+  <main class="admin-main">
+
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+          <h1>Dashboard</h1>
+          <p>Welcome back! Here's what's happening with your store.</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="../index.html" class="visit-site-btn">
+          <i class="fa-solid fa-external-link"></i>
+          <span>Visit Store</span>
+        </a>
+        <button class="topbar-btn" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notif-dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="admin-content">
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-shoe-prints"></i></div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">Total Products</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> +2 this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> +5 this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+          <div class="stat-value">Rs. 0</div>
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> +12% this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">Customers</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> +8 this month</div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+
+        <!-- Recent Orders -->
+        <div class="admin-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Recent Orders</h3>
+            <a href="orders.html" class="panel-action">View All →</a>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersBody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Quick Actions + Chart -->
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <!-- Revenue Chart -->
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Revenue Overview</h3>
+              <span class="panel-action">2026</span>
+            </div>
+            <div class="chart-container">
+              <div class="bar-chart" id="revenueChart">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="admin-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Quick Actions</h3>
+            </div>
+            <div class="quick-actions">
+              <a href="products.html" class="quick-action-btn">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add New Product</span>
+                <span class="arrow">→</span>
+              </a>
+              <a href="orders.html" class="quick-action-btn">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Manage Orders</span>
+                <span class="arrow">→</span>
+              </a>
+              <a href="customers.html" class="quick-action-btn">
+                <i class="fa-solid fa-user-group"></i>
+                <span>View Customers</span>
+                <span class="arrow">→</span>
+              </a>
+              <a href="../index.html" class="quick-action-btn">
+                <i class="fa-solid fa-store"></i>
+                <span>Visit Store</span>
+                <span class="arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

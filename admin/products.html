@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products — STEPZ Admin</title>
+  <meta name="description" content="Manage STEPZ footwear products — add, edit, and delete products from your store.">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">STEP<span>Z</span></span>
+      <span class="admin-tag">Admin</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <a href="index.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="products.html" class="sidebar-link active">
+          <i class="fa-solid fa-shoe-prints"></i>
+          <span>Products</span>
+        </a>
+        <a href="orders.html" class="sidebar-link">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Orders</span>
+        </a>
+        <a href="customers.html" class="sidebar-link">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="reviews.html" class="sidebar-link">
+          <i class="fa-solid fa-star"></i>
+          <span>Reviews</span>
+        </a>
+        <a href="offers.html" class="sidebar-link">
+          <i class="fa-solid fa-tag"></i>
+          <span>Offers & Coupons</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">System</div>
+        <a href="settings.html" class="sidebar-link">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../index.html" class="sidebar-link">
+          <i class="fa-solid fa-store"></i>
+          <span>Visit Store</span>
+        </a>
+        <a href="#" class="sidebar-link" id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Admin</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+        <button class="sidebar-logout" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ═══════════════════════════════ MAIN CONTENT ═══════════════════════════════ -->
+  <main class="admin-main">
+
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+          <h1>Products</h1>
+          <p>Manage your product catalog</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="../index.html" class="visit-site-btn">
+          <i class="fa-solid fa-external-link"></i>
+          <span>Visit Store</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <div class="table-toolbar-left">
+          <div class="table-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search products..." id="productSearch">
+          </div>
+        </div>
+        <button class="add-btn" id="addProductBtn">
+          <i class="fa-solid fa-plus"></i> Add Product
+        </button>
+      </div>
+
+      <!-- Products Table -->
+      <div class="admin-panel">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Badge</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════ ADD/EDIT PRODUCT MODAL ═══════════════════════════════ -->
+<div class="admin-modal-overlay" id="productModalOverlay">
+  <div class="admin-modal">
+    <div class="modal-header">
+      <h2 id="productModalTitle">Add New Product</h2>
+      <button class="modal-close" id="productModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <form class="modal-form" id="productForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pBrand">Brand</label>
+            <input type="text" id="pBrand" placeholder="e.g. Nike" required>
+          </div>
+          <div class="form-group">
+            <label for="pName">Product Name</label>
+            <input type="text" id="pName" placeholder="e.g. Air Max 270" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pCategory">Category</label>
+            <select id="pCategory" required>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="sport">Sport</option>
+              <option value="casual">Casual</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pBadge">Badge</label>
+            <select id="pBadge">
+              <option value="">None</option>
+              <option value="new">New</option>
+              <option value="sale">Sale</option>
+              <option value="hot">Hot</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pPrice">Price (Rs.)</label>
+            <input type="number" id="pPrice" placeholder="18500" required>
+          </div>
+          <div class="form-group">
+            <label for="pOldPrice">Old Price (Rs.)</label>
+            <input type="number" id="pOldPrice" placeholder="Optional">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pImage">Image Path</label>
+          <input type="text" id="pImage" placeholder="../assets/images/product_mens.png">
+        </div>
+
+        <div class="form-group">
+          <label for="pSizes">Sizes (comma separated)</label>
+          <input type="text" id="pSizes" placeholder="6,7,8,9,10,11,12" required>
+        </div>
+
+        <div class="form-group">
+          <label for="pDesc">Description</label>
+          <textarea id="pDesc" placeholder="Product description..." rows="3"></textarea>
+        </div>
+
+        <div class="form-group" style="flex-direction:row;align-items:center;gap:12px">
+          <label for="pStock" style="margin:0">In Stock</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pStock" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="modal-btn-cancel" id="productCancelBtn">Cancel</button>
+      <button type="submit" class="modal-btn-save" form="productForm">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -6,8 +6,11 @@
 CREATE DATABASE IF NOT EXISTS stepz_db;
 USE stepz_db;
 
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS products;
 
+-- ── PRODUCTS TABLE ──
 CREATE TABLE products (
   id INT AUTO_INCREMENT PRIMARY KEY,
   brand VARCHAR(100) NOT NULL,
@@ -24,8 +27,32 @@ CREATE TABLE products (
   in_stock TINYINT(1) DEFAULT 1
 );
 
--- Migrating the same 8 products that were hardcoded in app.js,
--- so nothing is lost when you switch to the database.
+-- ── USERS TABLE ──
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  phone VARCHAR(50) DEFAULT NULL,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'customer') DEFAULT 'customer',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ── ORDERS TABLE ──
+CREATE TABLE orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_code VARCHAR(50) NOT NULL UNIQUE,
+  user_id INT DEFAULT NULL,
+  customer_name VARCHAR(150) NOT NULL,
+  customer_email VARCHAR(150) NOT NULL,
+  items JSON NOT NULL,
+  total DECIMAL(10,2) NOT NULL,
+  status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- ── SEED PRODUCTS ──
 INSERT INTO products
   (brand, name, category, price, old_price, badge, rating, reviews, image, sizes, description, in_stock)
 VALUES
@@ -52,3 +79,7 @@ VALUES
 
 ('Skechers', 'Arch Fit Loafer', 'casual', 8900, 11000, 'sale', 4.6, 208, 'assets/images/product_casual.png', '6,7,8,9,10,11,12',
  'Skechers Arch Fit Loafer features an orthopedic insole developed with podiatrists. Superior arch support combined with a stylish slip-on design for all-day comfort.', 1);
+
+-- ── SEED DEFAULT ADMIN ──
+INSERT INTO users (name, email, phone, password, role)
+VALUES ('STEPZ Admin', 'admin@stepz.lk', '+94 11 234 5678', 'admin123', 'admin');

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — STEPZ | Premium Footwear</title>
+  <meta name="description" content="Create your STEPZ account and unlock exclusive deals, track orders, and build your wishlist.">
+  <link rel="stylesheet" href="auth.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ BACKGROUND ═══════════════════════════════ -->
+<div class="auth-bg">
+  <div class="auth-orb auth-orb-1"></div>
+  <div class="auth-orb auth-orb-2"></div>
+  <div class="auth-orb auth-orb-3"></div>
+</div>
+<div class="auth-grid"></div>
+
+<!-- ═══════════════════════════════ SIGNUP CARD ═══════════════════════════════ -->
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <a href="index.html">STEP<span>Z</span></a>
+    </div>
+
+    <!-- Header -->
+    <div class="auth-header">
+      <h1>Create Account</h1>
+      <p>Join STEPZ and step into a world of premium footwear</p>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupFormContent">
+      <form class="auth-form" id="signupForm" novalidate>
+
+        <!-- Name -->
+        <div class="input-group">
+          <label for="signupName">Full Name</label>
+          <div class="input-wrap">
+            <input type="text" id="signupName" placeholder="Enter your full name" autocomplete="name">
+            <i class="fa-solid fa-user input-icon-left"></i>
+          </div>
+          <div class="input-error"><i class="fa-solid fa-circle-exclamation"></i> Error message</div>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <label for="signupEmail">Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="signupEmail" placeholder="Enter your email" autocomplete="email">
+            <i class="fa-solid fa-envelope input-icon-left"></i>
+          </div>
+          <div class="input-error"><i class="fa-solid fa-circle-exclamation"></i> Error message</div>
+        </div>
+
+        <!-- Phone -->
+        <div class="input-group">
+          <label for="signupPhone">Phone Number</label>
+          <div class="input-wrap">
+            <input type="tel" id="signupPhone" placeholder="+94 7X XXX XXXX" autocomplete="tel">
+            <i class="fa-solid fa-phone input-icon-left"></i>
+          </div>
+          <div class="input-error"><i class="fa-solid fa-circle-exclamation"></i> Error message</div>
+        </div>
+
+        <!-- Password -->
+        <div class="input-group">
+          <label for="signupPassword">Password</label>
+          <div class="input-wrap">
+            <input type="password" id="signupPassword" placeholder="Create a strong password" autocomplete="new-password">
+            <i class="fa-solid fa-lock input-icon-left"></i>
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <div class="input-error"><i class="fa-solid fa-circle-exclamation"></i> Error message</div>
+          <!-- Strength Indicator -->
+          <div class="password-strength">
+            <div class="strength-bar"><div class="strength-fill"></div></div>
+            <span class="strength-text"></span>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="input-group">
+          <label for="signupConfirm">Confirm Password</label>
+          <div class="input-wrap">
+            <input type="password" id="signupConfirm" placeholder="Re-enter your password" autocomplete="new-password">
+            <i class="fa-solid fa-shield-halved input-icon-left"></i>
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <div class="input-error"><i class="fa-solid fa-circle-exclamation"></i> Error message</div>
+        </div>
+
+        <!-- Terms -->
+        <label class="checkbox-group">
+          <input type="checkbox" id="agreeTerms">
+          <span class="custom-checkbox"></span>
+          <span class="checkbox-label">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></span>
+        </label>
+
+        <!-- Submit -->
+        <button type="submit" class="auth-btn" id="signupBtn">
+          <span class="btn-text">Create Account</span>
+          <span class="btn-spinner"></span>
+        </button>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+          <span>or sign up with</span>
+        </div>
+
+        <!-- Social -->
+        <div class="social-auth">
+          <button type="button" class="social-auth-btn" onclick="showAuthToast('Google signup coming soon!', 'error')">
+            <i class="fa-brands fa-google"></i> Google
+          </button>
+          <button type="button" class="social-auth-btn" onclick="showAuthToast('Facebook signup coming soon!', 'error')">
+            <i class="fa-brands fa-facebook-f"></i> Facebook
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Success State -->
+    <div class="auth-success" id="signupSuccess">
+      <div class="success-icon">🎉</div>
+      <h2>Account Created!</h2>
+      <p>Redirecting you to login...</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="auth-footer">
+      Already have an account? <a href="login.html">Sign In</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="auth.js"></script>
+</body>
+</html>

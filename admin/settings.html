@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — STEPZ Admin</title>
+  <meta name="description" content="Manage store settings and preferences.">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text">STEP<span>Z</span></span>
+      <span class="admin-tag">Admin</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <a href="index.html" class="sidebar-link">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="products.html" class="sidebar-link">
+          <i class="fa-solid fa-shoe-prints"></i>
+          <span>Products</span>
+        </a>
+        <a href="orders.html" class="sidebar-link">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Orders</span>
+        </a>
+        <a href="customers.html" class="sidebar-link">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="reviews.html" class="sidebar-link">
+          <i class="fa-solid fa-star"></i>
+          <span>Reviews</span>
+        </a>
+        <a href="offers.html" class="sidebar-link">
+          <i class="fa-solid fa-tag"></i>
+          <span>Offers & Coupons</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">System</div>
+        <a href="settings.html" class="sidebar-link active">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../index.html" class="sidebar-link">
+          <i class="fa-solid fa-store"></i>
+          <span>Visit Store</span>
+        </a>
+        <a href="#" class="sidebar-link" id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Admin</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+        <button class="sidebar-logout" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ═══════════════════════════════ MAIN CONTENT ═══════════════════════════════ -->
+  <main class="admin-main">
+
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+          <h1>Store Settings</h1>
+          <p>Configure store options and admin account preferences</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="../index.html" class="visit-site-btn">
+          <i class="fa-solid fa-external-link"></i>
+          <span>Visit Store</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <div class="settings-grid">
+
+        <!-- Store Profile Card -->
+        <div class="settings-card">
+          <div class="settings-card-title">
+            <i class="fa-solid fa-store"></i> Store Profile
+          </div>
+          <form class="modal-form" id="storeSettingsForm">
+            <div class="form-group">
+              <label for="setStoreName">Store Name</label>
+              <input type="text" id="setStoreName" value="STEPZ Footwear" required>
+            </div>
+            <div class="form-group">
+              <label for="setSupportEmail">Support Email</label>
+              <input type="email" id="setSupportEmail" value="support@stepz.lk" required>
+            </div>
+            <div class="form-group">
+              <label for="setPhone">Contact Phone</label>
+              <input type="text" id="setPhone" value="+94 11 234 5678" required>
+            </div>
+            <div class="form-group">
+              <label for="setAddress">Store Location / Address</label>
+              <input type="text" id="setAddress" value="Colombo, Sri Lanka" required>
+            </div>
+            <button type="submit" class="add-btn" style="margin-top:10px">Save Store Details</button>
+          </form>
+        </div>
+
+        <!-- Shipping & Currency Card -->
+        <div class="settings-card">
+          <div class="settings-card-title">
+            <i class="fa-solid fa-truck"></i> Shipping & Currency Settings
+          </div>
+          <form class="modal-form" id="shippingSettingsForm">
+            <div class="form-group">
+              <label for="setCurrency">Currency Symbol</label>
+              <input type="text" id="setCurrency" value="Rs." required>
+            </div>
+            <div class="form-group">
+              <label for="setShippingFee">Standard Shipping Fee (Rs.)</label>
+              <input type="number" id="setShippingFee" value="350" required>
+            </div>
+            <div class="form-group">
+              <label for="setFreeShippingThreshold">Free Shipping Threshold (Rs.)</label>
+              <input type="number" id="setFreeShippingThreshold" value="15000" required>
+            </div>
+            <div class="form-group" style="flex-direction:row;align-items:center;gap:12px;margin-top:10px">
+              <label for="setCOD" style="margin:0">Enable Cash on Delivery (COD)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setCOD" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <button type="submit" class="add-btn" style="margin-top:16px">Save Shipping Settings</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

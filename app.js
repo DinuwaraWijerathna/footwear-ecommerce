@@ -319,10 +319,186 @@ function handleCheckout() {
     showToast('Your cart is empty!', '⚠️');
     return;
   }
-  showToast('Redirecting to checkout…', '🚀');
-  setTimeout(() => closeCart(), 1500);
+
+  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+  if (!currentUser) {
+    showToast('Please login to place an order', '🔒');
+    setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+    return;
+  }
+
+  let adminOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+  const newOrder = {
+    id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+    customer: currentUser.name || 'Customer',
+    email: currentUser.email || 'customer@stepz.lk',
+    date: new Date().toISOString().split('T')[0],
+    items: cart.map(item => ({ name: item.name, qty: item.qty, price: item.price })),
+    total: subtotal,
+    status: 'pending'
+  };
+
+  adminOrders.unshift(newOrder);
+  localStorage.setItem('stepz-admin-orders', JSON.stringify(adminOrders));
+
+  cart = [];
+  saveCart();
+  updateCartUI();
+  closeCart();
+
+  showToast('Order placed successfully! Track status in My Orders.', '🎉');
+  setTimeout(() => openCustomerOrdersModal(), 600);
 }
 window.handleCheckout = handleCheckout;
+
+/* ══════════════════════════════════
+   USER NAV & CUSTOMER ORDERS MODAL
+══════════════════════════════════ */
+function initUserNav() {
+  const userBtn = $('#userBtn');
+  const mobileUserBtn = $('#mobileUserBtn');
+  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+
+  if (currentUser) {
+    const isAd = currentUser.role === 'admin';
+
+    if (userBtn) {
+      userBtn.setAttribute('title', isAd ? 'Admin Dashboard' : `Logged in as ${currentUser.name}`);
+      userBtn.href = isAd ? 'admin/index.html' : '#';
+      userBtn.onclick = (e) => {
+        if (!isAd) {
+          e.preventDefault();
+          openCustomerOrdersModal();
+        }
+      };
+
+      userBtn.innerHTML = `
+        <div style="display:inline-flex;align-items:center;gap:6px;background:${isAd ? 'rgba(245,166,35,0.15)' : 'rgba(0,221,136,0.15)'};color:${isAd ? 'var(--accent)' : 'var(--green)'};padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;">
+          <i class="fa-solid fa-${isAd ? 'user-shield' : 'user-check'}"></i>
+          <span>${isAd ? 'Admin' : currentUser.name.split(' ')[0]}</span>
+        </div>
+      `;
+    }
+
+    if (mobileUserBtn) {
+      mobileUserBtn.textContent = isAd ? '⚡ Admin Dashboard' : `📦 My Orders (${currentUser.name})`;
+      mobileUserBtn.href = isAd ? 'admin/index.html' : '#';
+      mobileUserBtn.onclick = (e) => {
+        if (!isAd) {
+          e.preventDefault();
+          openCustomerOrdersModal();
+        }
+      };
+    }
+  } else {
+    if (userBtn) {
+      userBtn.setAttribute('title', 'Login / Account');
+      userBtn.href = 'login.html';
+      userBtn.innerHTML = `<i class="fa-regular fa-user"></i>`;
+    }
+    if (mobileUserBtn) {
+      mobileUserBtn.textContent = 'Login / Account';
+      mobileUserBtn.href = 'login.html';
+    }
+  }
+
+  // Setup Close listener for Customer Orders Modal
+  const modalClose = $('#customerOrdersModalClose');
+  const modalOverlay = $('#customerOrdersModalOverlay');
+  if (modalClose) modalClose.onclick = closeCustomerOrdersModal;
+  if (modalOverlay) {
+    modalOverlay.onclick = (e) => {
+      if (e.target === modalOverlay) closeCustomerOrdersModal();
+    };
+  }
+}
+
+function openCustomerOrdersModal() {
+  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+  if (!currentUser) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const overlay = $('#customerOrdersModalOverlay');
+  const body = $('#customerOrdersModalBody');
+  if (!overlay || !body) return;
+
+  const allOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
+  const userOrders = allOrders.filter(o => 
+    (o.email && o.email.toLowerCase() === currentUser.email.toLowerCase()) || 
+    (o.customer && o.customer.toLowerCase() === currentUser.name.toLowerCase())
+  );
+
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;margin-bottom:20px;border:1px solid var(--border-glass)">
+      <div>
+        <h3 style="color:var(--text-primary);font-size:1.1rem">${currentUser.name}</h3>
+        <p style="font-size:0.85rem;color:var(--text-muted)"><i class="fa-solid fa-envelope"></i> ${currentUser.email} • Role: <strong style="color:var(--accent);text-transform:capitalize">${currentUser.role}</strong></p>
+      </div>
+      <button onclick="logoutCustomer()" style="background:rgba(255,107,107,0.15);color:var(--accent2);border:1px solid rgba(255,107,107,0.3);padding:8px 14px;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
+    <h4 style="font-size:1rem;color:var(--text-primary);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+      <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i> My Order History
+    </h4>
+
+    ${userOrders.length > 0 ? `
+      <div style="display:flex;flex-direction:column;gap:12px">
+        ${userOrders.map(o => `
+          <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:12px;padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px dashed var(--border-glass);padding-bottom:8px">
+              <div>
+                <span style="font-weight:700;color:var(--accent);font-size:1rem">${o.id}</span>
+                <span style="font-size:0.8rem;color:var(--text-muted);margin-left:10px">${o.date}</span>
+              </div>
+              <span style="padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;
+                background:${o.status === 'delivered' ? 'rgba(0,221,136,0.15)' : o.status === 'shipped' ? 'rgba(77,166,255,0.15)' : 'rgba(245,166,35,0.15)'};
+                color:${o.status === 'delivered' ? 'var(--green)' : o.status === 'shipped' ? 'var(--blue)' : 'var(--accent)'};">
+                ${o.status}
+              </span>
+            </div>
+            <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">
+              ${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;font-weight:600;color:var(--text-primary)">
+              <span>Total Paid:</span>
+              <span style="color:var(--accent)">Rs. ${Number(o.total).toLocaleString('en-LK')}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    ` : `
+      <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+        <div style="font-size:2.5rem;margin-bottom:10px">🛍️</div>
+        <p style="font-size:1rem;color:var(--text-secondary)">No orders placed yet.</p>
+        <p style="font-size:0.85rem">Start shopping and place your first order!</p>
+      </div>
+    `}
+  `;
+
+  overlay.classList.add('open');
+}
+
+function closeCustomerOrdersModal() {
+  const overlay = $('#customerOrdersModalOverlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function logoutCustomer() {
+  localStorage.removeItem('stepz-current-user');
+  closeCustomerOrdersModal();
+  showToast('Logged out successfully');
+  setTimeout(() => window.location.reload(), 600);
+}
+
+window.openCustomerOrdersModal = openCustomerOrdersModal;
+window.closeCustomerOrdersModal = closeCustomerOrdersModal;
+window.logoutCustomer = logoutCustomer;
 
 /* ══════════════════════════════════
    WISHLIST
@@ -1378,9 +1554,48 @@ window.addEventListener('load', () => {
 });
 
 /* ══════════════════════════════════
+   USER NAV STATE
+══════════════════════════════════ */
+function initUserNav() {
+  const userBtn = $('#userBtn');
+  const mobileUserBtn = $('#mobileUserBtn');
+  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+
+  if (currentUser) {
+    const isAd = currentUser.role === 'admin';
+    const targetUrl = isAd ? 'admin/index.html' : 'login.html';
+    const label = isAd ? 'Admin Dashboard' : `Account (${currentUser.name})`;
+
+    if (userBtn) {
+      userBtn.setAttribute('title', label);
+      userBtn.href = targetUrl;
+      const icon = userBtn.querySelector('i');
+      if (icon) {
+        icon.className = 'fa-solid fa-user-check';
+        icon.style.color = 'var(--accent)';
+      }
+    }
+    if (mobileUserBtn) {
+      mobileUserBtn.textContent = isAd ? '⚡ Admin Dashboard' : `👤 ${currentUser.name}`;
+      mobileUserBtn.href = targetUrl;
+    }
+  } else {
+    if (userBtn) {
+      userBtn.setAttribute('title', 'Login / Account');
+      userBtn.href = 'login.html';
+    }
+    if (mobileUserBtn) {
+      mobileUserBtn.textContent = 'Login / Account';
+      mobileUserBtn.href = 'login.html';
+    }
+  }
+}
+
+/* ══════════════════════════════════
    INIT
 ══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
+  initUserNav();
   const urlParams = new URLSearchParams(window.location.search);
   const isOffersPage = window.location.pathname.includes('offers.html');
   const defaultFilter = isOffersPage ? 'sale' : 'all';
