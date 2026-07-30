@@ -7,8 +7,12 @@
 /* ══════════════════════════════════
    PRODUCT DATA (now loaded from MySQL via PHP API)
 ══════════════════════════════════ */
-// Change this if your XAMPP setup / folder name is different
-const API_URL = 'http://localhost/stepz-api/get_products.php';
+// Automatically uses whatever host/port this page was loaded from
+// (fixes issues when Apache runs on a non-default port like 8080).
+const API_BASE = window.location.origin + '/stepz-api/';
+const API_URL = API_BASE + 'get_products.php';
+const CREATE_ORDER_API = API_BASE + 'create_order.php';
+const GET_ORDERS_API = API_BASE + 'get_orders.php';
 
 let PRODUCTS = [];
 let PRODUCTS_LOAD_FAILED = false;
@@ -565,60 +569,69 @@ function initCheckoutPage() {
       cardLast4 = cardCheck.cardLast4;
     }
 
-    const orderNum = '#STZ-2026-' + Math.floor(10000 + Math.random() * 90000);
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
     const discountAmt = Math.round(subtotal * checkoutDiscount);
     const shipping = subtotal > 5000 ? 0 : 350;
     const grandTotal = subtotal - discountAmt + shipping;
 
-    const finalizeOrder = () => {
-      const lastOrder = {
-        orderNum: orderNum,
-        name: name,
-        email: email,
-        phone: phone,
-        city: city,
-        address: address,
+    const submitBtn = document.getElementById('placeOrderBtn');
+    const submitBtnText = document.getElementById('placeOrderBtnText');
+
+    // Saves the order straight into the MySQL database via the PHP API.
+    // This is the single source of truth now — no more localStorage mock data.
+    const finalizeOrder = async () => {
+      const orderPayload = {
+        name, email, phone, city, address,
         items: cartItems,
         subtotal: subtotal,
         discount: discountAmt,
         shipping: shipping,
         total: grandTotal,
         paymentMethod: selectedPaymentMethod,
-        cardLast4: cardLast4,
-        date: new Date().toISOString()
+        cardLast4: cardLast4
       };
-      localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
 
-      let adminOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
-      const newOrder = {
-        id: orderNum,
-        customer: name,
-        email: email,
-        phone: phone,
-        city: city,
-        date: new Date().toISOString().split('T')[0],
-        items: cartItems.map(item => ({ name: item.name, qty: item.qty, price: item.price })),
-        total: grandTotal,
-        paymentMethod: selectedPaymentMethod,
-        status: 'pending'
-      };
-      adminOrders.unshift(newOrder);
-      localStorage.setItem('stepz-admin-orders', JSON.stringify(adminOrders));
+      try {
+        const res = await fetch(CREATE_ORDER_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload)
+        });
+        const result = await res.json();
 
-      // Clear cart state
-      cart = [];
-      saveCart();
-      updateCartUI();
+        if (!res.ok || !result.success) {
+          throw new Error(result.error || 'Order could not be saved');
+        }
 
-      showToast(selectedPaymentMethod === 'card' ? 'Payment successful! Redirecting...' : 'Order placed successfully! Redirecting...', '✓');
-      setTimeout(() => {
-        window.location.href = 'order-confirmation.html';
-      }, 800);
+        // Keep a small, transient copy of just-placed order so the
+        // confirmation page can show it immediately without another fetch.
+        const lastOrder = {
+          orderNum: result.orderCode,
+          name, email, phone, city, address,
+          items: cartItems,
+          subtotal, discount: discountAmt, shipping, total: grandTotal,
+          paymentMethod: selectedPaymentMethod,
+          cardLast4,
+          date: new Date().toISOString()
+        };
+        localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
+
+        // Clear cart state
+        cart = [];
+        saveCart();
+        updateCartUI();
+
+        showToast(selectedPaymentMethod === 'card' ? 'Payment successful! Redirecting...' : 'Order placed successfully! Redirecting...', '✓');
+        setTimeout(() => {
+          window.location.href = 'order-confirmation.html';
+        }, 800);
+      } catch (err) {
+        console.error('Failed to save order:', err);
+        showToast('Could not save your order. Make sure the server (XAMPP) is running and try again.', '!');
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtnText) submitBtnText.textContent = selectedPaymentMethod === 'card' ? 'Pay & Place Order' : 'Place Order';
+      }
     };
-
-    const submitBtn = document.getElementById('placeOrderBtn');
-    const submitBtnText = document.getElementById('placeOrderBtnText');
 
     if (selectedPaymentMethod === 'card') {
       // Simulate real card payment processing before confirming the order
@@ -689,7 +702,66 @@ function initUserNav() {
   }
 }
 
-function openCustomerOrdersModal() {
+// Fetches a customer's own orders straight from the database.
+async function fetchCustomerOrders(email) {
+  try {
+    const res = await fetch(GET_ORDERS_API + '?email=' + encodeURIComponent(email));
+    if (!res.ok) throw new Error('Network response was not ok');
+    return await res.json();
+  } catch (err) {
+    console.error('Failed to load orders from API:', err);
+    return null; // null = load failed (distinct from an empty array)
+  }
+}
+
+function renderOrderHistoryList(userOrders) {
+  if (userOrders === null) {
+    return `
+      <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+        <div style="font-size:2.5rem;margin-bottom:10px"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <p style="font-size:1rem;color:var(--text-secondary)">Could not load your orders.</p>
+        <p style="font-size:0.85rem">Make sure the server (XAMPP) is running, then refresh.</p>
+      </div>`;
+  }
+
+  if (userOrders.length === 0) {
+    return `
+      <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+        <div style="font-size:2.5rem;margin-bottom:10px"><i class="fa-solid fa-box-open" style="color:var(--text-muted)"></i></div>
+        <p style="font-size:1rem;color:var(--text-secondary)">No orders placed yet.</p>
+        <p style="font-size:0.85rem">Start shopping and place your first order!</p>
+      </div>`;
+  }
+
+  return `
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${userOrders.map(o => `
+        <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:12px;padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px dashed var(--border-glass);padding-bottom:8px">
+            <div>
+              <span style="font-weight:700;color:var(--accent);font-size:1rem">${o.id}</span>
+              <span style="font-size:0.8rem;color:var(--text-muted);margin-left:10px">${o.date}</span>
+            </div>
+            <span style="padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;
+              background:${o.status === 'delivered' ? 'rgba(0,221,136,0.15)' : o.status === 'shipped' ? 'rgba(77,166,255,0.15)' : 'rgba(245,166,35,0.15)'};
+              color:${o.status === 'delivered' ? 'var(--green)' : o.status === 'shipped' ? 'var(--blue)' : 'var(--accent)'};">
+              ${o.status}
+            </span>
+          </div>
+          <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">
+            ${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;font-weight:600;color:var(--text-primary)">
+            <span>Total Paid:</span>
+            <span style="color:var(--accent)">Rs. ${Number(o.total).toLocaleString('en-LK')}</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function openCustomerOrdersModal() {
   const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
   if (!currentUser) {
     window.location.href = 'login.html';
@@ -699,12 +771,7 @@ function openCustomerOrdersModal() {
   const overlay = $('#customerOrdersModalOverlay');
   const body = $('#customerOrdersModalBody');
   if (!overlay || !body) return;
-
-  const allOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
-  const userOrders = allOrders.filter(o => 
-    (o.email && o.email.toLowerCase() === currentUser.email.toLowerCase()) || 
-    (o.customer && o.customer.toLowerCase() === currentUser.name.toLowerCase())
-  );
+  overlay.classList.add('open');
 
   body.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;margin-bottom:20px;border:1px solid var(--border-glass)">
@@ -721,41 +788,14 @@ function openCustomerOrdersModal() {
       <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i> My Order History
     </h4>
 
-    ${userOrders.length > 0 ? `
-      <div style="display:flex;flex-direction:column;gap:12px">
-        ${userOrders.map(o => `
-          <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:12px;padding:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px dashed var(--border-glass);padding-bottom:8px">
-              <div>
-                <span style="font-weight:700;color:var(--accent);font-size:1rem">${o.id}</span>
-                <span style="font-size:0.8rem;color:var(--text-muted);margin-left:10px">${o.date}</span>
-              </div>
-              <span style="padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;
-                background:${o.status === 'delivered' ? 'rgba(0,221,136,0.15)' : o.status === 'shipped' ? 'rgba(77,166,255,0.15)' : 'rgba(245,166,35,0.15)'};
-                color:${o.status === 'delivered' ? 'var(--green)' : o.status === 'shipped' ? 'var(--blue)' : 'var(--accent)'};">
-                ${o.status}
-              </span>
-            </div>
-            <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">
-              ${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;font-weight:600;color:var(--text-primary)">
-              <span>Total Paid:</span>
-              <span style="color:var(--accent)">Rs. ${Number(o.total).toLocaleString('en-LK')}</span>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    ` : `
-      <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
-        <div style="font-size:2.5rem;margin-bottom:10px"><i class="fa-solid fa-box-open" style="color:var(--text-muted)"></i></div>
-        <p style="font-size:1rem;color:var(--text-secondary)">No orders placed yet.</p>
-        <p style="font-size:0.85rem">Start shopping and place your first order!</p>
-      </div>
-    `}
+    <div id="customerOrdersListArea" style="text-align:center;padding:30px;color:var(--text-muted)">
+      <i class="fa-solid fa-spinner fa-spin"></i> Loading your orders...
+    </div>
   `;
 
-  overlay.classList.add('open');
+  const userOrders = await fetchCustomerOrders(currentUser.email);
+  const listArea = $('#customerOrdersListArea');
+  if (listArea) listArea.outerHTML = `<div id="customerOrdersListArea">${renderOrderHistoryList(userOrders)}</div>`;
 }
 
 function closeCustomerOrdersModal() {
@@ -880,7 +920,7 @@ function initAccountPage() {
   switchAccountTab('orders');
 }
 
-function switchAccountTab(tab) {
+async function switchAccountTab(tab) {
   const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
   if (!currentUser) {
     window.location.href = 'login.html';
@@ -896,49 +936,18 @@ function switchAccountTab(tab) {
   if (!body) return;
 
   if (tab === 'orders') {
-    const allOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
-    const userOrders = allOrders.filter(o =>
-      (o.email && o.email.toLowerCase() === currentUser.email.toLowerCase()) ||
-      (o.customer && o.customer.toLowerCase() === currentUser.name.toLowerCase())
-    );
-
     body.innerHTML = `
       <h4 style="font-size:1.1rem;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
         <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i> My Order History
       </h4>
-      ${userOrders.length > 0 ? `
-        <div style="display:flex;flex-direction:column;gap:12px">
-          ${userOrders.map(o => `
-            <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:12px;padding:16px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px dashed var(--border-glass);padding-bottom:8px">
-                <div>
-                  <span style="font-weight:700;color:var(--accent);font-size:1rem">${o.id}</span>
-                  <span style="font-size:0.8rem;color:var(--text-muted);margin-left:10px">${o.date}</span>
-                </div>
-                <span style="padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;
-                  background:${o.status === 'delivered' ? 'rgba(0,221,136,0.15)' : o.status === 'shipped' ? 'rgba(77,166,255,0.15)' : 'rgba(245,166,35,0.15)'};
-                  color:${o.status === 'delivered' ? 'var(--green)' : o.status === 'shipped' ? 'var(--blue)' : 'var(--accent)'};">
-                  ${o.status}
-                </span>
-              </div>
-              <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">
-                ${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;font-weight:600;color:var(--text-primary)">
-                <span>Total Paid:</span>
-                <span style="color:var(--accent)">Rs. ${Number(o.total).toLocaleString('en-LK')}</span>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      ` : `
-        <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
-          <div style="font-size:2.5rem;margin-bottom:10px"><i class="fa-solid fa-box-open"></i></div>
-          <p style="font-size:1rem;color:var(--text-secondary)">No orders placed yet.</p>
-          <p style="font-size:0.85rem">Start shopping and place your first order!</p>
-        </div>
-      `}
+      <div id="accountOrdersListArea" style="text-align:center;padding:30px;color:var(--text-muted)">
+        <i class="fa-solid fa-spinner fa-spin"></i> Loading your orders...
+      </div>
     `;
+
+    const userOrders = await fetchCustomerOrders(currentUser.email);
+    const listArea = $('#accountOrdersListArea');
+    if (listArea) listArea.outerHTML = `<div id="accountOrdersListArea">${renderOrderHistoryList(userOrders)}</div>`;
   } else if (tab === 'profile') {
     body.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">

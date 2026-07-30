@@ -6,6 +6,16 @@
 'use strict';
 
 /* ══════════════════════════════════
+   API ENDPOINTS (orders now come from MySQL, not localStorage)
+   Change the base URL if your XAMPP setup / folder name is different
+══════════════════════════════════ */
+// Automatically uses whatever host/port this page was loaded from
+// (fixes issues when Apache runs on a non-default port like 8080).
+const API_BASE = window.location.origin + '/stepz-api/';
+const GET_ORDERS_API = API_BASE + 'get_orders.php';
+const UPDATE_ORDER_STATUS_API = API_BASE + 'update_order_status.php';
+
+/* ══════════════════════════════════
    AUTH GUARD
 ══════════════════════════════════ */
 function getCurrentUser() {
@@ -113,61 +123,82 @@ function saveProducts(products) {
   localStorage.setItem('stepz-admin-products', JSON.stringify(products));
 }
 
-// Mock Orders
-function getOrders() {
-  let orders = JSON.parse(localStorage.getItem('stepz-admin-orders') || 'null');
-  if (!orders) {
-    orders = [
-      { id: 'ORD-1001', customer: 'Kamal Perera', email: 'kamal@gmail.com', date: '2026-07-28', items: [{ name: 'Air Max 270 React', qty: 1, price: 18500 }], total: 18500, status: 'delivered' },
-      { id: 'ORD-1002', customer: 'Nimali Fernando', email: 'nimali@gmail.com', date: '2026-07-27', items: [{ name: 'Elara Stiletto Heels', qty: 2, price: 9800 }], total: 19600, status: 'shipped' },
-      { id: 'ORD-1003', customer: 'Saman Silva', email: 'saman@gmail.com', date: '2026-07-27', items: [{ name: 'Ultraboost 23', qty: 1, price: 21000 }, { name: 'Arch Fit Loafer', qty: 1, price: 8900 }], total: 29900, status: 'processing' },
-      { id: 'ORD-1004', customer: 'Dilini Jayawardena', email: 'dilini@gmail.com', date: '2026-07-26', items: [{ name: 'Air Jordan 1 Retro High', qty: 1, price: 32000 }], total: 32000, status: 'pending' },
-      { id: 'ORD-1005', customer: 'Ruwan Wickramasinghe', email: 'ruwan@gmail.com', date: '2026-07-26', items: [{ name: 'Premium Loafer', qty: 1, price: 13500 }], total: 13500, status: 'delivered' },
-      { id: 'ORD-1006', customer: 'Tharushi Bandara', email: 'tharushi@gmail.com', date: '2026-07-25', items: [{ name: 'Strappy Sandal Heels', qty: 1, price: 7200 }], total: 7200, status: 'cancelled' },
-      { id: 'ORD-1007', customer: 'Nuwan Gamage', email: 'nuwan@gmail.com', date: '2026-07-25', items: [{ name: 'Nitro Runner Elite', qty: 2, price: 15800 }], total: 31600, status: 'shipped' },
-      { id: 'ORD-1008', customer: 'Sachini Rathnayake', email: 'sachini@gmail.com', date: '2026-07-24', items: [{ name: 'Arch Fit Loafer', qty: 1, price: 8900 }], total: 8900, status: 'delivered' },
-      { id: 'ORD-1009', customer: 'Chamara Dissanayake', email: 'chamara@gmail.com', date: '2026-07-24', items: [{ name: 'Air Max 270 React', qty: 1, price: 18500 }, { name: 'Premium Loafer', qty: 1, price: 13500 }], total: 32000, status: 'processing' },
-      { id: 'ORD-1010', customer: 'Iresha Kumari', email: 'iresha@gmail.com', date: '2026-07-23', items: [{ name: 'Elara Stiletto Heels', qty: 1, price: 9800 }], total: 9800, status: 'delivered' }
-    ];
-    localStorage.setItem('stepz-admin-orders', JSON.stringify(orders));
+// Orders — loaded live from the MySQL database via the PHP API.
+let ORDERS_CACHE = [];
+let ORDERS_LOAD_FAILED = false;
+
+// Fetches every order from the database and refreshes the local cache.
+// Call this (and await it) before reading orders on any admin page.
+async function fetchOrders() {
+  try {
+    const res = await fetch(GET_ORDERS_API);
+    if (!res.ok) throw new Error('Network response was not ok');
+    ORDERS_CACHE = await res.json();
+    ORDERS_LOAD_FAILED = false;
+  } catch (err) {
+    console.error('Failed to load orders from API:', err);
+    ORDERS_CACHE = [];
+    ORDERS_LOAD_FAILED = true;
+    showToast('Could not load orders. Make sure XAMPP (Apache + MySQL) is running.', 'error');
   }
-  return orders;
+  return ORDERS_CACHE;
 }
 
-function saveOrders(orders) {
-  localStorage.setItem('stepz-admin-orders', JSON.stringify(orders));
+// Returns whatever is currently cached (populated by fetchOrders()).
+function getOrders() {
+  return ORDERS_CACHE;
 }
 
-// Customers from registered users
+// Persists a status change to the database, then refreshes the cache.
+async function saveOrderStatus(orderCode, status) {
+  try {
+    const res = await fetch(UPDATE_ORDER_STATUS_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderCode, status })
+    });
+    const result = await res.json();
+    if (!res.ok || !result.success) throw new Error(result.error || 'Update failed');
+    return true;
+  } catch (err) {
+    console.error('Failed to update order status:', err);
+    showToast('Could not update order status. Check your database connection.', 'error');
+    return false;
+  }
+}
+
+// Customers — derived from registered users + real order data (no hardcoded mock list).
 function getCustomers() {
   const users = JSON.parse(localStorage.getItem('stepz-users') || '[]');
   const orders = getOrders();
 
-  // Generate some mock customers beyond registered users
-  let customers = [
-    { id: 1, name: 'Kamal Perera', email: 'kamal@gmail.com', phone: '+94 77 123 4567', joinDate: '2026-01-15', totalOrders: 3 },
-    { id: 2, name: 'Nimali Fernando', email: 'nimali@gmail.com', phone: '+94 71 234 5678', joinDate: '2026-02-20', totalOrders: 5 },
-    { id: 3, name: 'Saman Silva', email: 'saman@gmail.com', phone: '+94 76 345 6789', joinDate: '2026-03-10', totalOrders: 2 },
-    { id: 4, name: 'Dilini Jayawardena', email: 'dilini@gmail.com', phone: '+94 70 456 7890', joinDate: '2026-04-05', totalOrders: 7 },
-    { id: 5, name: 'Ruwan Wickramasinghe', email: 'ruwan@gmail.com', phone: '+94 75 567 8901', joinDate: '2026-04-18', totalOrders: 1 },
-    { id: 6, name: 'Tharushi Bandara', email: 'tharushi@gmail.com', phone: '+94 77 678 9012', joinDate: '2026-05-02', totalOrders: 4 },
-    { id: 7, name: 'Nuwan Gamage', email: 'nuwan@gmail.com', phone: '+94 71 789 0123', joinDate: '2026-05-22', totalOrders: 2 },
-    { id: 8, name: 'Sachini Rathnayake', email: 'sachini@gmail.com', phone: '+94 76 890 1234', joinDate: '2026-06-08', totalOrders: 6 },
-    { id: 9, name: 'Chamara Dissanayake', email: 'chamara@gmail.com', phone: '+94 70 901 2345', joinDate: '2026-06-25', totalOrders: 3 },
-    { id: 10, name: 'Iresha Kumari', email: 'iresha@gmail.com', phone: '+94 75 012 3456', joinDate: '2026-07-01', totalOrders: 1 }
-  ];
+  let customers = [];
 
-  // Add any registered users that aren't already in the list
+  // Registered customer accounts
   users.filter(u => u.role === 'customer').forEach(u => {
-    if (!customers.find(c => c.email === u.email)) {
-      const userOrders = orders.filter(o => o.email === u.email).length;
+    const userOrders = orders.filter(o => o.email && o.email.toLowerCase() === u.email.toLowerCase()).length;
+    customers.push({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      phone: u.phone || 'N/A',
+      joinDate: u.createdAt ? u.createdAt.split('T')[0] : 'N/A',
+      totalOrders: userOrders
+    });
+  });
+
+  // Guest checkouts — people who placed an order without a registered account
+  orders.forEach(o => {
+    if (!o.email) return;
+    const already = customers.find(c => c.email.toLowerCase() === o.email.toLowerCase());
+    if (!already) {
       customers.push({
-        id: u.id,
-        name: u.name,
-        email: u.email,
-        phone: u.phone || 'N/A',
-        joinDate: u.createdAt ? u.createdAt.split('T')[0] : 'N/A',
-        totalOrders: userOrders
+        id: 'guest-' + o.email,
+        name: o.customer,
+        email: o.email,
+        phone: o.phone || 'N/A',
+        joinDate: o.date || 'N/A',
+        totalOrders: orders.filter(x => x.email && x.email.toLowerCase() === o.email.toLowerCase()).length
       });
     }
   });
@@ -208,7 +239,8 @@ function animateCounter(el, target, prefix = '', suffix = '') {
   update();
 }
 
-function initDashboard() {
+async function initDashboard() {
+  await fetchOrders();
   const products = getProducts();
   const orders = getOrders();
   const customers = getCustomers();
@@ -450,7 +482,8 @@ window.deleteProduct = deleteProduct;
 /* ══════════════════════════════════
    ORDERS PAGE
 ══════════════════════════════════ */
-function initOrdersPage() {
+async function initOrdersPage() {
+  await fetchOrders();
   renderOrdersTable();
 
   // Search
@@ -530,13 +563,22 @@ function renderOrdersTable(search = '', filter = 'all') {
   `).join('');
 }
 
-function updateOrderStatus(orderId, newStatus) {
-  const orders = getOrders();
-  const order = orders.find(o => o.id === orderId);
-  if (order) {
-    order.status = newStatus;
-    saveOrders(orders);
+async function updateOrderStatus(orderId, newStatus) {
+  const ok = await saveOrderStatus(orderId, newStatus);
+  if (ok) {
+    const order = ORDERS_CACHE.find(o => o.id === orderId);
+    if (order) order.status = newStatus;
     showToast(`Order ${orderId} status updated to ${newStatus}`);
+    renderOrdersTable(
+      document.getElementById('orderSearch')?.value.trim().toLowerCase() || '',
+      currentOrderFilter
+    );
+  } else {
+    // Revert to actual DB state if the update failed
+    renderOrdersTable(
+      document.getElementById('orderSearch')?.value.trim().toLowerCase() || '',
+      currentOrderFilter
+    );
   }
 }
 
@@ -549,9 +591,13 @@ function openOrderModal(orderId) {
   const body = document.getElementById('orderModalBody');
   if (!modalOverlay || !body) return;
 
-  const subtotal = order.total;
-  const shipping = subtotal > 15000 ? 0 : 350;
-  const grandTotal = subtotal + shipping;
+  const subtotal = order.subtotal !== null && order.subtotal !== undefined ? order.subtotal : order.total;
+  const discount = order.discount || 0;
+  const shipping = order.shipping || 0;
+  const grandTotal = order.total;
+  const paymentLabel = order.paymentMethod === 'card'
+    ? `Card${order.cardLast4 ? ' ending in ' + order.cardLast4 : ''}`
+    : 'Cash on Delivery (COD)';
 
   body.innerHTML = `
     <div class="order-invoice-box">
@@ -573,15 +619,15 @@ function openOrderModal(orderId) {
           <div class="invoice-col-content">
             <p><strong>${order.customer}</strong></p>
             <p>${order.email}</p>
-            <p>+94 77 123 4567</p>
+            <p>${order.phone || '—'}</p>
           </div>
         </div>
         <div>
           <div class="invoice-col-title">Shipping Address</div>
           <div class="invoice-col-content">
-            <p>123 Store Street, Colombo 03</p>
-            <p>Western Province, Sri Lanka</p>
-            <p>Payment: Cash on Delivery (COD)</p>
+            <p>${order.address || '—'}</p>
+            <p>${order.city || ''}</p>
+            <p>Payment: ${paymentLabel}</p>
           </div>
         </div>
       </div>
@@ -613,6 +659,11 @@ function openOrderModal(orderId) {
             <span>Subtotal:</span>
             <span>${formatPrice(subtotal)}</span>
           </div>
+          ${discount > 0 ? `
+          <div class="invoice-summary-row">
+            <span>Discount:</span>
+            <span>- ${formatPrice(discount)}</span>
+          </div>` : ''}
           <div class="invoice-summary-row">
             <span>Shipping:</span>
             <span>${shipping === 0 ? 'FREE' : formatPrice(shipping)}</span>
@@ -641,7 +692,8 @@ window.closeOrderModal = closeOrderModal;
 /* ══════════════════════════════════
    CUSTOMERS PAGE
 ══════════════════════════════════ */
-function initCustomersPage() {
+async function initCustomersPage() {
+  await fetchOrders();
   renderCustomersTable();
 
   const searchInput = document.getElementById('customerSearch');
@@ -699,7 +751,7 @@ function renderCustomersTable(search = '') {
       <td><span style="font-weight:600;color:var(--text-primary)">${c.totalOrders}</span></td>
       <td>
         <div class="table-actions">
-          <button class="table-action-btn view" title="View Profile" onclick="openCustomerModal(${c.id})"><i class="fa-solid fa-user"></i></button>
+          <button class="table-action-btn view" title="View Profile" onclick="openCustomerModal('${c.id}')"><i class="fa-solid fa-user"></i></button>
         </div>
       </td>
     </tr>
@@ -708,7 +760,7 @@ function renderCustomersTable(search = '') {
 
 function openCustomerModal(customerId) {
   const customers = getCustomers();
-  const customer = customers.find(c => c.id === customerId);
+  const customer = customers.find(c => String(c.id) === String(customerId));
   if (!customer) return;
 
   const orders = getOrders().filter(o => o.email.toLowerCase() === customer.email.toLowerCase() || o.customer.toLowerCase() === customer.name.toLowerCase());
