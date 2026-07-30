@@ -6,10 +6,12 @@
   <title>Checkout — STEPZ | Premium Footwear</title>
   <meta name="description" content="Complete your purchase securely at STEPZ footwear.">
   <link rel="stylesheet" href="style.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="container">
     <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
@@ -24,6 +26,9 @@
     </ul>
 
     <div class="nav-actions">
+      <button class="nav-icon-btn" id="themeToggleBtn" aria-label="Toggle dark / light mode" title="Toggle dark / light mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
       <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
         <i class="fa-regular fa-user"></i>
       </a>
@@ -34,6 +39,7 @@
   </div>
 </nav>
 
+<!-- ═══════════════════════════════ HEADER BANNER ═══════════════════════════════ -->
 <section style="padding:120px 0 40px;background:var(--bg-secondary);border-bottom:1px solid var(--border-glass)">
   <div class="container">
     <h1 style="font-size:2.2rem;font-weight:900;margin-bottom:8px">Secure Checkout</h1>
@@ -41,7 +47,7 @@
   </div>
 </section>
 
-
+<!-- ═══════════════════════════════ MAIN CHECKOUT SUITE ═══════════════════════════════ -->
 <section class="checkout-section">
   <div class="container">
 
@@ -105,6 +111,37 @@
             </div>
           </div>
 
+          <!-- Card Details (shown only when Card payment is selected) -->
+          <div id="cardDetailsSection" style="display:none;margin-bottom:24px;background:var(--bg-secondary);border:1px solid var(--border-glass);border-radius:var(--radius-md);padding:20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <span style="font-size:0.9rem;font-weight:700;color:var(--text-primary)"><i class="fa-solid fa-lock" style="color:var(--green);margin-right:6px"></i>Card Details</span>
+              <span style="display:flex;gap:8px;font-size:1.3rem;color:var(--text-muted)">
+                <i class="fa-brands fa-cc-visa"></i><i class="fa-brands fa-cc-mastercard"></i><i class="fa-brands fa-cc-amex"></i>
+              </span>
+            </div>
+
+            <div class="checkout-field-group">
+              <label for="cardNumber">Card Number</label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" inputmode="numeric" maxlength="19">
+            </div>
+
+            <div class="checkout-field-group">
+              <label for="cardName">Name on Card</label>
+              <input type="text" id="cardName" placeholder="e.g. Kamal Perera">
+            </div>
+
+            <div class="form-grid-2" style="margin-bottom:0">
+              <div class="checkout-field-group" style="margin-bottom:0">
+                <label for="cardExpiry">Expiry (MM/YY)</label>
+                <input type="text" id="cardExpiry" placeholder="MM/YY" inputmode="numeric" maxlength="5">
+              </div>
+              <div class="checkout-field-group" style="margin-bottom:0">
+                <label for="cardCvv">CVV</label>
+                <input type="text" id="cardCvv" placeholder="123" inputmode="numeric" maxlength="4">
+              </div>
+            </div>
+          </div>
+
           <!-- Promo Code Option -->
           <div class="checkout-field-group">
             <label for="chkPromo">Have a Promo Code?</label>
@@ -114,8 +151,8 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-primary" style="width:100%;margin-top:20px;padding:16px">
-            Place Order Now <span class="arrow">→</span>
+          <button type="submit" class="btn-primary" id="placeOrderBtn" style="width:100%;margin-top:20px;padding:16px">
+            <span id="placeOrderBtnText">Place Order Now <span class="arrow">→</span></span>
           </button>
         </form>
 
@@ -156,6 +193,7 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
 <div class="toast" id="toast">
   <span class="toast-icon">✅</span>
   <span id="toastMsg">Added to cart!</span>

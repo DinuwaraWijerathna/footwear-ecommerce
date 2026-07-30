@@ -1,4 +1,13 @@
+/* ═══════════════════════════════════════════════
+   STEPZ — Footwear E-Commerce App Logic
+═══════════════════════════════════════════════ */
+
 'use strict';
+
+/* ══════════════════════════════════
+   PRODUCT DATA (now loaded from MySQL via PHP API)
+══════════════════════════════════ */
+// Change this if your XAMPP setup / folder name is different
 const API_URL = 'http://localhost/stepz-api/get_products.php';
 
 let PRODUCTS = [];
@@ -20,6 +29,9 @@ async function loadProducts() {
   }
 }
 
+/* ══════════════════════════════════
+   STATE
+══════════════════════════════════ */
 let cart = JSON.parse(localStorage.getItem('stepz-cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('stepz-wishlist') || '[]');
 let currentFilter = 'all';
@@ -30,13 +42,58 @@ let isCartOpen = false;
 let isSearchOpen = false;
 let isMobileNavOpen = false;
 
+/* ══════════════════════════════════
+   UTILITY
+══════════════════════════════════ */
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
+// Safely attach a listener only if the element exists on the current page.
+// Prevents one missing element (on a page that doesn't need it) from
+// throwing an error and silently breaking ALL the script code after it.
 function on(selector, event, handler) {
   const el = typeof selector === 'string' ? $(selector) : selector;
   if (el) el.addEventListener(event, handler);
 }
+
+/* ══════════════════════════════════
+   DARK / LIGHT MODE
+══════════════════════════════════ */
+function getTheme() {
+  return localStorage.getItem('stepz-theme') === 'light' ? 'light' : 'dark';
+}
+
+function applyThemeIcons(theme) {
+  const isLight = theme === 'light';
+  ['themeToggleIcon', 'mobileThemeToggleIcon'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  });
+  const label = document.getElementById('mobileThemeToggleLabel');
+  if (label) label.textContent = isLight ? 'Light Mode' : 'Dark Mode';
+  const btn = document.getElementById('themeToggleBtn');
+  if (btn) btn.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+}
+
+function applyTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  applyThemeIcons(theme);
+}
+
+function initTheme() {
+  applyTheme(getTheme());
+}
+
+function toggleTheme() {
+  const next = getTheme() === 'light' ? 'dark' : 'light';
+  localStorage.setItem('stepz-theme', next);
+  applyTheme(next);
+}
+window.toggleTheme = toggleTheme;
 
 function formatPrice(n) {
   return 'Rs. ' + n.toLocaleString('en-LK');
@@ -52,6 +109,9 @@ function showToast(msg, icon = '✅') {
   setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
+/* ══════════════════════════════════
+   PRODUCTS RENDER
+══════════════════════════════════ */
 function renderProducts(filter = 'all') {
   const grid = $('#productsGrid');
   if (!grid) return;
@@ -111,8 +171,10 @@ function renderProducts(filter = 'all') {
     grid.appendChild(card);
   });
 
+  // Bind events after rendering
   bindProductEvents();
 
+  // Trigger reveal after small delay
   setTimeout(() => {
     $$('.product-card.reveal').forEach(el => el.classList.add('visible'));
   }, 100);
@@ -153,6 +215,9 @@ function bindProductEvents() {
   });
 }
 
+/* ══════════════════════════════════
+   FILTER TABS
+══════════════════════════════════ */
 $$('.filter-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     $$('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -165,6 +230,7 @@ $$('.filter-tab').forEach(tab => {
 function filterProducts(cat) {
   currentFilter = cat;
   
+  // If not on products.html, redirect with filter query param
   if (!window.location.pathname.includes('products.html')) {
     window.location.href = `products.html?filter=${cat}`;
     return;
@@ -182,6 +248,9 @@ function filterProducts(cat) {
 }
 window.filterProducts = filterProducts;
 
+/* ══════════════════════════════════
+   CART
+══════════════════════════════════ */
 function addToCart(productId, size = null, qty = 1) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
@@ -197,6 +266,7 @@ function addToCart(productId, size = null, qty = 1) {
   updateCartUI();
   showToast(`${product.name} added to cart!`, '🛒');
 
+  // Animate cart badge
   const badge = $('#cartBadge');
   badge.style.transform = 'scale(1.5)';
   setTimeout(() => badge.style.transform = 'scale(1)', 300);
@@ -296,10 +366,14 @@ function handleCheckout() {
     showToast('Your cart is empty!', '⚠️');
     return;
   }
+  // Redirect to full checkout page
   window.location.href = 'checkout.html';
 }
 window.handleCheckout = handleCheckout;
 
+/* ══════════════════════════════════
+   CHECKOUT PAGE LOGIC
+══════════════════════════════════ */
 let selectedPaymentMethod = 'cod';
 let checkoutDiscount = 0;
 
@@ -307,12 +381,88 @@ function selectPaymentMethod(method) {
   selectedPaymentMethod = method;
   const payCOD = document.getElementById('payCOD');
   const payCard = document.getElementById('payCard');
+  const cardSection = document.getElementById('cardDetailsSection');
   if (payCOD && payCard) {
     payCOD.classList.toggle('active', method === 'cod');
     payCard.classList.toggle('active', method === 'card');
   }
+  if (cardSection) {
+    cardSection.style.display = method === 'card' ? 'block' : 'none';
+  }
 }
 window.selectPaymentMethod = selectPaymentMethod;
+
+/* Format card number as "1234 5678 9012 3456" */
+function formatCardNumberInput(e) {
+  let digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+  e.target.value = digits.replace(/(.{4})/g, '$1 ').trim();
+}
+
+/* Format expiry as "MM/YY" */
+function formatCardExpiryInput(e) {
+  let digits = e.target.value.replace(/\D/g, '').slice(0, 4);
+  if (digits.length >= 3) {
+    e.target.value = digits.slice(0, 2) + '/' + digits.slice(2);
+  } else {
+    e.target.value = digits;
+  }
+}
+
+/* CVV: digits only */
+function formatCardCvvInput(e) {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+}
+
+/* Validates card fields when Card payment is selected. Returns { valid, cardLast4 } */
+function validateCardDetails() {
+  const numberEl = document.getElementById('cardNumber');
+  const nameEl = document.getElementById('cardName');
+  const expiryEl = document.getElementById('cardExpiry');
+  const cvvEl = document.getElementById('cardCvv');
+
+  const number = (numberEl?.value || '').replace(/\s/g, '');
+  const name = (nameEl?.value || '').trim();
+  const expiry = (expiryEl?.value || '').trim();
+  const cvv = (cvvEl?.value || '').trim();
+
+  const highlight = (el, bad) => {
+    if (!el) return;
+    el.style.borderColor = bad ? 'var(--accent2)' : '';
+  };
+
+  let valid = true;
+
+  const numberOk = /^\d{13,16}$/.test(number);
+  highlight(numberEl, !numberOk);
+  if (!numberOk) valid = false;
+
+  const nameOk = name.length >= 2;
+  highlight(nameEl, !nameOk);
+  if (!nameOk) valid = false;
+
+  const expiryMatch = /^(\d{2})\/(\d{2})$/.exec(expiry);
+  let expiryOk = false;
+  if (expiryMatch) {
+    const mm = parseInt(expiryMatch[1], 10);
+    const yy = parseInt(expiryMatch[2], 10);
+    const now = new Date();
+    const curYY = now.getFullYear() % 100;
+    const curMM = now.getMonth() + 1;
+    expiryOk = mm >= 1 && mm <= 12 && (yy > curYY || (yy === curYY && mm >= curMM));
+  }
+  highlight(expiryEl, !expiryOk);
+  if (!expiryOk) valid = false;
+
+  const cvvOk = /^\d{3,4}$/.test(cvv);
+  highlight(cvvEl, !cvvOk);
+  if (!cvvOk) valid = false;
+
+  if (!valid) {
+    showToast('Please check your card details', '!');
+  }
+
+  return { valid, cardLast4: number.slice(-4) };
+}
 
 function applyCheckoutPromo() {
   const code = document.getElementById('chkPromo')?.value.trim().toUpperCase();
@@ -375,9 +525,19 @@ function initCheckoutPage() {
   if (currentUser) {
     const nameInput = document.getElementById('chkFullName');
     const emailInput = document.getElementById('chkEmail');
+    const cardNameInput = document.getElementById('cardName');
     if (nameInput && !nameInput.value) nameInput.value = currentUser.name || '';
     if (emailInput && !emailInput.value) emailInput.value = currentUser.email || '';
+    if (cardNameInput && !cardNameInput.value) cardNameInput.value = currentUser.name || '';
   }
+
+  // Card input formatting
+  const cardNumberEl = document.getElementById('cardNumber');
+  const cardExpiryEl = document.getElementById('cardExpiry');
+  const cardCvvEl = document.getElementById('cardCvv');
+  if (cardNumberEl) cardNumberEl.addEventListener('input', formatCardNumberInput);
+  if (cardExpiryEl) cardExpiryEl.addEventListener('input', formatCardExpiryInput);
+  if (cardCvvEl) cardCvvEl.addEventListener('input', formatCardCvvInput);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -393,55 +553,88 @@ function initCheckoutPage() {
     const city = document.getElementById('chkCity').value.trim();
     const address = document.getElementById('chkAddress').value.trim();
 
+    if (!name || !email || !phone || !city || !address) {
+      showToast('Please fill in all shipping details', '!');
+      return;
+    }
+
+    let cardLast4 = null;
+    if (selectedPaymentMethod === 'card') {
+      const cardCheck = validateCardDetails();
+      if (!cardCheck.valid) return;
+      cardLast4 = cardCheck.cardLast4;
+    }
+
     const orderNum = '#STZ-2026-' + Math.floor(10000 + Math.random() * 90000);
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
     const discountAmt = Math.round(subtotal * checkoutDiscount);
     const shipping = subtotal > 5000 ? 0 : 350;
     const grandTotal = subtotal - discountAmt + shipping;
 
-    const lastOrder = {
-      orderNum: orderNum,
-      name: name,
-      email: email,
-      phone: phone,
-      city: city,
-      address: address,
-      items: cartItems,
-      subtotal: subtotal,
-      discount: discountAmt,
-      shipping: shipping,
-      total: grandTotal,
-      paymentMethod: selectedPaymentMethod,
-      date: new Date().toISOString()
+    const finalizeOrder = () => {
+      const lastOrder = {
+        orderNum: orderNum,
+        name: name,
+        email: email,
+        phone: phone,
+        city: city,
+        address: address,
+        items: cartItems,
+        subtotal: subtotal,
+        discount: discountAmt,
+        shipping: shipping,
+        total: grandTotal,
+        paymentMethod: selectedPaymentMethod,
+        cardLast4: cardLast4,
+        date: new Date().toISOString()
+      };
+      localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
+
+      let adminOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
+      const newOrder = {
+        id: orderNum,
+        customer: name,
+        email: email,
+        phone: phone,
+        city: city,
+        date: new Date().toISOString().split('T')[0],
+        items: cartItems.map(item => ({ name: item.name, qty: item.qty, price: item.price })),
+        total: grandTotal,
+        paymentMethod: selectedPaymentMethod,
+        status: 'pending'
+      };
+      adminOrders.unshift(newOrder);
+      localStorage.setItem('stepz-admin-orders', JSON.stringify(adminOrders));
+
+      // Clear cart state
+      cart = [];
+      saveCart();
+      updateCartUI();
+
+      showToast(selectedPaymentMethod === 'card' ? 'Payment successful! Redirecting...' : 'Order placed successfully! Redirecting...', '✓');
+      setTimeout(() => {
+        window.location.href = 'order-confirmation.html';
+      }, 800);
     };
-    localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
 
-    let adminOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
-    const newOrder = {
-      id: orderNum,
-      customer: name,
-      email: email,
-      phone: phone,
-      city: city,
-      date: new Date().toISOString().split('T')[0],
-      items: cartItems.map(item => ({ name: item.name, qty: item.qty, price: item.price })),
-      total: grandTotal,
-      status: 'pending'
-    };
-    adminOrders.unshift(newOrder);
-    localStorage.setItem('stepz-admin-orders', JSON.stringify(adminOrders));
+    const submitBtn = document.getElementById('placeOrderBtn');
+    const submitBtnText = document.getElementById('placeOrderBtnText');
 
-    cart = [];
-    saveCart();
-    updateCartUI();
-
-    showToast('Order placed successfully! Redirecting...', '✓');
-    setTimeout(() => {
-      window.location.href = 'order-confirmation.html';
-    }, 800);
+    if (selectedPaymentMethod === 'card') {
+      // Simulate real card payment processing before confirming the order
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtnText) submitBtnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing Payment...';
+      showToast('Processing your card payment...', '⏳');
+      setTimeout(finalizeOrder, 1600);
+    } else {
+      finalizeOrder();
+    }
   });
 }
 
+/* ══════════════════════════════════
+   USER NAV & CUSTOMER ORDERS MODAL
+══════════════════════════════════ */
 function initUserNav() {
   const userBtn = $('#userBtn');
   const mobileUserBtn = $('#mobileUserBtn');
@@ -460,7 +653,9 @@ function initUserNav() {
 
       userBtn.innerHTML = isAd
         ? `<i class="fa-solid fa-user-shield"></i>`
-        : `<span style="font-weight:700;font-size:1rem;">${currentUser.name.trim().charAt(0).toUpperCase()}</span>`;
+        : currentUser.avatar
+          ? `<img src="${currentUser.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+          : `<span style="font-weight:700;font-size:1rem;">${currentUser.name.trim().charAt(0).toUpperCase()}</span>`;
     }
 
     if (mobileUserBtn) {
@@ -483,6 +678,7 @@ function initUserNav() {
     }
   }
 
+  // Setup Close listener for Customer Orders Modal
   const modalClose = $('#customerOrdersModalClose');
   const modalOverlay = $('#customerOrdersModalOverlay');
   if (modalClose) modalClose.onclick = closeCustomerOrdersModal;
@@ -582,20 +778,104 @@ window.openCustomerOrdersModal = openCustomerOrdersModal;
 window.closeCustomerOrdersModal = closeCustomerOrdersModal;
 window.logoutCustomer = logoutCustomer;
 
+/* ══════════════════════════════════
+   ACCOUNT PAGE (account.html)
+══════════════════════════════════ */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function renderAccountAvatar(user) {
+  const avatarEl = $('#accAvatar');
+  if (!avatarEl) return;
+  if (user.avatar) {
+    avatarEl.innerHTML = `<img src="${user.avatar}" alt="Profile photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    avatarEl.textContent = (user.name || '?').trim().charAt(0).toUpperCase();
+  }
+}
+
+/* Merges updates into both the active session user AND the persisted
+   stepz-users record, so profile edits survive logout/login. */
+function persistUserUpdate(updates) {
+  let currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+  if (!currentUser) return null;
+  const originalEmail = currentUser.email;
+
+  currentUser = { ...currentUser, ...updates };
+  localStorage.setItem('stepz-current-user', JSON.stringify(currentUser));
+
+  let users = JSON.parse(localStorage.getItem('stepz-users') || '[]');
+  users = users.map(u => u.email.toLowerCase() === originalEmail.toLowerCase() ? { ...u, ...updates } : u);
+  localStorage.setItem('stepz-users', JSON.stringify(users));
+
+  return currentUser;
+}
+
+/* Reads an uploaded image file, center-crops + downsizes it to a square
+   JPEG data URL (keeps localStorage usage small), then saves it. */
+function handleAvatarFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    showToast('Please choose an image file', '!');
+    return;
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    showToast('Image is too large (max 8MB)', '!');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const size = 240;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const s = Math.min(img.width, img.height);
+      const sx = (img.width - s) / 2;
+      const sy = (img.height - s) / 2;
+      ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+      const updated = persistUserUpdate({ avatar: dataUrl });
+      if (updated) {
+        renderAccountAvatar(updated);
+        showToast('Profile picture updated!', '✓');
+        if (typeof initUserNav === 'function') initUserNav();
+      }
+    };
+    img.onerror = () => showToast('Could not read that image', '!');
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function initAccountPage() {
   const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
 
+  // Guard: not logged in -> send to login
   if (!currentUser) {
     window.location.href = 'login.html';
     return;
   }
 
-  const avatarEl = $('#accAvatar');
   const nameEl = $('#accName');
   const emailEl = $('#accEmail');
-  if (avatarEl) avatarEl.textContent = currentUser.name.trim().charAt(0).toUpperCase();
+  renderAccountAvatar(currentUser);
   if (nameEl) nameEl.textContent = currentUser.name;
   if (emailEl) emailEl.textContent = currentUser.email;
+
+  const avatarBtn = $('#accAvatarEditBtn');
+  const avatarInput = $('#accAvatarInput');
+  if (avatarBtn && avatarInput) {
+    avatarBtn.onclick = () => avatarInput.click();
+    avatarInput.onchange = (e) => handleAvatarFile(e.target.files[0]);
+  }
 
   switchAccountTab('orders');
 }
@@ -661,24 +941,75 @@ function switchAccountTab(tab) {
     `;
   } else if (tab === 'profile') {
     body.innerHTML = `
-      <h4 style="font-size:1.1rem;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-        <i class="fa-solid fa-user-gear" style="color:var(--accent)"></i> Personal Profile
-      </h4>
-      <div style="display:flex;flex-direction:column;gap:14px;max-width:420px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h4 style="font-size:1.1rem;color:var(--text-primary);display:flex;align-items:center;gap:8px;margin:0">
+          <i class="fa-solid fa-user-gear" style="color:var(--accent)"></i> Personal Profile
+        </h4>
+        <button type="button" id="profileEditToggleBtn" class="btn-ghost" style="padding:8px 16px;font-size:0.85rem" onclick="toggleProfileEdit()">
+          <i class="fa-solid fa-pen"></i> Edit
+        </button>
+      </div>
+      <form id="profileEditForm" style="display:flex;flex-direction:column;gap:14px;max-width:420px">
         <div>
           <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Full Name</label>
-          <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary)">${currentUser.name}</div>
+          <input type="text" id="profileNameInput" value="${escapeHtml(currentUser.name)}" disabled
+            style="width:100%;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary);font-family:inherit;font-size:0.95rem">
         </div>
         <div>
           <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Email Address</label>
-          <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary)">${currentUser.email}</div>
+          <input type="email" id="profileEmailInput" value="${escapeHtml(currentUser.email)}" disabled
+            style="width:100%;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary);font-family:inherit;font-size:0.95rem">
+        </div>
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Phone Number</label>
+          <input type="text" id="profilePhoneInput" value="${escapeHtml(currentUser.phone || '')}" disabled
+            style="width:100%;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary);font-family:inherit;font-size:0.95rem">
         </div>
         <div>
           <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Account Type</label>
           <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary);text-transform:capitalize">${currentUser.role}</div>
         </div>
-      </div>
+        <button type="submit" id="profileSaveBtn" class="btn-primary" style="display:none;width:fit-content;padding:10px 24px;margin-top:4px">
+          <i class="fa-solid fa-check"></i> Save Changes
+        </button>
+      </form>
     `;
+
+    $('#profileEditForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = $('#profileNameInput').value.trim();
+      const email = $('#profileEmailInput').value.trim();
+      const phone = $('#profilePhoneInput').value.trim();
+
+      if (!name || name.length < 2) {
+        showToast('Please enter a valid name', '!');
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Please enter a valid email', '!');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('stepz-users') || '[]');
+      const clash = users.find(u =>
+        u.email.toLowerCase() === email.toLowerCase() &&
+        u.email.toLowerCase() !== currentUser.email.toLowerCase()
+      );
+      if (clash) {
+        showToast('That email is already in use by another account', '!');
+        return;
+      }
+
+      const updated = persistUserUpdate({ name, email, phone });
+      if (updated) {
+        showToast('Profile updated successfully!', '✓');
+        if ($('#accName')) $('#accName').textContent = updated.name;
+        if ($('#accEmail')) $('#accEmail').textContent = updated.email;
+        renderAccountAvatar(updated);
+        if (typeof initUserNav === 'function') initUserNav();
+        switchAccountTab('profile');
+      }
+    });
   } else if (tab === 'addresses') {
     body.innerHTML = `
       <h4 style="font-size:1.1rem;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
@@ -695,6 +1026,36 @@ function switchAccountTab(tab) {
 
 window.switchAccountTab = switchAccountTab;
 
+function toggleProfileEdit(forceState) {
+  const ids = ['profileNameInput', 'profileEmailInput', 'profilePhoneInput'];
+  const inputs = ids.map(id => $('#' + id));
+  if (!inputs[0]) return;
+
+  const editing = forceState !== undefined ? forceState : inputs[0].disabled;
+  inputs.forEach(inp => { if (inp) inp.disabled = !editing; });
+
+  const toggleBtn = $('#profileEditToggleBtn');
+  const saveBtn = $('#profileSaveBtn');
+  if (toggleBtn) toggleBtn.innerHTML = editing ? '<i class="fa-solid fa-xmark"></i> Cancel' : '<i class="fa-solid fa-pen"></i> Edit';
+  if (saveBtn) saveBtn.style.display = editing ? 'inline-flex' : 'none';
+
+  if (!editing) {
+    // Cancel: reset fields back to the saved values
+    const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+    if (currentUser) {
+      if ($('#profileNameInput')) $('#profileNameInput').value = currentUser.name;
+      if ($('#profileEmailInput')) $('#profileEmailInput').value = currentUser.email;
+      if ($('#profilePhoneInput')) $('#profilePhoneInput').value = currentUser.phone || '';
+    }
+  } else {
+    inputs[0].focus();
+  }
+}
+window.toggleProfileEdit = toggleProfileEdit;
+
+/* ══════════════════════════════════
+   WISHLIST
+══════════════════════════════════ */
 function toggleWishlist(productId, btn) {
   const idx = wishlist.indexOf(productId);
   const product = PRODUCTS.find(p => p.id === productId);
@@ -713,6 +1074,9 @@ function toggleWishlist(productId, btn) {
   localStorage.setItem('stepz-wishlist', JSON.stringify(wishlist));
 }
 
+/* ══════════════════════════════════
+   QUICK VIEW MODAL
+══════════════════════════════════ */
 function openModal(productId) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
@@ -740,6 +1104,7 @@ function openModal(productId) {
     sizeGrid.appendChild(btn);
   });
 
+  // Add to cart from modal
   $('#modalAddBtn').onclick = () => {
     const selectedSize = $('.size-btn.selected')?.textContent || product.sizes[0];
     addToCart(product.id, Number(selectedSize));
@@ -747,6 +1112,7 @@ function openModal(productId) {
     setTimeout(() => openCart(), 400);
   };
 
+  // Wishlist from modal
   const isWishlisted = wishlist.includes(product.id);
   const wishBtn = $('#modalWishBtn');
   wishBtn.innerHTML = `<i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart" style="color:${isWishlisted ? '#ff6b6b' : 'inherit'}"></i>`;
@@ -779,6 +1145,9 @@ on('#modalOverlay', 'click', (e) => {
   if (e.target === $('#modalOverlay')) closeModal();
 });
 
+/* ══════════════════════════════════
+   NAVBAR
+══════════════════════════════════ */
 window.addEventListener('scroll', () => {
   const navbar = $('#navbar');
   if (!navbar) return;
@@ -788,6 +1157,7 @@ window.addEventListener('scroll', () => {
     navbar.classList.remove('scrolled');
   }
 
+  // Active nav link based on scroll (only if section exists on page)
   const sections = ['home','categories','products','offers','testimonials'];
   sections.forEach(id => {
     const section = document.getElementById(id);
@@ -803,6 +1173,7 @@ window.addEventListener('scroll', () => {
   });
 });
 
+// Hamburger
 on('#hamburger', 'click', () => {
   isMobileNavOpen = !isMobileNavOpen;
   $('#hamburger').classList.toggle('active', isMobileNavOpen);
@@ -819,6 +1190,7 @@ on('#navOverlay', 'click', () => {
   document.body.style.overflow = '';
 });
 
+// Mobile nav links close on click
 $$('.mobile-nav a').forEach(a => {
   a.addEventListener('click', () => {
     isMobileNavOpen = false;
@@ -829,6 +1201,9 @@ $$('.mobile-nav a').forEach(a => {
   });
 });
 
+/* ══════════════════════════════════
+   SEARCH
+══════════════════════════════════ */
 on('#searchBtn', 'click', () => {
   isSearchOpen = !isSearchOpen;
   $('#searchBar').classList.toggle('open', isSearchOpen);
@@ -849,10 +1224,14 @@ on('#searchInput', 'keydown', (e) => {
   }
 });
 
+/* ══════════════════════════════════
+   COUNTDOWN TIMER
+══════════════════════════════════ */
 function startCountdown() {
   const hoursEl = $('#cd-hours');
   if (!hoursEl) return;
 
+  // Set target to 8 hours from now
   const stored = localStorage.getItem('stepz-countdown-end');
   let endTime;
 
@@ -883,6 +1262,9 @@ function startCountdown() {
   setInterval(tick, 1000);
 }
 
+/* ══════════════════════════════════
+   TESTIMONIALS SLIDER
+══════════════════════════════════ */
 function initSlider() {
   const slider = $('#testimonialSlider');
   if (!slider) return;
@@ -901,6 +1283,7 @@ function initSlider() {
 
   totalSlides = getTotalSlides();
 
+  // Create dots
   function createDots() {
     dotsContainer.innerHTML = '';
     for (let i = 0; i < totalSlides; i++) {
@@ -937,6 +1320,7 @@ function initSlider() {
   $('#nextSlide').addEventListener('click', next);
   $('#prevSlide').addEventListener('click', prev);
 
+  // Auto slide
   function startAutoSlide() {
     autoSlideInterval = setInterval(next, 4500);
   }
@@ -947,6 +1331,7 @@ function initSlider() {
   slider.addEventListener('mouseenter', stopAutoSlide);
   slider.addEventListener('mouseleave', startAutoSlide);
 
+  // Touch swipe
   let touchStartX = 0;
   slider.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
   slider.addEventListener('touchend', (e) => {
@@ -967,6 +1352,9 @@ function initSlider() {
   startAutoSlide();
 }
 
+/* ══════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════ */
 function initReveal() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -982,6 +1370,9 @@ function initReveal() {
   $$('.reveal').forEach(el => observer.observe(el));
 }
 
+/* ══════════════════════════════════
+   NEWSLETTER
+══════════════════════════════════ */
 function handleNewsletter(e) {
   e.preventDefault();
   const email = $('#newsletterEmail').value;
@@ -991,6 +1382,9 @@ function handleNewsletter(e) {
 }
 window.handleNewsletter = handleNewsletter;
 
+/* ══════════════════════════════════
+   PRODUCT DETAILS PAGE LOGIC
+   ══════════════════════════════════ */
 let sessionReviews = JSON.parse(localStorage.getItem('stepz-custom-reviews') || '{}');
 
 function getReviewsForProduct(product) {
@@ -1052,6 +1446,7 @@ function initProductReviews(product) {
     });
   }
 
+  // Interactive stars hover/click logic
   if (formStars.length > 0) {
     formStars.forEach((star, index) => {
       star.addEventListener('mouseenter', () => {
@@ -1081,6 +1476,7 @@ function initProductReviews(product) {
   function updateReviewsView() {
     const reviewsList = getReviewsForProduct(product);
 
+    // Calculate rating breakdowns
     const breakdownGrid = $('#rating-breakdown');
     if (breakdownGrid) {
       breakdownGrid.innerHTML = '';
@@ -1101,6 +1497,7 @@ function initProductReviews(product) {
       }
     }
 
+    // Recalculate average rating & counts
     const totalRating = reviewsList.reduce((sum, r) => sum + r.rating, 0);
     const avgRating = reviewsList.length > 0 ? (totalRating / reviewsList.length).toFixed(1) : '0.0';
 
@@ -1158,6 +1555,7 @@ function initProductReviews(product) {
     }
   }
 
+  // Handle Form Submit
   if (reviewForm) {
     reviewForm.onsubmit = (e) => {
       e.preventDefault();
@@ -1220,9 +1618,11 @@ async function initProductDetails() {
     return;
   }
 
+  // Populate Breadcrumb
   const breadcrumbCurrent = $('#breadcrumb-current');
   if (breadcrumbCurrent) breadcrumbCurrent.textContent = product.name;
 
+  // Populate Basic Details
   const detailBrand = $('#detail-brand');
   const detailName = $('#detail-name');
   const detailPriceCurrent = $('#detail-price-current');
@@ -1249,6 +1649,7 @@ async function initProductDetails() {
   }
   if (detailDescription) detailDescription.textContent = product.description;
 
+  // Populate Specs tab content
   const specBrand = $('#spec-brand');
   const specCategory = $('#spec-category');
   const specSizes = $('#spec-sizes');
@@ -1259,6 +1660,7 @@ async function initProductDetails() {
   if (specSizes) specSizes.textContent = product.sizes.join(', ');
   if (tabDescContent) tabDescContent.textContent = product.description;
 
+  // Stock Status Indicator
   const stockBadge = $('#stock-badge');
   if (stockBadge) {
     if (!product.inStock) {
@@ -1275,6 +1677,7 @@ async function initProductDetails() {
 
   let currentQty = 1;
 
+  // Populate Gallery
   const mainImg = $('#main-product-img');
   const thumbnailGrid = $('#thumbnailGrid');
   if (mainImg) {
@@ -1308,6 +1711,7 @@ async function initProductDetails() {
     });
   }
 
+  // Magnifier zoom effect on main image hover
   const mainImgContainer = $('#mainImgContainer');
   if (mainImgContainer && mainImg) {
     mainImgContainer.addEventListener('mousemove', (e) => {
@@ -1332,6 +1736,7 @@ async function initProductDetails() {
     });
   }
 
+  // Populate sizes grid
   const sizeGrid = $('#detail-size-grid');
   if (sizeGrid) {
     sizeGrid.innerHTML = '';
@@ -1347,6 +1752,7 @@ async function initProductDetails() {
     });
   }
 
+  // Size Guide trigger
   const sizeGuideBtn = $('#sizeGuideBtn');
   const sizeGuideClose = $('#sizeGuideClose');
   const sizeGuideModal = $('#sizeGuideModalOverlay');
@@ -1362,6 +1768,7 @@ async function initProductDetails() {
     });
   }
 
+  // Bind Add to Cart & Buy Now buttons
   const addToCartBtn = $('#detail-add-to-cart-btn');
   const buyNowBtn = $('#detail-buy-now-btn');
   if (addToCartBtn) {
@@ -1384,6 +1791,7 @@ async function initProductDetails() {
     };
   }
 
+  // Wishlist bindings
   const wishlistBtn = $('#detail-wishlist-btn');
   if (wishlistBtn) {
     const checkWishlistState = () => {
@@ -1399,6 +1807,7 @@ async function initProductDetails() {
     };
   }
 
+  // Info Tabs functionality
   const tabBtns = $$('.tab-btn');
   const tabPanes = $$('.tab-pane');
   tabBtns.forEach(btn => {
@@ -1413,6 +1822,7 @@ async function initProductDetails() {
     });
   });
 
+  // Related Products Loading
   const relatedGrid = $('#relatedGrid');
   if (relatedGrid) {
     relatedGrid.innerHTML = '';
@@ -1462,6 +1872,7 @@ async function initProductDetails() {
     bindProductEvents();
   }
 
+  // Sharing links setup
   const currentURL = encodeURIComponent(window.location.href);
   const shareText = encodeURIComponent(`Check out the awesome ${product.brand} ${product.name} on STEPZ: `);
   
@@ -1483,6 +1894,7 @@ async function initProductDetails() {
     };
   }
 
+  // Quantity Stepper
   const qtyMinusBtn = $('#qtyMinusBtn');
   const qtyPlusBtn = $('#qtyPlusBtn');
   const qtyValue = $('#qtyValue');
@@ -1501,6 +1913,7 @@ async function initProductDetails() {
     });
   }
 
+  // Delivery Estimator
   const deliveryCheckBtn = $('#deliveryCheckBtn');
   const deliveryDistrict = $('#deliveryDistrict');
   const deliveryEstimateResult = $('#deliveryEstimateResult');
@@ -1527,6 +1940,7 @@ async function initProductDetails() {
     });
   }
 
+  // Recently Viewed Products
   const RECENTLY_VIEWED_KEY = 'stepz-recently-viewed';
   let recentlyViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || '[]');
   const recentGrid = $('#recentlyViewedGrid');
@@ -1582,10 +1996,11 @@ async function initProductDetails() {
       recentSection.style.display = 'none';
     }
   }
-
+  // Track this product as viewed (most recent first, max 8 remembered)
   recentlyViewed = [product.id, ...recentlyViewed.filter(pid => pid !== product.id)].slice(0, 8);
   localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(recentlyViewed));
 
+  // Sticky Mobile Add-to-Cart Bar
   const stickyCartBar = $('#stickyCartBar');
   const stickyCartName = $('#stickyCartName');
   const stickyCartPrice = $('#stickyCartPrice');
@@ -1609,9 +2024,13 @@ async function initProductDetails() {
     }
   }
 
+  // Reviews System
   initProductReviews(product);
 }
 
+/* ══════════════════════════════════
+   HERO PARALLAX
+══════════════════════════════════ */
 function initParallax() {
   const heroBg = $('.hero-bg');
   if (!heroBg) return;
@@ -1623,6 +2042,9 @@ function initParallax() {
   }, { passive: true });
 }
 
+/* ══════════════════════════════════
+   SMOOTH SCROLL FOR NAV LINKS
+══════════════════════════════════ */
 $$('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', (e) => {
     const targetId = anchor.getAttribute('href').slice(1);
@@ -1636,6 +2058,9 @@ $$('a[href^="#"]').forEach(anchor => {
   });
 });
 
+/* ══════════════════════════════════
+   KEYBOARD ACCESSIBILITY
+══════════════════════════════════ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (isCartOpen) closeCart();
@@ -1647,6 +2072,9 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/* ══════════════════════════════════
+   WISHLIST ICON BADGE
+══════════════════════════════════ */
 function updateWishlistIcon() {
   const btn = $('#wishlistBtn');
   if (!btn) return;
@@ -1668,6 +2096,9 @@ on('#wishlistBtn', 'click', () => {
   }
 });
 
+/* ══════════════════════════════════
+   HERO BG ANIMATION
+══════════════════════════════════ */
 window.addEventListener('load', () => {
   const heroBg = $('.hero-bg');
   if (heroBg) {
@@ -1677,7 +2108,11 @@ window.addEventListener('load', () => {
   }
 });
 
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
+  initTheme();
   initUserNav();
   const urlParams = new URLSearchParams(window.location.search);
   const isOffersPage = window.location.pathname.includes('offers.html');
@@ -1692,7 +2127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  await loadProducts();  
+  await loadProducts();   // fetch from MySQL (via PHP API) before rendering
 
   if (window.location.pathname.includes('product-details.html')) {
     await initProductDetails();
@@ -1708,7 +2143,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   initReveal();
   initParallax();
 
+  // Init slider after short delay so DOM is ready
   setTimeout(initSlider, 100);
 
+  // Re-run observer for dynamically added elements
   setTimeout(initReveal, 200);
 });

@@ -6,17 +6,20 @@
   <title>Product Details — STEPZ | Premium Footwear</title>
   <meta name="description" content="View product specifications, custom sizes, checkout details, and verified buyer reviews for premium footwear at STEPZ.">
   <link rel="stylesheet" href="style.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ SEARCH BAR ═══════════════════════════════ -->
 <div class="search-bar" id="searchBar">
   <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);font-size:20px"></i>
   <input type="text" placeholder="Search for sneakers, boots, heels…" id="searchInput">
   <button class="search-close" id="searchClose" aria-label="Close Search">✕</button>
 </div>
 
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="navbar scrolled" id="navbar">
   <div class="container">
     <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
@@ -41,6 +44,9 @@
         <i class="fa-solid fa-bag-shopping"></i>
         <span class="cart-badge" id="cartBadge">0</span>
       </button>
+      <button class="nav-icon-btn" id="themeToggleBtn" aria-label="Toggle dark / light mode" title="Toggle dark / light mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
       <a href="login.html" class="nav-icon-btn" id="userBtn" aria-label="Account" title="Login / Account" style="display:inline-flex;align-items:center;justify-content:center;">
         <i class="fa-regular fa-user"></i>
       </a>
@@ -58,9 +64,11 @@
   <a href="products.html">Products</a>
   <a href="offers.html">Offers</a>
   <a href="reviews.html">Reviews</a>
+  <a href="javascript:void(0)" id="mobileThemeToggleBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="mobileThemeToggleIcon"></i> <span id="mobileThemeToggleLabel">Dark Mode</span></a>
   <a href="login.html" id="mobileUserBtn">Login / Account</a>
 </nav>
 
+<!-- ═══════════════════════════════ PRODUCT DETAILS ═══════════════════════════════ -->
 <section class="section product-details-section" style="padding-top: 120px;">
   <div class="container">
     
@@ -435,6 +443,7 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
 <footer class="footer" id="contact">
   <div class="container">
     <div class="footer-grid">
@@ -516,6 +525,7 @@
   </div>
 </footer>
 
+<!-- ═══════════════════════════════ CART SIDEBAR ═══════════════════════════════ -->
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
@@ -553,6 +563,7 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════ QUICK VIEW MODAL ═══════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modal">
     <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
@@ -580,11 +591,13 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
 <div class="toast" id="toast">
   <span class="toast-icon">✅</span>
   <span id="toastMsg">Added to cart!</span>
 </div>
 
+<!-- ═══════════════════════════════ STICKY MOBILE ADD TO CART BAR ═══════════════════════════════ -->
 <div class="sticky-cart-bar" id="stickyCartBar">
   <div class="sticky-cart-bar-info">
     <span class="sticky-cart-bar-name" id="stickyCartName">Product</span>

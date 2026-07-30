@@ -6,10 +6,12 @@
   <title>Page Not Found 😕 — STEPZ | Premium Footwear</title>
   <meta name="description" content="Oops! The page you're looking for doesn't exist. Return to STEPZ and continue shopping.">
   <link rel="stylesheet" href="style.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="container">
     <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
@@ -21,6 +23,9 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-actions">
+      <button class="nav-icon-btn" id="themeToggleBtn" aria-label="Toggle dark / light mode" title="Toggle dark / light mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
       <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
         <i class="fa-regular fa-user"></i>
       </a>
@@ -28,6 +33,7 @@
   </div>
 </nav>
 
+<!-- ═══════════════════════════════ 404 CONTENT ═══════════════════════════════ -->
 <section class="not-found-section">
   <div>
     <span class="nf-big-emoji"><i class="fa-solid fa-shoe-prints" style="color:var(--accent)"></i></span>

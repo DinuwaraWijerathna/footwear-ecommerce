@@ -6,10 +6,12 @@
   <title>Order Confirmed 🎉 — STEPZ | Premium Footwear</title>
   <meta name="description" content="Your STEPZ order has been confirmed! Track your delivery and manage your order.">
   <link rel="stylesheet" href="style.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="container">
     <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
@@ -22,6 +24,9 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-actions">
+      <button class="nav-icon-btn" id="themeToggleBtn" aria-label="Toggle dark / light mode" title="Toggle dark / light mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
       <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
         <i class="fa-regular fa-user"></i>
       </a>
@@ -41,9 +46,11 @@
   <a href="reviews.html">Reviews</a>
   <a href="wishlist.html">Wishlist</a>
   <a href="contact.html">Contact</a>
+  <a href="javascript:void(0)" id="mobileThemeToggleBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="mobileThemeToggleIcon"></i> <span id="mobileThemeToggleLabel">Dark Mode</span></a>
   <a href="login.html" id="mobileUserBtn">Login / Account</a>
 </nav>
 
+<!-- ═══════════════════════════════ ORDER CONFIRMATION ═══════════════════════════════ -->
 <section class="order-confirm-section">
   <div class="container">
 
@@ -133,6 +140,7 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
 <footer class="page-footer">
   <div class="container">
     <div class="page-footer-grid">

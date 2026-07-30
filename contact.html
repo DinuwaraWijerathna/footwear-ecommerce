@@ -6,10 +6,12 @@
   <title>Contact & Support — STEPZ | Premium Footwear</title>
   <meta name="description" content="Get in touch with STEPZ customer support team or visit our store outlets in Sri Lanka.">
   <link rel="stylesheet" href="style.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="container">
     <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
@@ -24,6 +26,9 @@
     </ul>
 
     <div class="nav-actions">
+      <button class="nav-icon-btn" id="themeToggleBtn" aria-label="Toggle dark / light mode" title="Toggle dark / light mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
       <a href="login.html" class="nav-icon-btn" id="userBtn" title="Account">
         <i class="fa-regular fa-user"></i>
       </a>
@@ -34,7 +39,7 @@
   </div>
 </nav>
 
-
+<!-- ═══════════════════════════════ HEADER BANNER ═══════════════════════════════ -->
 <section style="padding:120px 0 40px;background:var(--bg-secondary);border-bottom:1px solid var(--border-glass)">
   <div class="container">
     <h1 style="font-size:2.2rem;font-weight:900;margin-bottom:8px">Contact & Support</h1>
@@ -42,7 +47,7 @@
   </div>
 </section>
 
-
+<!-- ═══════════════════════════════ CONTACT SUITE ═══════════════════════════════ -->
 <section class="contact-section">
   <div class="container">
 
@@ -159,7 +164,7 @@
   </div>
 </section>
 
-
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
 <div class="toast" id="toast">
   <span class="toast-icon">✅</span>
   <span id="toastMsg">Added to cart!</span>

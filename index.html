@@ -9,17 +9,20 @@
   <meta property="og:title" content="STEPZ — Premium Footwear">
   <meta property="og:description" content="Step Into Luxury — Premium Footwear Collection">
   <link rel="stylesheet" href="style.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ SEARCH BAR ═══════════════════════════════ -->
 <div class="search-bar" id="searchBar">
   <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);font-size:20px"></i>
   <input type="text" placeholder="Search for sneakers, boots, heels…" id="searchInput">
   <button class="search-close" id="searchClose" aria-label="Close Search">✕</button>
 </div>
 
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="container">
     <a href="#" class="nav-logo">STEP<span>Z</span></a>
@@ -44,6 +47,9 @@
         <i class="fa-solid fa-bag-shopping"></i>
         <span class="cart-badge" id="cartBadge">0</span>
       </button>
+      <button class="nav-icon-btn" id="themeToggleBtn" aria-label="Toggle dark / light mode" title="Toggle dark / light mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
       <a href="login.html" class="nav-icon-btn" id="userBtn" aria-label="Account" title="Login / Account" style="display:inline-flex;align-items:center;justify-content:center;">
         <i class="fa-regular fa-user"></i>
       </a>
@@ -63,10 +69,11 @@
   <a href="reviews.html">Reviews</a>
   <a href="wishlist.html">Wishlist</a>
   <a href="contact.html">Contact</a>
+  <a href="javascript:void(0)" id="mobileThemeToggleBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="mobileThemeToggleIcon"></i> <span id="mobileThemeToggleLabel">Dark Mode</span></a>
   <a href="login.html" id="mobileUserBtn">Login / Account</a>
 </nav>
 
-
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-orb hero-orb-1"></div>
@@ -122,7 +129,7 @@
   </div>
 </section>
 
-
+<!-- ═══════════════════════════════ TICKER ═══════════════════════════════ -->
 <div class="ticker">
   <div class="ticker-inner" id="tickerInner">
     <span class="ticker-item"><span class="star">★</span> Free Shipping Over Rs. 5,000</span>
@@ -140,7 +147,7 @@
 
 
 
-
+<!-- ═══════════════════════════════ FEATURES ═══════════════════════════════ -->
 <section class="section" id="features" style="padding-top:0">
   <div class="container">
     <div class="text-center reveal">
@@ -172,7 +179,7 @@
   </div>
 </section>
 
-
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
 <footer class="footer" id="contact">
   <div class="container">
     <div class="footer-grid">
@@ -254,6 +261,7 @@
   </div>
 </footer>
 
+<!-- ═══════════════════════════════ CART SIDEBAR ═══════════════════════════════ -->
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
@@ -291,7 +299,7 @@
   </div>
 </div>
 
-
+<!-- ═══════════════════════════════ QUICK VIEW MODAL ═══════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modal">
     <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
@@ -319,6 +327,7 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════ CUSTOMER ORDERS MODAL ═══════════════════════════════ -->
 <div class="modal-overlay" id="customerOrdersModalOverlay">
   <div class="modal" style="max-width:700px;width:90%;max-height:85vh;overflow-y:auto;background:var(--bg-secondary);border:1px solid var(--border-glass);border-radius:var(--radius-lg);padding:24px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid var(--border-glass);padding-bottom:12px;">
@@ -333,7 +342,7 @@
   </div>
 </div>
 
-
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
 <div class="toast" id="toast">
   <span class="toast-icon">✅</span>
   <span id="toastMsg">Added to cart!</span>

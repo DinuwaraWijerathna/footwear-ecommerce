@@ -1,3 +1,8 @@
+/* ═══════════════════════════════════════════════
+   STEPZ — Admin Panel Styles
+   Dark Premium Dashboard Design
+═══════════════════════════════════════════════ */
+
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap');
 
 /* ── Root Variables ── */
@@ -61,11 +66,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 
+/* ═══════════════════════════════════════
+   ADMIN LAYOUT
+═══════════════════════════════════════ */
 .admin-layout {
   display: flex;
   min-height: 100vh;
 }
 
+/* ═══════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════ */
 .admin-sidebar {
   width: var(--sidebar-width);
   background: var(--bg-secondary);
@@ -241,6 +252,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--accent2);
 }
 
+/* ═══════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════ */
 .admin-main {
   flex: 1;
   margin-left: var(--sidebar-width);
@@ -358,6 +372,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   padding: 32px;
 }
 
+/* ═══════════════════════════════════════
+   STATS GRID
+═══════════════════════════════════════ */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -448,6 +465,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   background: rgba(255, 107, 107, 0.15);
 }
 
+/* ═══════════════════════════════════════
+   DASHBOARD GRID (two columns)
+═══════════════════════════════════════ */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -455,6 +475,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   margin-bottom: 32px;
 }
 
+/* ═══════════════════════════════════════
+   PANEL / CARD
+═══════════════════════════════════════ */
 .admin-panel {
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
@@ -490,6 +513,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   padding: 20px 24px;
 }
 
+/* ═══════════════════════════════════════
+   DATA TABLE
+═══════════════════════════════════════ */
 .admin-table-wrap {
   overflow-x: auto;
 }
@@ -621,6 +647,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 }
 .status-badge.out-of-stock::before { background: var(--accent2); }
 
+/* ═══════════════════════════════════════
+   SIMPLE BAR CHART (CSS only)
+═══════════════════════════════════════ */
 .chart-container {
   padding: 20px 24px;
 }
@@ -672,6 +701,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   font-weight: 600;
 }
 
+/* ═══════════════════════════════════════
+   QUICK ACTIONS
+═══════════════════════════════════════ */
 .quick-actions {
   display: flex;
   flex-direction: column;
@@ -719,6 +751,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   opacity: 1;
 }
 
+/* ═══════════════════════════════════════
+   TABLE TOOLBAR
+═══════════════════════════════════════ */
 .table-toolbar {
   display: flex;
   align-items: center;
@@ -812,6 +847,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   box-shadow: 0 4px 20px rgba(245, 166, 35, 0.4);
 }
 
+/* ═══════════════════════════════════════
+   TABLE ACTION BUTTONS
+═══════════════════════════════════════ */
 .table-actions {
   display: flex;
   gap: 8px;
@@ -858,6 +896,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: white;
 }
 
+/* ═══════════════════════════════════════
+   STATUS SELECT DROPDOWN
+═══════════════════════════════════════ */
 .status-select {
   padding: 6px 12px;
   background: var(--bg-glass);
@@ -880,6 +921,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--text-primary);
 }
 
+/* ═══════════════════════════════════════
+   MODAL
+═══════════════════════════════════════ */
 .admin-modal-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -1091,6 +1135,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   transform: translateX(22px);
 }
 
+/* ═══════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════ */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -1113,6 +1160,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--text-muted);
 }
 
+/* ═══════════════════════════════════════
+   ADMIN TOAST
+═══════════════════════════════════════ */
 .admin-toast {
   position: fixed;
   top: 24px;
@@ -1139,6 +1189,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 .admin-toast.success { border-color: rgba(0, 221, 136, 0.3); }
 .admin-toast.error { border-color: rgba(255, 107, 107, 0.3); }
 
+/* ═══════════════════════════════════════
+   PAGINATION
+═══════════════════════════════════════ */
 .table-pagination {
   display: flex;
   align-items: center;
@@ -1184,6 +1237,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   font-weight: 700;
 }
 
+/* ═══════════════════════════════════════
+   SIDEBAR OVERLAY (Mobile)
+═══════════════════════════════════════ */
 .sidebar-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -1200,6 +1256,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   visibility: visible;
 }
 
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
 @media (max-width: 1200px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1280,6 +1339,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   }
 }
 
+/* ═══════════════════════════════════════
+   INVOICE / ORDER DETAILS MODAL
+═══════════════════════════════════════ */
 .order-invoice-box {
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
@@ -1400,6 +1462,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--accent);
 }
 
+/* ═══════════════════════════════════════
+   CUSTOMER DETAILS MODAL
+═══════════════════════════════════════ */
 .customer-profile-card {
   display: flex;
   align-items: center;
@@ -1452,6 +1517,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--text-primary);
 }
 
+/* ═══════════════════════════════════════
+   REVIEWS & OFFERS STYLING
+═══════════════════════════════════════ */
 .star-rating {
   color: #f5a623;
   font-size: 0.9rem;
@@ -1470,6 +1538,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   letter-spacing: 1px;
 }
 
+/* ═══════════════════════════════════════
+   SETTINGS PAGE STYLING
+═══════════════════════════════════════ */
 .settings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

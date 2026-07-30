@@ -1,3 +1,8 @@
+/* ═══════════════════════════════════════════════
+   STEPZ — Auth Pages (Login / Signup)
+   Dark Premium + Glassmorphism
+═══════════════════════════════════════════════ */
+
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap');
 
 /* ── Reuse root variables from main site ── */
@@ -31,6 +36,29 @@
   --transition-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Light Mode Overrides ── */
+[data-theme="light"] {
+  --bg-primary:    #f6f6fa;
+  --bg-secondary:  #ffffff;
+  --bg-card:       #ffffff;
+  --bg-glass:      rgba(20, 20, 30, 0.035);
+  --border-glass:  rgba(20, 20, 30, 0.1);
+
+  --accent:        #e0921a;
+  --accent-dim:    rgba(224, 146, 26, 0.12);
+  --accent-glow:   rgba(224, 146, 26, 0.35);
+  --accent2:       #e8555a;
+  --accent3:       #5b52e6;
+
+  --text-primary:  #16161f;
+  --text-secondary:#4c4c5e;
+  --text-muted:    #8a8a9c;
+
+  --shadow-card:   0 8px 32px rgba(20,20,30,0.08);
+  --shadow-glow:   0 0 40px rgba(224, 146, 26, 0.2);
+  --shadow-btn:    0 4px 20px rgba(224, 146, 26, 0.3);
+}
+
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -54,6 +82,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 
+/* ═══════════════════════════════════════
+   AUTH PAGE LAYOUT
+═══════════════════════════════════════ */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -63,6 +94,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   padding: 40px 20px;
 }
 
+/* ── Background Orbs (matching hero) ── */
 .auth-bg {
   position: fixed;
   top: 0; left: 0;
@@ -109,6 +141,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   100% { transform: translate(-20px, 30px) scale(0.95); }
 }
 
+/* ── Grid pattern overlay ── */
 .auth-grid {
   position: fixed;
   top: 0; left: 0;
@@ -121,6 +154,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   background-size: 60px 60px;
 }
 
+/* ═══════════════════════════════════════
+   AUTH CARD (Glassmorphism)
+═══════════════════════════════════════ */
 .auth-card {
   position: relative;
   z-index: 1;
@@ -145,6 +181,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   }
 }
 
+/* ── Card glow border ── */
 .auth-card::before {
   content: '';
   position: absolute;
@@ -158,7 +195,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   pointer-events: none;
 }
 
-
+/* ── Logo ── */
 .auth-logo {
   text-align: center;
   margin-bottom: 8px;
@@ -176,6 +213,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--accent);
 }
 
+/* ── Header ── */
 .auth-header {
   text-align: center;
   margin-bottom: 36px;
@@ -193,12 +231,16 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--text-secondary);
 }
 
+/* ═══════════════════════════════════════
+   FORM STYLES
+═══════════════════════════════════════ */
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
+/* ── Input Group ── */
 .input-group {
   position: relative;
 }
@@ -256,6 +298,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--accent);
 }
 
+/* ── Icon on left, move icon positioning ── */
 .input-wrap .input-icon-left {
   position: absolute;
   left: 16px;
@@ -264,6 +307,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   transition: var(--transition);
 }
 
+/* ── Password toggle ── */
 .password-toggle {
   position: absolute;
   right: 14px;
@@ -281,6 +325,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--accent);
 }
 
+/* ── Input error state ── */
 .input-group.error .input-wrap input {
   border-color: var(--accent2);
   box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
@@ -310,6 +355,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   75% { transform: translateX(5px); }
 }
 
+/* ═══════════════════════════════════════
+   PASSWORD STRENGTH INDICATOR
+═══════════════════════════════════════ */
 .password-strength {
   margin-top: 10px;
 }
@@ -347,6 +395,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 .strength-text.good { color: #44bb44; }
 .strength-text.strong { color: #00dd88; }
 
+/* ═══════════════════════════════════════
+   CHECKBOX & LINKS
+═══════════════════════════════════════ */
 .auth-options {
   display: flex;
   align-items: center;
@@ -420,6 +471,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--text-primary);
 }
 
+/* ═══════════════════════════════════════
+   AUTH BUTTON
+═══════════════════════════════════════ */
 .auth-btn {
   width: 100%;
   padding: 16px;
@@ -447,6 +501,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   transform: translateY(0);
 }
 
+/* Button loading state */
 .auth-btn.loading {
   pointer-events: none;
   opacity: 0.8;
@@ -476,6 +531,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+/* ── Shimmer effect ── */
 .auth-btn::before {
   content: '';
   position: absolute;
@@ -489,6 +545,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   left: 100%;
 }
 
+/* ═══════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════ */
 .auth-divider {
   display: flex;
   align-items: center;
@@ -511,6 +570,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   letter-spacing: 1px;
 }
 
+/* ═══════════════════════════════════════
+   SOCIAL LOGIN
+═══════════════════════════════════════ */
 .social-auth {
   display: flex;
   gap: 12px;
@@ -544,6 +606,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   font-size: 18px;
 }
 
+/* ═══════════════════════════════════════
+   AUTH FOOTER / SWITCH LINK
+═══════════════════════════════════════ */
 .auth-footer {
   text-align: center;
   margin-top: 28px;
@@ -564,12 +629,18 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   text-decoration: underline;
 }
 
+/* ═══════════════════════════════════════
+   TWO COLUMN ROW
+═══════════════════════════════════════ */
 .input-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
+/* ═══════════════════════════════════════
+   SUCCESS ANIMATION
+═══════════════════════════════════════ */
 .auth-success {
   display: none;
   text-align: center;
@@ -609,6 +680,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   100% { transform: scale(1); }
 }
 
+/* ═══════════════════════════════════════
+   TOAST (for auth pages)
+═══════════════════════════════════════ */
 .auth-toast {
   position: fixed;
   top: 24px;
@@ -640,6 +714,9 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   border-color: rgba(0, 221, 136, 0.3);
 }
 
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
 @media (max-width: 540px) {
   .auth-card {
     padding: 32px 24px;

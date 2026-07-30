@@ -6,12 +6,13 @@
   <title>Login — STEPZ | Premium Footwear</title>
   <meta name="description" content="Sign in to your STEPZ account to access your orders, wishlist, and exclusive deals.">
   <link rel="stylesheet" href="auth.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-
+<!-- ═══════════════════════════════ BACKGROUND ═══════════════════════════════ -->
 <div class="auth-bg">
   <div class="auth-orb auth-orb-1"></div>
   <div class="auth-orb auth-orb-2"></div>
@@ -19,12 +20,17 @@
 </div>
 <div class="auth-grid"></div>
 
+<!-- ═══════════════════════════════ LOGIN CARD ═══════════════════════════════ -->
 <div class="auth-page">
   <div class="auth-card">
 
     <!-- Logo -->
-    <div class="auth-logo">
+    <div class="auth-logo" style="display:flex;align-items:center;justify-content:center;gap:12px;position:relative">
       <a href="index.html">STEP<span>Z</span></a>
+      <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark / light mode" title="Toggle dark / light mode"
+        style="position:absolute;right:0;width:36px;height:36px;border-radius:50%;background:var(--bg-glass);border:1px solid var(--border-glass);color:var(--text-primary);display:flex;align-items:center;justify-content:center;font-size:0.9rem">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
     </div>
 
     <!-- Header -->

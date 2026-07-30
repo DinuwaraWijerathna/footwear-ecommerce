@@ -6,10 +6,12 @@
   <title>My Account — STEPZ | Premium Footwear</title>
   <meta name="description" content="Manage your STEPZ profile, orders, and addresses.">
   <link rel="stylesheet" href="style.css">
+  <script>(function(){try{var t=localStorage.getItem('stepz-theme');if(t==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="container">
     <a href="index.html" class="nav-logo">STEP<span>Z</span></a>
@@ -24,6 +26,9 @@
     </ul>
 
     <div class="nav-actions">
+      <button class="nav-icon-btn" id="themeToggleBtn" aria-label="Toggle dark / light mode" title="Toggle dark / light mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+      </button>
       <a href="account.html" class="nav-icon-btn" id="userBtn" title="Account">
         <i class="fa-solid fa-user-check" style="color:var(--accent)"></i>
       </a>
@@ -34,6 +39,7 @@
   </div>
 </nav>
 
+<!-- ═══════════════════════════════ HEADER BANNER ═══════════════════════════════ -->
 <section style="padding:120px 0 40px;background:var(--bg-secondary);border-bottom:1px solid var(--border-glass)">
   <div class="container">
     <h1 style="font-size:2.2rem;font-weight:900;margin-bottom:8px">Customer Portal</h1>
@@ -41,14 +47,23 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════════ ACCOUNT LAYOUT ═══════════════════════════════ -->
 <section class="account-section">
   <div class="container">
 
     <div class="account-layout">
 
+      <!-- Sidebar Card -->
       <div class="account-sidebar-card">
         <div class="account-user-header">
-          <div class="account-user-avatar" id="accAvatar">K</div>
+          <div class="account-avatar-wrap" style="position:relative;width:fit-content;margin:0 auto 14px">
+            <div class="account-user-avatar" id="accAvatar" style="margin:0;overflow:hidden">K</div>
+            <button type="button" id="accAvatarEditBtn" title="Change profile picture"
+              style="position:absolute;bottom:-2px;right:-2px;width:28px;height:28px;border-radius:50%;background:var(--accent);border:2px solid var(--bg-card);color:#111;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem">
+              <i class="fa-solid fa-camera"></i>
+            </button>
+            <input type="file" id="accAvatarInput" accept="image/*" style="display:none">
+          </div>
           <h3 id="accName" style="font-size:1.1rem;color:var(--text-primary);margin-bottom:4px">Kamal Perera</h3>
           <p id="accEmail" style="font-size:0.8rem;color:var(--text-muted)">kamal@gmail.com</p>
         </div>
@@ -67,7 +82,9 @@
         </button>
       </div>
 
+      <!-- Main Content Tab -->
       <div class="account-tab-content" id="accountTabBody">
+        <!-- Rendered by app.js -->
       </div>
 
     </div>
@@ -75,6 +92,7 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════════ TOAST ═══════════════════════════════ -->
 <div class="toast" id="toast">
   <span class="toast-icon">✅</span>
   <span id="toastMsg">Added to cart!</span>
