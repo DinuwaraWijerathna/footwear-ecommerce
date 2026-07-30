@@ -1,13 +1,4 @@
-/* ═══════════════════════════════════════════════
-   STEPZ — Footwear E-Commerce App Logic
-═══════════════════════════════════════════════ */
-
 'use strict';
-
-/* ══════════════════════════════════
-   PRODUCT DATA (now loaded from MySQL via PHP API)
-══════════════════════════════════ */
-// Change this if your XAMPP setup / folder name is different
 const API_URL = 'http://localhost/stepz-api/get_products.php';
 
 let PRODUCTS = [];
@@ -29,9 +20,6 @@ async function loadProducts() {
   }
 }
 
-/* ══════════════════════════════════
-   STATE
-══════════════════════════════════ */
 let cart = JSON.parse(localStorage.getItem('stepz-cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('stepz-wishlist') || '[]');
 let currentFilter = 'all';
@@ -42,11 +30,13 @@ let isCartOpen = false;
 let isSearchOpen = false;
 let isMobileNavOpen = false;
 
-/* ══════════════════════════════════
-   UTILITY
-══════════════════════════════════ */
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
+
+function on(selector, event, handler) {
+  const el = typeof selector === 'string' ? $(selector) : selector;
+  if (el) el.addEventListener(event, handler);
+}
 
 function formatPrice(n) {
   return 'Rs. ' + n.toLocaleString('en-LK');
@@ -62,9 +52,6 @@ function showToast(msg, icon = '✅') {
   setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-/* ══════════════════════════════════
-   PRODUCTS RENDER
-══════════════════════════════════ */
 function renderProducts(filter = 'all') {
   const grid = $('#productsGrid');
   if (!grid) return;
@@ -124,10 +111,8 @@ function renderProducts(filter = 'all') {
     grid.appendChild(card);
   });
 
-  // Bind events after rendering
   bindProductEvents();
 
-  // Trigger reveal after small delay
   setTimeout(() => {
     $$('.product-card.reveal').forEach(el => el.classList.add('visible'));
   }, 100);
@@ -168,9 +153,6 @@ function bindProductEvents() {
   });
 }
 
-/* ══════════════════════════════════
-   FILTER TABS
-══════════════════════════════════ */
 $$('.filter-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     $$('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -183,7 +165,6 @@ $$('.filter-tab').forEach(tab => {
 function filterProducts(cat) {
   currentFilter = cat;
   
-  // If not on products.html, redirect with filter query param
   if (!window.location.pathname.includes('products.html')) {
     window.location.href = `products.html?filter=${cat}`;
     return;
@@ -201,9 +182,6 @@ function filterProducts(cat) {
 }
 window.filterProducts = filterProducts;
 
-/* ══════════════════════════════════
-   CART
-══════════════════════════════════ */
 function addToCart(productId, size = null, qty = 1) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
@@ -219,7 +197,6 @@ function addToCart(productId, size = null, qty = 1) {
   updateCartUI();
   showToast(`${product.name} added to cart!`, '🛒');
 
-  // Animate cart badge
   const badge = $('#cartBadge');
   badge.style.transform = 'scale(1.5)';
   setTimeout(() => badge.style.transform = 'scale(1)', 300);
@@ -247,14 +224,14 @@ function saveCart() {
 
 function updateCartUI() {
   const total = cart.reduce((sum, item) => sum + item.qty, 0);
-  $('#cartBadge').textContent = total;
-  $('#cartCount').textContent = total;
+  if ($('#cartBadge')) $('#cartBadge').textContent = total;
+  if ($('#cartCount')) $('#cartCount').textContent = total;
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  $('#cartSubtotal').textContent = formatPrice(subtotal);
-  $('#cartTotal').textContent = formatPrice(subtotal);
+  if ($('#cartSubtotal')) $('#cartSubtotal').textContent = formatPrice(subtotal);
+  if ($('#cartTotal')) $('#cartTotal').textContent = formatPrice(subtotal);
 
-  $('#cartFooter').style.display = cart.length > 0 ? 'block' : 'none';
+  if ($('#cartFooter')) $('#cartFooter').style.display = cart.length > 0 ? 'block' : 'none';
 }
 
 function renderCart() {
@@ -310,23 +287,19 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-$('#cartBtn').addEventListener('click', openCart);
-$('#cartClose').addEventListener('click', closeCart);
-$('#cartOverlay').addEventListener('click', closeCart);
+on('#cartBtn', 'click', openCart);
+on('#cartClose', 'click', closeCart);
+on('#cartOverlay', 'click', closeCart);
 
 function handleCheckout() {
   if (cart.length === 0) {
     showToast('Your cart is empty!', '⚠️');
     return;
   }
-  // Redirect to full checkout page
   window.location.href = 'checkout.html';
 }
 window.handleCheckout = handleCheckout;
 
-/* ══════════════════════════════════
-   CHECKOUT PAGE LOGIC
-══════════════════════════════════ */
 let selectedPaymentMethod = 'cod';
 let checkoutDiscount = 0;
 
@@ -458,7 +431,6 @@ function initCheckoutPage() {
     adminOrders.unshift(newOrder);
     localStorage.setItem('stepz-admin-orders', JSON.stringify(adminOrders));
 
-    // Clear cart state
     cart = [];
     saveCart();
     updateCartUI();
@@ -470,9 +442,6 @@ function initCheckoutPage() {
   });
 }
 
-/* ══════════════════════════════════
-   USER NAV & CUSTOMER ORDERS MODAL
-══════════════════════════════════ */
 function initUserNav() {
   const userBtn = $('#userBtn');
   const mobileUserBtn = $('#mobileUserBtn');
@@ -483,36 +452,29 @@ function initUserNav() {
 
     if (userBtn) {
       userBtn.setAttribute('title', isAd ? 'Admin Dashboard' : `Logged in as ${currentUser.name}`);
-      userBtn.href = isAd ? 'admin/index.html' : '#';
-      userBtn.onclick = (e) => {
-        if (!isAd) {
-          e.preventDefault();
-          openCustomerOrdersModal();
-        }
-      };
+      userBtn.href = isAd ? 'admin/index.html' : 'account.html';
+      userBtn.onclick = null;
+      userBtn.style.background = isAd ? 'rgba(245,166,35,0.15)' : 'rgba(0,221,136,0.15)';
+      userBtn.style.borderColor = isAd ? 'var(--accent)' : 'var(--green)';
+      userBtn.style.color = isAd ? 'var(--accent)' : 'var(--green)';
 
-      userBtn.innerHTML = `
-        <div style="display:inline-flex;align-items:center;gap:6px;background:${isAd ? 'rgba(245,166,35,0.15)' : 'rgba(0,221,136,0.15)'};color:${isAd ? 'var(--accent)' : 'var(--green)'};padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;">
-          <i class="fa-solid fa-${isAd ? 'user-shield' : 'user-check'}"></i>
-          <span>${isAd ? 'Admin' : currentUser.name.split(' ')[0]}</span>
-        </div>
-      `;
+      userBtn.innerHTML = isAd
+        ? `<i class="fa-solid fa-user-shield"></i>`
+        : `<span style="font-weight:700;font-size:1rem;">${currentUser.name.trim().charAt(0).toUpperCase()}</span>`;
     }
 
     if (mobileUserBtn) {
-      mobileUserBtn.textContent = isAd ? 'Admin Dashboard' : `My Orders (${currentUser.name})`;
-      mobileUserBtn.href = isAd ? 'admin/index.html' : '#';
-      mobileUserBtn.onclick = (e) => {
-        if (!isAd) {
-          e.preventDefault();
-          openCustomerOrdersModal();
-        }
-      };
+      mobileUserBtn.textContent = isAd ? 'Admin Dashboard' : `My Account (${currentUser.name})`;
+      mobileUserBtn.href = isAd ? 'admin/index.html' : 'account.html';
+      mobileUserBtn.onclick = null;
     }
   } else {
     if (userBtn) {
       userBtn.setAttribute('title', 'Login / Account');
       userBtn.href = 'login.html';
+      userBtn.style.background = '';
+      userBtn.style.borderColor = '';
+      userBtn.style.color = '';
       userBtn.innerHTML = `<i class="fa-regular fa-user"></i>`;
     }
     if (mobileUserBtn) {
@@ -521,7 +483,6 @@ function initUserNav() {
     }
   }
 
-  // Setup Close listener for Customer Orders Modal
   const modalClose = $('#customerOrdersModalClose');
   const modalOverlay = $('#customerOrdersModalOverlay');
   if (modalClose) modalClose.onclick = closeCustomerOrdersModal;
@@ -610,16 +571,130 @@ function logoutCustomer() {
   localStorage.removeItem('stepz-current-user');
   closeCustomerOrdersModal();
   showToast('Logged out successfully');
-  setTimeout(() => window.location.reload(), 600);
+  const onAccountPage = window.location.pathname.includes('account.html');
+  setTimeout(() => {
+    window.location.href = onAccountPage ? 'login.html' : window.location.href;
+    if (!onAccountPage) window.location.reload();
+  }, 600);
 }
 
 window.openCustomerOrdersModal = openCustomerOrdersModal;
 window.closeCustomerOrdersModal = closeCustomerOrdersModal;
 window.logoutCustomer = logoutCustomer;
 
-/* ══════════════════════════════════
-   WISHLIST
-══════════════════════════════════ */
+function initAccountPage() {
+  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+
+  if (!currentUser) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const avatarEl = $('#accAvatar');
+  const nameEl = $('#accName');
+  const emailEl = $('#accEmail');
+  if (avatarEl) avatarEl.textContent = currentUser.name.trim().charAt(0).toUpperCase();
+  if (nameEl) nameEl.textContent = currentUser.name;
+  if (emailEl) emailEl.textContent = currentUser.email;
+
+  switchAccountTab('orders');
+}
+
+function switchAccountTab(tab) {
+  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
+  if (!currentUser) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  ['Orders', 'Profile', 'Addresses'].forEach(t => {
+    const btn = $(`#btnTab${t}`);
+    if (btn) btn.classList.toggle('active', t.toLowerCase() === tab);
+  });
+
+  const body = $('#accountTabBody');
+  if (!body) return;
+
+  if (tab === 'orders') {
+    const allOrders = JSON.parse(localStorage.getItem('stepz-admin-orders') || '[]');
+    const userOrders = allOrders.filter(o =>
+      (o.email && o.email.toLowerCase() === currentUser.email.toLowerCase()) ||
+      (o.customer && o.customer.toLowerCase() === currentUser.name.toLowerCase())
+    );
+
+    body.innerHTML = `
+      <h4 style="font-size:1.1rem;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+        <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i> My Order History
+      </h4>
+      ${userOrders.length > 0 ? `
+        <div style="display:flex;flex-direction:column;gap:12px">
+          ${userOrders.map(o => `
+            <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:12px;padding:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px dashed var(--border-glass);padding-bottom:8px">
+                <div>
+                  <span style="font-weight:700;color:var(--accent);font-size:1rem">${o.id}</span>
+                  <span style="font-size:0.8rem;color:var(--text-muted);margin-left:10px">${o.date}</span>
+                </div>
+                <span style="padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;
+                  background:${o.status === 'delivered' ? 'rgba(0,221,136,0.15)' : o.status === 'shipped' ? 'rgba(77,166,255,0.15)' : 'rgba(245,166,35,0.15)'};
+                  color:${o.status === 'delivered' ? 'var(--green)' : o.status === 'shipped' ? 'var(--blue)' : 'var(--accent)'};">
+                  ${o.status}
+                </span>
+              </div>
+              <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px">
+                ${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;font-weight:600;color:var(--text-primary)">
+                <span>Total Paid:</span>
+                <span style="color:var(--accent)">Rs. ${Number(o.total).toLocaleString('en-LK')}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+          <div style="font-size:2.5rem;margin-bottom:10px"><i class="fa-solid fa-box-open"></i></div>
+          <p style="font-size:1rem;color:var(--text-secondary)">No orders placed yet.</p>
+          <p style="font-size:0.85rem">Start shopping and place your first order!</p>
+        </div>
+      `}
+    `;
+  } else if (tab === 'profile') {
+    body.innerHTML = `
+      <h4 style="font-size:1.1rem;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+        <i class="fa-solid fa-user-gear" style="color:var(--accent)"></i> Personal Profile
+      </h4>
+      <div style="display:flex;flex-direction:column;gap:14px;max-width:420px">
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Full Name</label>
+          <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary)">${currentUser.name}</div>
+        </div>
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Email Address</label>
+          <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary)">${currentUser.email}</div>
+        </div>
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Account Type</label>
+          <div style="background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;padding:12px 14px;color:var(--text-primary);text-transform:capitalize">${currentUser.role}</div>
+        </div>
+      </div>
+    `;
+  } else if (tab === 'addresses') {
+    body.innerHTML = `
+      <h4 style="font-size:1.1rem;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+        <i class="fa-solid fa-location-dot" style="color:var(--accent)"></i> Saved Addresses
+      </h4>
+      <div style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+        <div style="font-size:2.5rem;margin-bottom:10px"><i class="fa-solid fa-map-location-dot"></i></div>
+        <p style="font-size:1rem;color:var(--text-secondary)">No saved addresses yet.</p>
+        <p style="font-size:0.85rem">Addresses you use at checkout will appear here.</p>
+      </div>
+    `;
+  }
+}
+
+window.switchAccountTab = switchAccountTab;
+
 function toggleWishlist(productId, btn) {
   const idx = wishlist.indexOf(productId);
   const product = PRODUCTS.find(p => p.id === productId);
@@ -638,9 +713,6 @@ function toggleWishlist(productId, btn) {
   localStorage.setItem('stepz-wishlist', JSON.stringify(wishlist));
 }
 
-/* ══════════════════════════════════
-   QUICK VIEW MODAL
-══════════════════════════════════ */
 function openModal(productId) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
@@ -668,7 +740,6 @@ function openModal(productId) {
     sizeGrid.appendChild(btn);
   });
 
-  // Add to cart from modal
   $('#modalAddBtn').onclick = () => {
     const selectedSize = $('.size-btn.selected')?.textContent || product.sizes[0];
     addToCart(product.id, Number(selectedSize));
@@ -676,7 +747,6 @@ function openModal(productId) {
     setTimeout(() => openCart(), 400);
   };
 
-  // Wishlist from modal
   const isWishlisted = wishlist.includes(product.id);
   const wishBtn = $('#modalWishBtn');
   wishBtn.innerHTML = `<i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart" style="color:${isWishlisted ? '#ff6b6b' : 'inherit'}"></i>`;
@@ -704,23 +774,20 @@ function closeModal() {
   currentModal = null;
 }
 
-$('#modalClose').addEventListener('click', closeModal);
-$('#modalOverlay').addEventListener('click', (e) => {
+on('#modalClose', 'click', closeModal);
+on('#modalOverlay', 'click', (e) => {
   if (e.target === $('#modalOverlay')) closeModal();
 });
 
-/* ══════════════════════════════════
-   NAVBAR
-══════════════════════════════════ */
 window.addEventListener('scroll', () => {
   const navbar = $('#navbar');
+  if (!navbar) return;
   if (window.scrollY > 60) {
     navbar.classList.add('scrolled');
   } else {
     navbar.classList.remove('scrolled');
   }
 
-  // Active nav link based on scroll (only if section exists on page)
   const sections = ['home','categories','products','offers','testimonials'];
   sections.forEach(id => {
     const section = document.getElementById(id);
@@ -736,24 +803,22 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// Hamburger
-$('#hamburger').addEventListener('click', () => {
+on('#hamburger', 'click', () => {
   isMobileNavOpen = !isMobileNavOpen;
   $('#hamburger').classList.toggle('active', isMobileNavOpen);
-  $('#mobileNav').classList.toggle('open', isMobileNavOpen);
-  $('#navOverlay').classList.toggle('open', isMobileNavOpen);
+  $('#mobileNav')?.classList.toggle('open', isMobileNavOpen);
+  $('#navOverlay')?.classList.toggle('open', isMobileNavOpen);
   document.body.style.overflow = isMobileNavOpen ? 'hidden' : '';
 });
 
-$('#navOverlay').addEventListener('click', () => {
+on('#navOverlay', 'click', () => {
   isMobileNavOpen = false;
-  $('#hamburger').classList.remove('active');
-  $('#mobileNav').classList.remove('open');
-  $('#navOverlay').classList.remove('open');
+  $('#hamburger')?.classList.remove('active');
+  $('#mobileNav')?.classList.remove('open');
+  $('#navOverlay')?.classList.remove('open');
   document.body.style.overflow = '';
 });
 
-// Mobile nav links close on click
 $$('.mobile-nav a').forEach(a => {
   a.addEventListener('click', () => {
     isMobileNavOpen = false;
@@ -764,10 +829,7 @@ $$('.mobile-nav a').forEach(a => {
   });
 });
 
-/* ══════════════════════════════════
-   SEARCH
-══════════════════════════════════ */
-$('#searchBtn').addEventListener('click', () => {
+on('#searchBtn', 'click', () => {
   isSearchOpen = !isSearchOpen;
   $('#searchBar').classList.toggle('open', isSearchOpen);
   if (isSearchOpen) {
@@ -775,26 +837,22 @@ $('#searchBtn').addEventListener('click', () => {
   }
 });
 
-$('#searchClose').addEventListener('click', () => {
+on('#searchClose', 'click', () => {
   isSearchOpen = false;
   $('#searchBar').classList.remove('open');
 });
 
-$('#searchInput').addEventListener('keydown', (e) => {
+on('#searchInput', 'keydown', (e) => {
   if (e.key === 'Escape') {
     isSearchOpen = false;
     $('#searchBar').classList.remove('open');
   }
 });
 
-/* ══════════════════════════════════
-   COUNTDOWN TIMER
-══════════════════════════════════ */
 function startCountdown() {
   const hoursEl = $('#cd-hours');
   if (!hoursEl) return;
 
-  // Set target to 8 hours from now
   const stored = localStorage.getItem('stepz-countdown-end');
   let endTime;
 
@@ -825,9 +883,6 @@ function startCountdown() {
   setInterval(tick, 1000);
 }
 
-/* ══════════════════════════════════
-   TESTIMONIALS SLIDER
-══════════════════════════════════ */
 function initSlider() {
   const slider = $('#testimonialSlider');
   if (!slider) return;
@@ -846,7 +901,6 @@ function initSlider() {
 
   totalSlides = getTotalSlides();
 
-  // Create dots
   function createDots() {
     dotsContainer.innerHTML = '';
     for (let i = 0; i < totalSlides; i++) {
@@ -883,7 +937,6 @@ function initSlider() {
   $('#nextSlide').addEventListener('click', next);
   $('#prevSlide').addEventListener('click', prev);
 
-  // Auto slide
   function startAutoSlide() {
     autoSlideInterval = setInterval(next, 4500);
   }
@@ -894,7 +947,6 @@ function initSlider() {
   slider.addEventListener('mouseenter', stopAutoSlide);
   slider.addEventListener('mouseleave', startAutoSlide);
 
-  // Touch swipe
   let touchStartX = 0;
   slider.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
   slider.addEventListener('touchend', (e) => {
@@ -915,9 +967,6 @@ function initSlider() {
   startAutoSlide();
 }
 
-/* ══════════════════════════════════
-   SCROLL REVEAL
-══════════════════════════════════ */
 function initReveal() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -933,9 +982,6 @@ function initReveal() {
   $$('.reveal').forEach(el => observer.observe(el));
 }
 
-/* ══════════════════════════════════
-   NEWSLETTER
-══════════════════════════════════ */
 function handleNewsletter(e) {
   e.preventDefault();
   const email = $('#newsletterEmail').value;
@@ -945,9 +991,6 @@ function handleNewsletter(e) {
 }
 window.handleNewsletter = handleNewsletter;
 
-/* ══════════════════════════════════
-   PRODUCT DETAILS PAGE LOGIC
-   ══════════════════════════════════ */
 let sessionReviews = JSON.parse(localStorage.getItem('stepz-custom-reviews') || '{}');
 
 function getReviewsForProduct(product) {
@@ -1009,7 +1052,6 @@ function initProductReviews(product) {
     });
   }
 
-  // Interactive stars hover/click logic
   if (formStars.length > 0) {
     formStars.forEach((star, index) => {
       star.addEventListener('mouseenter', () => {
@@ -1039,7 +1081,6 @@ function initProductReviews(product) {
   function updateReviewsView() {
     const reviewsList = getReviewsForProduct(product);
 
-    // Calculate rating breakdowns
     const breakdownGrid = $('#rating-breakdown');
     if (breakdownGrid) {
       breakdownGrid.innerHTML = '';
@@ -1060,7 +1101,6 @@ function initProductReviews(product) {
       }
     }
 
-    // Recalculate average rating & counts
     const totalRating = reviewsList.reduce((sum, r) => sum + r.rating, 0);
     const avgRating = reviewsList.length > 0 ? (totalRating / reviewsList.length).toFixed(1) : '0.0';
 
@@ -1118,7 +1158,6 @@ function initProductReviews(product) {
     }
   }
 
-  // Handle Form Submit
   if (reviewForm) {
     reviewForm.onsubmit = (e) => {
       e.preventDefault();
@@ -1181,11 +1220,9 @@ async function initProductDetails() {
     return;
   }
 
-  // Populate Breadcrumb
   const breadcrumbCurrent = $('#breadcrumb-current');
   if (breadcrumbCurrent) breadcrumbCurrent.textContent = product.name;
 
-  // Populate Basic Details
   const detailBrand = $('#detail-brand');
   const detailName = $('#detail-name');
   const detailPriceCurrent = $('#detail-price-current');
@@ -1212,7 +1249,6 @@ async function initProductDetails() {
   }
   if (detailDescription) detailDescription.textContent = product.description;
 
-  // Populate Specs tab content
   const specBrand = $('#spec-brand');
   const specCategory = $('#spec-category');
   const specSizes = $('#spec-sizes');
@@ -1223,7 +1259,6 @@ async function initProductDetails() {
   if (specSizes) specSizes.textContent = product.sizes.join(', ');
   if (tabDescContent) tabDescContent.textContent = product.description;
 
-  // Stock Status Indicator
   const stockBadge = $('#stock-badge');
   if (stockBadge) {
     if (!product.inStock) {
@@ -1240,7 +1275,6 @@ async function initProductDetails() {
 
   let currentQty = 1;
 
-  // Populate Gallery
   const mainImg = $('#main-product-img');
   const thumbnailGrid = $('#thumbnailGrid');
   if (mainImg) {
@@ -1274,7 +1308,6 @@ async function initProductDetails() {
     });
   }
 
-  // Magnifier zoom effect on main image hover
   const mainImgContainer = $('#mainImgContainer');
   if (mainImgContainer && mainImg) {
     mainImgContainer.addEventListener('mousemove', (e) => {
@@ -1299,7 +1332,6 @@ async function initProductDetails() {
     });
   }
 
-  // Populate sizes grid
   const sizeGrid = $('#detail-size-grid');
   if (sizeGrid) {
     sizeGrid.innerHTML = '';
@@ -1315,7 +1347,6 @@ async function initProductDetails() {
     });
   }
 
-  // Size Guide trigger
   const sizeGuideBtn = $('#sizeGuideBtn');
   const sizeGuideClose = $('#sizeGuideClose');
   const sizeGuideModal = $('#sizeGuideModalOverlay');
@@ -1331,7 +1362,6 @@ async function initProductDetails() {
     });
   }
 
-  // Bind Add to Cart & Buy Now buttons
   const addToCartBtn = $('#detail-add-to-cart-btn');
   const buyNowBtn = $('#detail-buy-now-btn');
   if (addToCartBtn) {
@@ -1354,7 +1384,6 @@ async function initProductDetails() {
     };
   }
 
-  // Wishlist bindings
   const wishlistBtn = $('#detail-wishlist-btn');
   if (wishlistBtn) {
     const checkWishlistState = () => {
@@ -1370,7 +1399,6 @@ async function initProductDetails() {
     };
   }
 
-  // Info Tabs functionality
   const tabBtns = $$('.tab-btn');
   const tabPanes = $$('.tab-pane');
   tabBtns.forEach(btn => {
@@ -1385,7 +1413,6 @@ async function initProductDetails() {
     });
   });
 
-  // Related Products Loading
   const relatedGrid = $('#relatedGrid');
   if (relatedGrid) {
     relatedGrid.innerHTML = '';
@@ -1435,7 +1462,6 @@ async function initProductDetails() {
     bindProductEvents();
   }
 
-  // Sharing links setup
   const currentURL = encodeURIComponent(window.location.href);
   const shareText = encodeURIComponent(`Check out the awesome ${product.brand} ${product.name} on STEPZ: `);
   
@@ -1457,7 +1483,6 @@ async function initProductDetails() {
     };
   }
 
-  // Quantity Stepper
   const qtyMinusBtn = $('#qtyMinusBtn');
   const qtyPlusBtn = $('#qtyPlusBtn');
   const qtyValue = $('#qtyValue');
@@ -1476,7 +1501,6 @@ async function initProductDetails() {
     });
   }
 
-  // Delivery Estimator
   const deliveryCheckBtn = $('#deliveryCheckBtn');
   const deliveryDistrict = $('#deliveryDistrict');
   const deliveryEstimateResult = $('#deliveryEstimateResult');
@@ -1503,7 +1527,6 @@ async function initProductDetails() {
     });
   }
 
-  // Recently Viewed Products
   const RECENTLY_VIEWED_KEY = 'stepz-recently-viewed';
   let recentlyViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || '[]');
   const recentGrid = $('#recentlyViewedGrid');
@@ -1559,11 +1582,10 @@ async function initProductDetails() {
       recentSection.style.display = 'none';
     }
   }
-  // Track this product as viewed (most recent first, max 8 remembered)
+
   recentlyViewed = [product.id, ...recentlyViewed.filter(pid => pid !== product.id)].slice(0, 8);
   localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(recentlyViewed));
 
-  // Sticky Mobile Add-to-Cart Bar
   const stickyCartBar = $('#stickyCartBar');
   const stickyCartName = $('#stickyCartName');
   const stickyCartPrice = $('#stickyCartPrice');
@@ -1587,13 +1609,9 @@ async function initProductDetails() {
     }
   }
 
-  // Reviews System
   initProductReviews(product);
 }
 
-/* ══════════════════════════════════
-   HERO PARALLAX
-══════════════════════════════════ */
 function initParallax() {
   const heroBg = $('.hero-bg');
   if (!heroBg) return;
@@ -1605,9 +1623,6 @@ function initParallax() {
   }, { passive: true });
 }
 
-/* ══════════════════════════════════
-   SMOOTH SCROLL FOR NAV LINKS
-══════════════════════════════════ */
 $$('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', (e) => {
     const targetId = anchor.getAttribute('href').slice(1);
@@ -1621,9 +1636,6 @@ $$('a[href^="#"]').forEach(anchor => {
   });
 });
 
-/* ══════════════════════════════════
-   KEYBOARD ACCESSIBILITY
-══════════════════════════════════ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (isCartOpen) closeCart();
@@ -1635,11 +1647,9 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ══════════════════════════════════
-   WISHLIST ICON BADGE
-══════════════════════════════════ */
 function updateWishlistIcon() {
   const btn = $('#wishlistBtn');
+  if (!btn) return;
   const icon = btn.querySelector('i');
   if (wishlist.length > 0) {
     icon.className = 'fa-solid fa-heart';
@@ -1650,7 +1660,7 @@ function updateWishlistIcon() {
   }
 }
 
-$('#wishlistBtn').addEventListener('click', () => {
+on('#wishlistBtn', 'click', () => {
   if (wishlist.length === 0) {
     showToast('Your wishlist is empty! ❤️', '❤️');
   } else {
@@ -1658,9 +1668,6 @@ $('#wishlistBtn').addEventListener('click', () => {
   }
 });
 
-/* ══════════════════════════════════
-   HERO BG ANIMATION
-══════════════════════════════════ */
 window.addEventListener('load', () => {
   const heroBg = $('.hero-bg');
   if (heroBg) {
@@ -1670,47 +1677,6 @@ window.addEventListener('load', () => {
   }
 });
 
-/* ══════════════════════════════════
-   USER NAV STATE
-══════════════════════════════════ */
-function initUserNav() {
-  const userBtn = $('#userBtn');
-  const mobileUserBtn = $('#mobileUserBtn');
-  const currentUser = JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
-
-  if (currentUser) {
-    const isAd = currentUser.role === 'admin';
-    const targetUrl = isAd ? 'admin/index.html' : 'login.html';
-    const label = isAd ? 'Admin Dashboard' : `Account (${currentUser.name})`;
-
-    if (userBtn) {
-      userBtn.setAttribute('title', label);
-      userBtn.href = targetUrl;
-      const icon = userBtn.querySelector('i');
-      if (icon) {
-        icon.className = 'fa-solid fa-user-check';
-        icon.style.color = 'var(--accent)';
-      }
-    }
-    if (mobileUserBtn) {
-      mobileUserBtn.textContent = isAd ? '⚡ Admin Dashboard' : `👤 ${currentUser.name}`;
-      mobileUserBtn.href = targetUrl;
-    }
-  } else {
-    if (userBtn) {
-      userBtn.setAttribute('title', 'Login / Account');
-      userBtn.href = 'login.html';
-    }
-    if (mobileUserBtn) {
-      mobileUserBtn.textContent = 'Login / Account';
-      mobileUserBtn.href = 'login.html';
-    }
-  }
-}
-
-/* ══════════════════════════════════
-   INIT
-══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
   initUserNav();
   const urlParams = new URLSearchParams(window.location.search);
@@ -1726,12 +1692,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  await loadProducts();   // fetch from MySQL (via PHP API) before rendering
+  await loadProducts();  
 
   if (window.location.pathname.includes('product-details.html')) {
     await initProductDetails();
   } else if (window.location.pathname.includes('checkout.html')) {
     initCheckoutPage();
+  } else if (window.location.pathname.includes('account.html')) {
+    initAccountPage();
   } else if (!PRODUCTS_LOAD_FAILED) {
     renderProducts(filterParam);
   }
@@ -1740,9 +1708,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initReveal();
   initParallax();
 
-  // Init slider after short delay so DOM is ready
   setTimeout(initSlider, 100);
 
-  // Re-run observer for dynamically added elements
   setTimeout(initReveal, 200);
 });

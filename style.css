@@ -1,8 +1,3 @@
-/* ═══════════════════════════════════════════════
-   STEPZ — Footwear E-Commerce Design System
-   Dark Premium + Glassmorphism Aesthetic
-═══════════════════════════════════════════════ */
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap');
 
 /* ── CSS Variables ── */
@@ -99,9 +94,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 .text-accent { color: var(--accent); }
 .text-center { text-align: center; }
 
-/* ══════════════════════════════════════
-   NAVBAR
-══════════════════════════════════════ */
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -293,9 +285,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 }
 .search-close:hover { color: var(--accent); }
 
-/* ══════════════════════════════════════
-   HERO SECTION
-══════════════════════════════════════ */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -521,9 +510,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   100% { opacity: 0; transform: scaleY(1) translateY(20px); }
 }
 
-/* ══════════════════════════════════════
-   MARQUEE TICKER
-══════════════════════════════════════ */
 .ticker {
   background: var(--accent);
   padding: 12px 0;
@@ -552,9 +538,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   100% { transform: translateX(-50%); }
 }
 
-/* ══════════════════════════════════════
-   CATEGORIES
-══════════════════════════════════════ */
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -640,9 +623,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 /* Large first card */
 .cat-card.large { grid-row: span 1; }
 
-/* ══════════════════════════════════════
-   PRODUCTS
-══════════════════════════════════════ */
 .products-header {
   display: flex;
   align-items: flex-end;
@@ -837,9 +817,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 /* View All btn */
 .view-all-wrap { text-align: center; margin-top: 48px; }
 
-/* ══════════════════════════════════════
-   SPECIAL OFFER BANNER
-══════════════════════════════════════ */
 .offer-section {
   padding: 0 0 100px;
 }
@@ -940,9 +917,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   margin-top: 16px;
 }
 
-/* ══════════════════════════════════════
-   FEATURES / WHY US
-══════════════════════════════════════ */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1000,9 +974,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   line-height: 1.6;
 }
 
-/* ══════════════════════════════════════
-   TESTIMONIALS
-══════════════════════════════════════ */
 .testimonials-wrap {
   position: relative;
   overflow: hidden;
@@ -1113,9 +1084,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   border-radius: 4px;
 }
 
-/* ══════════════════════════════════════
-   NEWSLETTER
-══════════════════════════════════════ */
 .newsletter-section {
   padding: 80px 0 100px;
 }
@@ -1187,9 +1155,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 }
 .newsletter-form button:hover { background: #e8941b; }
 
-/* ══════════════════════════════════════
-   FOOTER
-══════════════════════════════════════ */
 .footer {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-glass);
@@ -1284,9 +1249,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   letter-spacing: 0.5px;
 }
 
-/* ══════════════════════════════════════
-   CART SIDEBAR
-══════════════════════════════════════ */
 .cart-overlay {
   position: fixed;
   inset: 0;
@@ -1483,9 +1445,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   box-shadow: var(--shadow-btn);
 }
 
-/* ══════════════════════════════════════
-   QUICK VIEW MODAL
-══════════════════════════════════════ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1573,9 +1532,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 }
 .modal-add-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-btn); }
 
-/* ══════════════════════════════════════
-   ANIMATIONS
-══════════════════════════════════════ */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -1623,9 +1579,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast-icon { font-size: 18px; }
 
-/* ══════════════════════════════════════
-   PRODUCT DETAILS PAGE
-   ══════════════════════════════════════ */
 .product-details-section {
   padding-top: 120px;
 }
@@ -2554,9 +2507,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   border-bottom: 1px solid var(--border-glass);
 }
 
-/* ══════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════ */
 @media (max-width: 1100px) {
   .products-grid    { grid-template-columns: repeat(3, 1fr); }
   .categories-grid  { grid-template-columns: repeat(2, 1fr); }
@@ -2590,9 +2540,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   .offer-banner     { padding: 40px 24px; }
 }
 
-/* ══════════════════════════════════════
-   CUSTOMER SUITE — CHECKOUT PAGE
-══════════════════════════════════════ */
 .checkout-section {
   padding: 60px 0 100px;
 }
@@ -2759,9 +2706,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   color: var(--accent);
 }
 
-/* ══════════════════════════════════════
-   CUSTOMER SUITE — ACCOUNT PORTAL
-══════════════════════════════════════ */
 .account-section {
   padding: 60px 0 100px;
 }
@@ -2836,9 +2780,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   padding: 32px;
 }
 
-/* ══════════════════════════════════════
-   CUSTOMER SUITE — WISHLIST PAGE
-══════════════════════════════════════ */
 .wishlist-section {
   padding: 60px 0 100px;
 }
@@ -2856,9 +2797,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   margin-bottom: 16px;
 }
 
-/* ══════════════════════════════════════
-   CUSTOMER SUITE — CONTACT PAGE
-══════════════════════════════════════ */
 .contact-section {
   padding: 60px 0 100px;
 }
@@ -2937,9 +2875,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   display: block;
 }
 
-/* ══════════════════════════════════════
-   SHARED PAGE FOOTER (all inner pages)
-══════════════════════════════════════ */
 .page-footer {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-glass);
@@ -3012,9 +2947,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   transform: translateY(-2px);
 }
 
-/* ══════════════════════════════════════
-   PAGE HEADER BANNER (reusable)
-══════════════════════════════════════ */
+
 .page-hero {
   padding: 130px 0 60px;
   background: var(--bg-secondary);
@@ -3058,9 +2991,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   max-width: 520px;
 }
 
-/* ══════════════════════════════════════
-   ORDER CONFIRMATION PAGE
-══════════════════════════════════════ */
 .order-confirm-section { padding: 80px 0 120px; }
 
 .confirm-card {
@@ -3221,9 +3151,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 
 .confirm-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 
-/* ══════════════════════════════════════
-   ORDER TRACKING PAGE
-══════════════════════════════════════ */
 .tracking-section { padding: 60px 0 120px; }
 
 .tracking-search-box {
@@ -3395,9 +3322,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 .update-info span { font-size: 0.8rem; color: var(--text-muted); }
 .update-info .update-time { display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
 
-/* ══════════════════════════════════════
-   SIZE GUIDE PAGE
-══════════════════════════════════════ */
 .size-guide-section { padding: 60px 0 120px; }
 
 .size-guide-tabs {
@@ -3528,9 +3452,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 }
 .sg-tip-box .tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
 
-/* ══════════════════════════════════════
-   ABOUT PAGE
-══════════════════════════════════════ */
 .about-section { padding: 60px 0 120px; }
 
 .about-story-grid {
@@ -3652,9 +3573,6 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 .about-team-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
 .about-team-card p { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
 
-/* ══════════════════════════════════════
-   404 PAGE
-══════════════════════════════════════ */
 .not-found-section {
   min-height: 100vh;
   display: flex;
@@ -3737,8 +3655,5 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
   background: var(--accent-dim);
 }
 
-/* ══════════════════════════════════════
-   GREEN SUCCESS COLOR
-══════════════════════════════════════ */
 :root { --green: #22c55e; }
-
+

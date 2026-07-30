@@ -1,13 +1,5 @@
-/* ═══════════════════════════════════════════════
-   STEPZ — Admin Panel Logic
-   Dashboard, Products, Orders, Customers
-═══════════════════════════════════════════════ */
-
 'use strict';
 
-/* ══════════════════════════════════
-   AUTH GUARD
-══════════════════════════════════ */
 function getCurrentUser() {
   return JSON.parse(localStorage.getItem('stepz-current-user') || 'null');
 }
@@ -24,9 +16,6 @@ function isAdmin() {
   }
 })();
 
-/* ══════════════════════════════════
-   TOAST
-══════════════════════════════════ */
 function showToast(message, type = 'success') {
   const existing = document.querySelector('.admin-toast');
   if (existing) existing.remove();
@@ -43,9 +32,6 @@ function showToast(message, type = 'success') {
   }, 3000);
 }
 
-/* ══════════════════════════════════
-   SIDEBAR
-══════════════════════════════════ */
 function initSidebar() {
   const sidebar = document.querySelector('.admin-sidebar');
   const toggle = document.querySelector('.sidebar-toggle');
@@ -84,12 +70,6 @@ function initSidebar() {
     if (avatarEl) avatarEl.textContent = (user.name || 'A').charAt(0).toUpperCase();
   }
 }
-
-/* ══════════════════════════════════
-   MOCK DATA
-══════════════════════════════════ */
-
-// Products from localStorage (synced with main site)
 function getProducts() {
   let products = JSON.parse(localStorage.getItem('stepz-admin-products') || 'null');
   if (!products) {
@@ -175,9 +155,6 @@ function getCustomers() {
   return customers;
 }
 
-/* ══════════════════════════════════
-   FORMAT HELPERS
-══════════════════════════════════ */
 function formatPrice(n) {
   return 'Rs. ' + Number(n).toLocaleString('en-LK');
 }
@@ -187,9 +164,6 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-/* ══════════════════════════════════
-   DASHBOARD — STATS (Animated Counters)
-══════════════════════════════════ */
 function animateCounter(el, target, prefix = '', suffix = '') {
   let current = 0;
   const duration = 1500;
@@ -275,9 +249,6 @@ function renderRevenueChart() {
   }, 300);
 }
 
-/* ══════════════════════════════════
-   PRODUCTS PAGE
-══════════════════════════════════ */
 let editingProductId = null;
 
 function initProductsPage() {
@@ -447,7 +418,6 @@ function deleteProduct(id) {
 window.openProductModal = openProductModal;
 window.deleteProduct = deleteProduct;
 
-/* ══════════════════════════════════
    ORDERS PAGE
 ══════════════════════════════════ */
 function initOrdersPage() {
@@ -638,9 +608,6 @@ window.updateOrderStatus = updateOrderStatus;
 window.openOrderModal = openOrderModal;
 window.closeOrderModal = closeOrderModal;
 
-/* ══════════════════════════════════
-   CUSTOMERS PAGE
-══════════════════════════════════ */
 function initCustomersPage() {
   renderCustomersTable();
 
@@ -779,9 +746,6 @@ function closeCustomerModal() {
 window.openCustomerModal = openCustomerModal;
 window.closeCustomerModal = closeCustomerModal;
 
-/* ══════════════════════════════════
-   REVIEWS PAGE
-══════════════════════════════════ */
 function getReviews() {
   let reviews = JSON.parse(localStorage.getItem('stepz-admin-reviews') || 'null');
   if (!reviews) {
@@ -891,9 +855,6 @@ function deleteReview(id) {
 window.toggleReviewStatus = toggleReviewStatus;
 window.deleteReview = deleteReview;
 
-/* ══════════════════════════════════
-   OFFERS PAGE
-══════════════════════════════════ */
 function getOffers() {
   let offers = JSON.parse(localStorage.getItem('stepz-admin-offers') || 'null');
   if (!offers) {
@@ -1028,9 +989,6 @@ function deleteOffer(id) {
 window.toggleOfferStatus = toggleOfferStatus;
 window.deleteOffer = deleteOffer;
 
-/* ══════════════════════════════════
-   SETTINGS PAGE
-══════════════════════════════════ */
 function initSettingsPage() {
   const storeForm = document.getElementById('storeSettingsForm');
   const shippingForm = document.getElementById('shippingSettingsForm');
@@ -1050,9 +1008,6 @@ function initSettingsPage() {
   }
 }
 
-/* ══════════════════════════════════
-   INIT ON LOAD
-══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   initSidebar();
 

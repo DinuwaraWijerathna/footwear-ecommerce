@@ -1,8 +1,3 @@
--- ═══════════════════════════════════════════════
--- STEPZ Database Setup
--- phpMyAdmin -> Import tab -> select this file -> Go
--- ═══════════════════════════════════════════════
-
 CREATE DATABASE IF NOT EXISTS stepz_db;
 USE stepz_db;
 
@@ -22,7 +17,7 @@ CREATE TABLE products (
   rating DECIMAL(2,1) DEFAULT 0,
   reviews INT DEFAULT 0,
   image VARCHAR(255) NOT NULL,
-  sizes VARCHAR(100) NOT NULL,      -- comma separated e.g. "6,7,8,9,10,11,12"
+  sizes VARCHAR(100) NOT NULL,      
   description TEXT,
   in_stock TINYINT(1) DEFAULT 1
 );

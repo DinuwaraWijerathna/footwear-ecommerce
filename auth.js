@@ -1,13 +1,5 @@
-/* ═══════════════════════════════════════════════
-   STEPZ — Auth Logic (Login / Signup)
-   localStorage-based authentication prototype
-═══════════════════════════════════════════════ */
-
 'use strict';
 
-/* ══════════════════════════════════
-   DEFAULT ADMIN & CUSTOMER ACCOUNTS
-══════════════════════════════════ */
 const DEFAULT_ADMIN = {
   id: 1,
   name: 'STEPZ Admin',
@@ -28,9 +20,6 @@ const DEFAULT_CUSTOMER = {
   createdAt: '2026-01-15T00:00:00Z'
 };
 
-/* ══════════════════════════════════
-   INITIALIZE USERS STORE
-══════════════════════════════════ */
 function initUsersStore() {
   let users = JSON.parse(localStorage.getItem('stepz-users') || '[]');
   
@@ -64,9 +53,6 @@ function fillDemoLogin(role) {
 }
 window.fillDemoLogin = fillDemoLogin;
 
-/* ══════════════════════════════════
-   AUTH HELPERS
-══════════════════════════════════ */
 function getUsers() {
   return JSON.parse(localStorage.getItem('stepz-users') || '[]');
 }
@@ -96,9 +82,6 @@ function setCurrentUser(user) {
   localStorage.setItem('stepz-current-user', JSON.stringify(sessionUser));
 }
 
-/* ══════════════════════════════════
-   VALIDATION HELPERS
-══════════════════════════════════ */
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -135,9 +118,6 @@ function clearAllErrors(form) {
   form.querySelectorAll('.input-group').forEach(g => clearInputError(g));
 }
 
-/* ══════════════════════════════════
-   SHOW TOAST NOTIFICATION
-══════════════════════════════════ */
 function showAuthToast(message, type = 'success') {
   // Remove existing toast
   const existing = document.querySelector('.auth-toast');
@@ -158,9 +138,6 @@ function showAuthToast(message, type = 'success') {
   }, 3000);
 }
 
-/* ══════════════════════════════════
-   LOGIN HANDLER
-══════════════════════════════════ */
 function handleLogin(e) {
   e.preventDefault();
   const form = e.target;
@@ -224,9 +201,6 @@ function handleLogin(e) {
   }, 800);
 }
 
-/* ══════════════════════════════════
-   SIGNUP HANDLER
-══════════════════════════════════ */
 function handleSignup(e) {
   e.preventDefault();
   const form = e.target;
@@ -327,9 +301,6 @@ function handleSignup(e) {
   }, 800);
 }
 
-/* ══════════════════════════════════
-   PASSWORD VISIBILITY TOGGLE
-══════════════════════════════════ */
 function togglePasswordVisibility(btn) {
   const input = btn.parentElement.querySelector('input');
   const icon = btn.querySelector('i');
@@ -345,9 +316,6 @@ function togglePasswordVisibility(btn) {
   }
 }
 
-/* ══════════════════════════════════
-   PASSWORD STRENGTH LIVE UPDATE
-══════════════════════════════════ */
 function updatePasswordStrength(password) {
   const strengthFill = document.querySelector('.strength-fill');
   const strengthText = document.querySelector('.strength-text');
@@ -367,9 +335,6 @@ function updatePasswordStrength(password) {
   strengthText.className = `strength-text ${strength.level}`;
 }
 
-/* ══════════════════════════════════
-   INIT
-══════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   initUsersStore();
 

@@ -1,8 +1,4 @@
 <?php
-// ═══════════════════════════════════════════════
-// Database connection settings
-// Default XAMPP values -- change if yours is different
-// ═══════════════════════════════════════════════
 $host = "localhost";
 $user = "root";
 $pass = "";          // XAMPP default MySQL password is empty

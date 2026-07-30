@@ -1,5 +1,4 @@
 <?php
-// Allow the frontend (Live Server / any origin) to call this API
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
