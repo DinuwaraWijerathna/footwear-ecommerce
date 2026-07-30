@@ -9,7 +9,7 @@
 ══════════════════════════════════ */
 // Automatically uses whatever host/port this page was loaded from
 // (fixes issues when Apache runs on a non-default port like 8080).
-const API_BASE = window.location.origin + '/stepz-api/';
+const API_BASE = 'stepz-api/';
 const API_URL = API_BASE + 'get_products.php';
 const CREATE_ORDER_API = API_BASE + 'create_order.php';
 const GET_ORDERS_API = API_BASE + 'get_orders.php';
